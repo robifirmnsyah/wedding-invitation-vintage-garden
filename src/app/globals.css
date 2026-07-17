@@ -3,16 +3,26 @@
 @tailwind utilities;
 
 :root {
-  --olive: #708238;
-  --ivory: #faf8f3;
-  --cream: #f5f0e6;
-  --sage: #dce4d3;
-  --beige: #e9e1d3;
-  --ink: #3b3b3b;
+  --olive: #a94468;
+  --ivory: #fffaf8;
+  --cream: #fff4f1;
+  --sage: #f3dfe5;
+  --beige: #f0dfd2;
+  --ink: #3b2730;
 }
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+:where(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid rgba(169, 68, 104, 0.55);
+  outline-offset: 3px;
+}
+
+button,
+a {
+  touch-action: manipulation;
 }
 
 html {
@@ -72,8 +82,9 @@ body.locked {
 
   /* Olive outline button */
   .btn-olive {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-olive px-7 py-3 font-body text-sm font-medium tracking-wide text-ivory shadow-lg transition-all duration-300;
-    box-shadow: 0 8px 22px -8px rgba(86, 101, 41, 0.7);
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-olive px-7 py-3 font-body text-sm font-medium tracking-wide text-ivory shadow-lg transition-all duration-300;
+    box-shadow: 0 8px 22px -8px rgba(169, 68, 104, 0.7);
+    touch-action: manipulation;
   }
   .btn-olive:hover {
     @apply bg-olive-dark;

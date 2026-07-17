@@ -82,7 +82,8 @@ export function Hero({ guestName, opened, onOpen }: Props) {
         {!opened && (
           <motion.button
             onClick={onOpen}
-            className="btn-olive mt-8 [text-shadow:none]"
+            className="btn-olive mt-8 min-w-44 [text-shadow:none]"
+            aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
             whileTap={{ scale: 0.96 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

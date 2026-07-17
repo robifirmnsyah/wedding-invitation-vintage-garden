@@ -8,21 +8,21 @@ const config: Config = {
     extend: {
       colors: {
         olive: {
-          DEFAULT: "#708238",
-          light: "#8a9a52",
-          dark: "#566529",
+          DEFAULT: "#A94468",
+          light: "#CF718D",
+          dark: "#7C2948",
         },
-        ivory: "#FAF8F3",
-        cream: "#F5F0E6",
-        sage: "#DCE4D3",
-        beige: "#E9E1D3",
-        ink: "#3B3B3B",
+        ivory: "#FFFAF8",
+        cream: "#FFF4F1",
+        sage: "#F3DFE5",
+        beige: "#F0DFD2",
+        ink: "#3B2730",
       },
       fontFamily: {
-        heading: ["var(--font-fredoka)", "sans-serif"],
+        heading: ["var(--font-heading)", "cursive"],
         sub: ["var(--font-cormorant)", "serif"],
         body: ["var(--font-poppins)", "sans-serif"],
-        script: ["var(--font-caveat)", "cursive"],
+        script: ["var(--font-heading)", "cursive"],
       },
       keyframes: {
         floatUp: {

@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { Fredoka, Cormorant_Garamond, Poppins, Caveat } from "next/font/google";
+import { Cormorant_Infant, Great_Vibes, Poppins } from "next/font/google";
 import config from "@/lib/config";
 import "./globals.css";
 
-const fredoka = Fredoka({
+const heading = Great_Vibes({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-fredoka",
+  weight: ["400"],
+  variable: "--font-heading",
   display: "swap",
 });
 
-const cormorant = Cormorant_Garamond({
+const cormorant = Cormorant_Infant({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-cormorant",
   display: "swap",
@@ -22,13 +22,6 @@ const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
   variable: "--font-poppins",
-  display: "swap",
-});
-
-const caveat = Caveat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-caveat",
   display: "swap",
 });
 
@@ -46,10 +39,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#708238",
+  themeColor: "#A94468",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -58,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${fredoka.variable} ${cormorant.variable} ${poppins.variable} ${caveat.variable}`}
+      className={`${heading.variable} ${cormorant.variable} ${poppins.variable}`}
     >
       <body className="bg-ivory font-body text-ink antialiased">{children}</body>
     </html>
