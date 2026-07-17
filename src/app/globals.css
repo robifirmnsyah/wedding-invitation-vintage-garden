@@ -262,6 +262,65 @@ body.locked {
   }
 }
 
+/* Small illustrated garden details: clouds drift, birds glide once, flowers breathe. */
+.garden-atmosphere {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--olive-600);
+}
+.garden-cloud,
+.garden-bird,
+.garden-flower {
+  position: absolute;
+}
+.garden-cloud-one { top: 10%; left: -2rem; width: 12rem; animation: cloud-drift 22s linear infinite; }
+.garden-cloud-two { top: 18%; right: -2rem; width: 10rem; animation: cloud-drift-reverse 28s linear infinite; }
+.garden-bird-one { top: 24%; left: 17%; width: 3.3rem; animation: bird-glide 11s ease-in-out infinite; }
+.garden-bird-two { top: 31%; right: 19%; width: 2.4rem; opacity: .7; animation: bird-glide-reverse 14s ease-in-out 1.5s infinite; }
+.garden-flower { bottom: -1.4rem; width: 5.8rem; opacity: .6; transform-origin: bottom center; animation: flower-sway 7s ease-in-out infinite; }
+.garden-flower-left { left: 2%; }
+.garden-flower-right { right: 2%; animation-delay: 1.2s; }
+
+@keyframes cloud-drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(3rem); }
+}
+@keyframes cloud-drift-reverse {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-2.5rem); }
+}
+@keyframes bird-glide {
+  0%, 100% { transform: translate(0, 0) rotate(-2deg); }
+  50% { transform: translate(2.4rem, -0.7rem) rotate(2deg); }
+}
+@keyframes bird-glide-reverse {
+  0%, 100% { transform: translate(0, 0) rotate(2deg); }
+  50% { transform: translate(-2rem, -0.5rem) rotate(-2deg); }
+}
+@keyframes flower-sway {
+  0%, 100% { transform: rotate(-1deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@media (max-width: 640px) {
+  .garden-cloud-one { top: 7%; left: -4rem; width: 9rem; }
+  .garden-cloud-two { top: 14%; right: -3rem; width: 8rem; }
+  .garden-bird-one { top: 22%; left: 10%; width: 2.8rem; }
+  .garden-bird-two { top: 28%; right: 10%; width: 2rem; }
+  .garden-flower { width: 4.3rem; opacity: .45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-cloud,
+  .garden-bird,
+  .garden-flower {
+    animation: none;
+  }
+}
+
 /* Arabic verse — Amiri, generous leading, never letter-spaced */
 .arabic-verse {
   font-family: var(--font-arabic), serif;

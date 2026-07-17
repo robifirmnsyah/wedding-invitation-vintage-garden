@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineEnvelopeOpen } from "react-icons/hi2";
 import { GardenVines } from "@/components/Decor";
+import { GardenAtmosphere } from "@/components/GardenAtmosphere";
 import config from "@/lib/config";
 
 interface Props {
@@ -29,6 +30,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
       className="relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-ivory-50 px-5 py-12"
     >
       <div className="hero-garden-wash" aria-hidden="true" />
+      <GardenAtmosphere />
       <GardenVines />
       <div className="relative z-10 mx-auto flex w-full max-w-xl flex-col items-center text-center">
         <motion.div
