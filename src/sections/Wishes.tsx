@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import {
   HiOutlinePaperAirplane,
   HiCheckBadge,
@@ -38,7 +37,11 @@ interface RegisteredGuest {
   wish_message: string;
 }
 
-/** Guestbook: RSVP counters + form + paginated wishes with replies. */
+/**
+ * Guestbook: RSVP counters + form + paginated wishes with replies.
+ * Editorial restyle only — Supabase lookup, RSVP submission, wish posting,
+ * replies, and pagination are unchanged (IMPLEMENTATION_PLAN §P2.1–P2.2).
+ */
 export function Wishes() {
   const guestInfo = useGuestInfo();
   const guestName = guestInfo.name;
@@ -191,85 +194,124 @@ export function Wishes() {
   };
 
   return (
-    <section className="section-pad relative overflow-hidden bg-cream/60 backdrop-blur-sm">
-      <SectionTitle eyebrow="Send Your Love" title="Wedding Wishes" />
+    <section aria-labelledby="wishes-title" className="section-pad bg-ivory-50">
+      <SectionTitle id="wishes-title" eyebrow="Send Your Love" title="Wedding Wishes" />
 
-      <div className="mx-auto mt-10 grid max-w-4xl gap-8 lg:grid-cols-2">
+      <Reveal className="mx-auto mt-12 grid max-w-4xl gap-8 lg:grid-cols-2">
         {/* form */}
-        <Reveal className="paper-card rounded-2xl p-6 shadow-md ring-1 ring-olive/10">
+        <div className="paper-card h-fit p-6 sm:p-8">
           {!guestLookupDone ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-olive border-t-transparent" />
+            <div className="flex items-center justify-center py-8" role="status">
+              <div
+                aria-hidden="true"
+                className="h-6 w-6 animate-spin rounded-full border-2 border-olive-600 border-t-transparent"
+              />
+              <span className="sr-only">Memuat data tamu…</span>
             </div>
           ) : !hasInvitationCode ? (
             /* No invitation code — show a message */
             <div className="py-8 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-sage/40">
-                <svg className="h-7 w-7 text-olive" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-sage-300 bg-sage-100">
+                <svg
+                  aria-hidden="true"
+                  className="h-7 w-7 text-olive-700"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
                 </svg>
               </div>
-              <p className="font-heading text-lg font-600 text-olive-dark">
+              <p
+                className="font-display font-semibold text-olive-900"
+                style={{ fontSize: "var(--text-h3)" }}
+              >
                 RSVP Khusus Tamu Terdaftar
               </p>
-              <p className="mt-2 font-body text-sm text-ink/60">
+              <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 Untuk mengisi RSVP dan memberikan ucapan, silakan buka undangan melalui link khusus yang telah dikirimkan kepada Anda.
               </p>
             </div>
           ) : !registeredGuest ? (
             /* Invalid code */
             <div className="py-8 text-center">
-              <p className="font-heading text-lg font-600 text-rose-600">
+              <p
+                className="font-display font-semibold text-error"
+                style={{ fontSize: "var(--text-h3)" }}
+              >
                 Kode Undangan Tidak Valid
               </p>
-              <p className="mt-2 font-body text-sm text-ink/60">
+              <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 Kode undangan yang Anda gunakan tidak ditemukan. Pastikan Anda membuka link yang benar.
               </p>
             </div>
           ) : status === "success" ? (
             /* Success message */
-            <div className="py-8 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 ring-2 ring-emerald-500/30">
-                <svg className="h-7 w-7 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <div className="py-8 text-center" role="status">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-olive-600 bg-sage-100">
+                <svg
+                  aria-hidden="true"
+                  className="h-7 w-7 text-olive-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
               </div>
-              <p className="font-heading text-lg font-600 text-olive-dark">
+              <p
+                className="font-display font-semibold text-olive-900"
+                style={{ fontSize: "var(--text-h3)" }}
+              >
                 Terima Kasih, {registeredGuest.name}!
               </p>
-              <p className="mt-2 font-body text-sm text-ink/60">
+              <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 RSVP dan ucapan Anda telah tersimpan. Kami sangat menantikan kehadiran Anda.
               </p>
             </div>
           ) : (
             /* RSVP Form for registered guests */
-            <form onSubmit={submitRsvp} className="space-y-4">
-              <div className="rounded-xl bg-sage/30 p-3">
+            <form onSubmit={submitRsvp} className="space-y-5">
+              <div className="border border-sage-300 bg-sage-100 p-3">
                 <div className="flex items-center gap-2">
-                  <HiCheckBadge className="text-lg text-olive" />
-                  <span className="font-heading text-sm font-600 text-olive-dark">
+                  <HiCheckBadge
+                    aria-hidden="true"
+                    className="text-lg text-olive-600"
+                  />
+                  <span className="font-body text-base font-medium text-olive-900">
                     {registeredGuest.name}
                   </span>
                 </div>
-                <p className="mt-1 font-body text-xs text-ink/50">
+                <p className="mt-1 font-body text-sm text-olive-700">
                   Kode: {registeredGuest.unique_code} · Kuota: {registeredGuest.pax} orang
                 </p>
               </div>
 
               <div>
-                <label className="font-body text-xs uppercase tracking-widest text-ink/60">
+                <span
+                  id="attendance-label"
+                  className="font-body text-sm font-medium text-olive-700"
+                >
                   Kehadiran
-                </label>
-                <div className="mt-1 grid grid-cols-3 gap-2">
+                </span>
+                <div
+                  role="radiogroup"
+                  aria-labelledby="attendance-label"
+                  className="mt-2 grid grid-cols-3 gap-2"
+                >
                   {ATTENDANCE.map((a) => (
                     <button
                       type="button"
                       key={a}
+                      role="radio"
+                      aria-checked={attendance === a}
                       onClick={() => setAttendance(a)}
-                      className={`rounded-lg border px-2 py-2 text-xs transition-colors ${
+                      className={`min-h-11 cursor-pointer rounded border px-2 py-2 font-body text-sm transition-colors duration-200 ${
                         attendance === a
-                          ? "border-olive bg-olive text-ivory"
-                          : "border-olive/20 bg-ivory text-ink/70 hover:bg-sage/40"
+                          ? "border-olive-600 bg-olive-600 text-ivory-50"
+                          : "border-sage-300 bg-ivory-50 text-olive-700 hover:bg-sage-100"
                       }`}
                     >
                       {attendanceLabel[a]}
@@ -279,79 +321,84 @@ export function Wishes() {
               </div>
 
               <div>
-                <label className="font-body text-xs uppercase tracking-widest text-ink/60">
+                <label
+                  htmlFor="wish-message"
+                  className="font-body text-sm font-medium text-olive-700"
+                >
                   Ucapan &amp; Doa
                 </label>
                 <textarea
+                  id="wish-message"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   maxLength={500}
                   required
                   rows={3}
                   placeholder="Tulis ucapan dan doa terbaik Anda..."
-                  className="mt-1 w-full resize-none rounded-lg border border-olive/20 bg-ivory px-4 py-2.5 text-sm outline-none focus:border-olive focus:ring-1 focus:ring-olive/40"
+                  className="mt-2 w-full resize-none rounded border border-sage-300 bg-ivory-50 px-4 py-3 font-body text-base text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
                 />
+                <p className="mt-1 font-body text-sm text-olive-700">
+                  Maksimal 500 karakter.
+                </p>
               </div>
 
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="btn-olive w-full disabled:opacity-60"
+                className="btn-olive w-full disabled:cursor-not-allowed disabled:opacity-45"
               >
-                <HiOutlinePaperAirplane />
+                <HiOutlinePaperAirplane aria-hidden="true" />
                 {status === "sending" ? "Mengirim..." : "Kirim RSVP & Ucapan"}
               </button>
               {status === "error" && (
-                <p className="text-center text-xs text-red-500">
+                <p role="alert" className="text-center font-body text-sm text-error">
                   Gagal mengirim. Silakan coba lagi.
                 </p>
               )}
             </form>
           )}
-        </Reveal>
+        </div>
 
         {/* list */}
         <div className="flex flex-col">
-          <p className="mb-3 font-body text-sm text-ink/60">
+          <p className="mb-3 font-body text-sm text-olive-700" aria-live="polite">
             {wishes.length} ucapan
           </p>
           <div className="no-scrollbar max-h-[28rem] space-y-3 overflow-y-auto pr-1">
             {wishes.length === 0 && (
-              <p className="rounded-xl bg-ivory/70 p-4 text-center text-sm text-ink/50">
-                Jadilah yang pertama memberi ucapan 🤍
+              <p className="paper-card p-4 text-center font-body text-base text-olive-700">
+                Jadilah yang pertama memberi ucapan
               </p>
             )}
             {wishes.slice(0, visible).map((w) => (
-              <motion.div
-                key={w.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-xl bg-ivory/80 p-4 shadow-sm ring-1 ring-olive/10"
-              >
+              <article key={w.id} className="paper-card p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="flex items-center gap-1.5 font-heading text-base font-600 text-olive-dark">
+                  <p className="flex items-center gap-1.5 font-body text-base font-medium text-olive-900">
                     {w.name}
                     {w.verified && (
                       <span
-                        className="inline-flex items-center gap-0.5 rounded-full bg-olive/10 px-1.5 py-0.5 text-[10px] font-medium text-olive"
+                        className="inline-flex items-center gap-0.5 rounded-full border border-sage-300 bg-sage-100 px-1.5 py-0.5 text-xs font-medium text-olive-700"
                         title="Tamu undangan"
                       >
-                        <HiCheckBadge className="text-sm text-olive" />
+                        <HiCheckBadge
+                          aria-hidden="true"
+                          className="text-sm text-olive-600"
+                        />
                         Tamu
                       </span>
                     )}
                   </p>
-                  <span className="shrink-0 rounded-full bg-sage/60 px-2 py-0.5 text-[10px] uppercase tracking-wide text-olive-dark">
+                  <span className="shrink-0 rounded-full border border-sage-300 bg-sage-100 px-2 py-0.5 text-xs uppercase tracking-wide text-olive-700">
                     {attendanceLabel[w.attendance]}
                   </span>
                 </div>
 
-                <p className="mt-1 font-body text-sm leading-relaxed text-ink/75">
+                <p className="mt-2 font-body text-base leading-relaxed text-olive-700">
                   {w.message}
                 </p>
 
-                <div className="mt-2 flex items-center gap-3">
-                  <span className="font-body text-[11px] text-ink/40">
+                <div className="mt-3 flex items-center gap-4">
+                  <span className="font-body text-xs text-sage-500">
                     {relativeTime(w.createdAt)}
                   </span>
                   <button
@@ -360,27 +407,28 @@ export function Wishes() {
                       setReplyTo((cur) => (cur === w.id ? null : w.id));
                       setReplyStatus("idle");
                     }}
-                    className="inline-flex items-center gap-1 font-body text-[11px] font-medium text-olive transition-colors hover:text-olive-dark"
+                    aria-expanded={replyTo === w.id}
+                    className="inline-flex min-h-8 cursor-pointer items-center gap-1 py-1 font-body text-sm font-medium text-olive-600 transition-colors duration-200 hover:text-olive-700"
                   >
-                    <HiOutlineArrowUturnLeft className="text-xs" />
+                    <HiOutlineArrowUturnLeft aria-hidden="true" className="text-sm" />
                     Balas
                   </button>
                 </div>
 
                 {/* replies */}
                 {w.replies && w.replies.length > 0 && (
-                  <ul className="mt-3 space-y-2 border-l-2 border-sage pl-3">
+                  <ul className="mt-3 space-y-2 border-l border-sage-300 pl-3">
                     {w.replies.map((r) => (
                       <li key={r.id}>
                         <div className="flex items-center gap-2">
-                          <p className="font-heading text-sm font-600 text-olive-dark">
+                          <p className="font-body text-sm font-medium text-olive-900">
                             {r.name}
                           </p>
-                          <span className="font-body text-[10px] text-ink/40">
+                          <span className="font-body text-xs text-sage-500">
                             {relativeTime(r.createdAt)}
                           </span>
                         </div>
-                        <p className="font-body text-xs leading-relaxed text-ink/70">
+                        <p className="font-body text-sm leading-relaxed text-olive-700">
                           {r.message}
                         </p>
                       </li>
@@ -389,57 +437,66 @@ export function Wishes() {
                 )}
 
                 {/* inline reply form */}
-                <AnimatePresence initial={false}>
-                  {replyTo === w.id && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <div className="mt-3 space-y-2 rounded-lg bg-sage/20 p-3">
-                        <input
-                          value={replyName}
-                          onChange={(e) => setReplyName(e.target.value)}
-                          maxLength={60}
-                          placeholder="Nama Anda"
-                          className="w-full rounded-md border border-olive/20 bg-ivory px-3 py-1.5 text-xs outline-none focus:border-olive"
-                        />
-                        <textarea
-                          value={replyMessage}
-                          onChange={(e) => setReplyMessage(e.target.value)}
-                          maxLength={300}
-                          rows={2}
-                          placeholder={`Balas ${w.name}...`}
-                          className="w-full resize-none rounded-md border border-olive/20 bg-ivory px-3 py-1.5 text-xs outline-none focus:border-olive"
-                        />
-                        <div className="flex items-center justify-end gap-2">
-                          {replyStatus === "error" && (
-                            <span className="mr-auto text-[11px] text-red-500">
-                              Gagal mengirim.
-                            </span>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => setReplyTo(null)}
-                            className="rounded-full px-3 py-1.5 text-xs text-ink/60 hover:text-ink"
-                          >
-                            Batal
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => submitReply(w.id)}
-                            disabled={replyStatus === "sending"}
-                            className="btn-olive !px-4 !py-1.5 !text-xs disabled:opacity-60"
-                          >
-                            {replyStatus === "sending" ? "..." : "Kirim"}
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                {replyTo === w.id && (
+                  <div className="mt-3 space-y-3 border border-sage-300 bg-sage-100 p-3">
+                    <div>
+                      <label
+                        htmlFor={`reply-name-${w.id}`}
+                        className="font-body text-sm font-medium text-olive-700"
+                      >
+                        Nama Anda
+                      </label>
+                      <input
+                        id={`reply-name-${w.id}`}
+                        value={replyName}
+                        onChange={(e) => setReplyName(e.target.value)}
+                        maxLength={60}
+                        placeholder="Nama Anda"
+                        className="mt-1 min-h-11 w-full rounded border border-sage-300 bg-ivory-50 px-3 py-2 font-body text-base text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor={`reply-message-${w.id}`}
+                        className="font-body text-sm font-medium text-olive-700"
+                      >
+                        Balasan
+                      </label>
+                      <textarea
+                        id={`reply-message-${w.id}`}
+                        value={replyMessage}
+                        onChange={(e) => setReplyMessage(e.target.value)}
+                        maxLength={300}
+                        rows={2}
+                        placeholder={`Balas ${w.name}...`}
+                        className="mt-1 w-full resize-none rounded border border-sage-300 bg-ivory-50 px-3 py-2 font-body text-base text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
+                      />
+                    </div>
+                    <div className="flex items-center justify-end gap-2">
+                      {replyStatus === "error" && (
+                        <span role="alert" className="mr-auto font-body text-sm text-error">
+                          Gagal mengirim.
+                        </span>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => setReplyTo(null)}
+                        className="min-h-11 cursor-pointer rounded px-3 py-1.5 font-body text-sm text-olive-700 transition-colors duration-200 hover:text-olive-900"
+                      >
+                        Batal
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => submitReply(w.id)}
+                        disabled={replyStatus === "sending"}
+                        className="btn-olive !min-h-11 !px-4 !py-1.5 !text-sm disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        {replyStatus === "sending" ? "Mengirim..." : "Kirim"}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </article>
             ))}
           </div>
           {visible < wishes.length && (
@@ -451,7 +508,7 @@ export function Wishes() {
             </button>
           )}
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }
