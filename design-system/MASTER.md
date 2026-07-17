@@ -244,7 +244,7 @@ Use `min-h-svh` / `h-svh` (never `100vh`) for full-viewport chapters. `viewport-
 | **Icon button** | 44×44px min, hairline circle border, icon `--olive-700` | Music toggle, close, lightbox arrows |
 | **Disabled** | `opacity-45` + `cursor-not-allowed` + `disabled` attr | Any variant |
 
-All variants: `cursor-pointer`, visible focus (§18), `touch-action: manipulation`, loading state = spinner + disabled (never a dead click).
+All variants: `cursor-pointer`, visible focus (§17.3), `touch-action: manipulation`, loading state = spinner + disabled (never a dead click).
 
 ## 12. Form Component Rules (RSVP & wishes UI shell only — logic untouched)
 
@@ -302,7 +302,7 @@ When `prefers-reduced-motion: reduce`:
 2. **Framer Motion:** wrap the app in `<MotionConfig reducedMotion="user">`; reveal variants collapse to opacity-only 150ms fades.
 3. **GSAP:** gate every ScrollTrigger/timeline behind a `usePrefersReducedMotion()` hook; when reduced, set final state immediately (`gsap.set`) instead of tweening.
 4. **Lenis:** do not instantiate; fall back to native scrolling (also removes smooth-scroll vestibular risk).
-5. Cover "open" becomes a simple crossfade; countdown numbers update without flip/scale effects; music still requires explicit user tap (no autoplay change — see §18.7).
+5. Cover "open" becomes a simple crossfade; countdown numbers update without flip/scale effects; music still requires explicit user tap (no autoplay change — see §17.7).
 6. All content must be fully readable with animations disabled — no reveal leaves opacity at 0.
 
 ## 17. Accessibility Requirements

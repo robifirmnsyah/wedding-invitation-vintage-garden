@@ -329,7 +329,7 @@ For each P1 chapter, preserve current data/config and implement a shared editori
 
 ### Groom portrait review status
 
-A complete file listing of `~/Downloads/PREWED EDIT` could not be safely completed during the planning run because the path currently resolves through a symlink loop on this server. No asset was copied, deleted, or selected by assumption. Before P1 implementation, resolve that path and review every image; choose the best individual portrait based on sharpness, face visibility, neutral crop space, and consistency with the Vintage Garden direction. Keep the current configured portrait as a temporary fallback and document the replacement decision.
+A complete file listing of `~/Downloads/PREWED EDIT` could not be safely completed during the planning run because `~/Downloads` is a self-referential symlink, so any traversal fails with `ELOOP`. As a result, no groom photo was selected; no asset was copied, deleted, or selected by assumption. Before P1 implementation, resolve that path and review every image; choose the best individual portrait based on sharpness, face visibility, neutral crop space, and consistency with the Vintage Garden direction. Keep the current configured portrait as a temporary fallback and document the replacement decision.
 
 ## Incremental migration strategy
 

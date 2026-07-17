@@ -45,7 +45,7 @@ The project uses **Tailwind v3** + CSS custom properties in `src/app/globals.css
 1. Photos come from the approved source set (`~/Downloads/PREWED EDIT` — see IMPLEMENTATION_PLAN asset map). **Never copy full-resolution sources into `public/`** — export to the target dimensions/format in the asset map (AVIF/WebP, quality ~70–80).
 2. Match orientation to the slot: cover = portrait (arch crop, faces upper third), story = 4:3 landscape, gallery mixes per the collage map.
 3. Prefer images where the couple is the clear subject and the background is garden/outdoor/neutral — consistent with the botanical narrative.
-4. Watermarked images may be used temporarily; log them in the asset map "needs replacement" column. Never edit watermarks out.
+4. Watermarked images may be used temporarily; log them in the asset map "Fallback" column. Never edit watermarks out.
 5. Existing assets in `public/assets/` are not deleted until the asset map confirms nothing references them (grep `src/` + `config/wedding.json`).
 6. Keep `*.orig.jpg` source-crops out of production references.
 
