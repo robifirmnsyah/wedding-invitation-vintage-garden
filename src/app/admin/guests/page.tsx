@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useMemo, Suspense, useRef } from "react";
+import { useCallback, useEffect, useState, useMemo, Suspense, useRef } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { useSearchParams } from "next/navigation";
 import { toCsv } from "@/lib/csv";
@@ -77,7 +77,7 @@ function GuestsContent() {
   const [formError, setFormError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     setLoading(true);
     Promise.all([
       fetch(`/api/admin/guests?side=${side}`).then((r) => r.json()),
@@ -89,11 +89,11 @@ function GuestsContent() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  };
+  }, [side]);
 
   useEffect(() => {
     fetchData();
-  }, [side]);
+  }, [fetchData]);
 
   const filtered = useMemo(() => {
     return guests.filter((g) => {

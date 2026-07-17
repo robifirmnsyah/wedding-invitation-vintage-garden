@@ -5,6 +5,7 @@ import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiXMark, HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import type { GalleryItem } from "@/lib/types";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 interface Props {
   items: GalleryItem[];
@@ -13,9 +14,13 @@ interface Props {
   onNavigate: (next: number) => void;
 }
 
-/** Fullscreen lightbox with keyboard + touch-swipe navigation. */
+/** Fullscreen lightbox with keyboard, focus, and touch-swipe navigation. */
 export function Lightbox({ items, index, onClose, onNavigate }: Props) {
   const touchStartX = useRef<number | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const reducedMotion = usePrefersReducedMotion();
   const open = index !== null;
 
   const go = useCallback(
@@ -28,14 +33,52 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
   );
 
   useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (e.key === "ArrowRight") go(1);
-      if (e.key === "ArrowLeft") go(-1);
-    };
-    window.addEventListener("keydown", onKey);
+    if (!open) {
+      previousFocusRef.current?.focus?.();
+      previousFocusRef.current = null;
+      return;
+    }
+
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+    closeRef.current?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        go(1);
+        return;
+      }
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        go(-1);
+        return;
+      }
+      if (e.key === "Tab" && dialogRef.current) {
+        const focusable = Array.from(
+          dialogRef.current.querySelectorAll<HTMLElement>(
+            "button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"
+          )
+        );
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
@@ -53,73 +96,90 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
   };
 
   const current = index !== null ? items[index] : null;
+  const transition = reducedMotion
+    ? { duration: 0 }
+    : { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const };
 
   return (
     <AnimatePresence>
       {open && current && (
         <motion.div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-ink/90 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
+          ref={dialogRef}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lightbox-title"
+          aria-describedby="lightbox-count"
+          tabIndex={-1}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-olive-950/95 p-4"
+          initial={reducedMotion ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          exit={reducedMotion ? undefined : { opacity: 0 }}
+          transition={transition}
           onClick={onClose}
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
+          <h2 id="lightbox-title" className="sr-only">
+            {current.caption || "Foto galeri"}
+          </h2>
           <button
-            aria-label="Tutup"
+            ref={closeRef}
+            type="button"
+            aria-label="Tutup galeri"
             onClick={onClose}
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/15 text-ivory transition-colors hover:bg-ivory/30"
+            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
           >
-            <HiXMark className="text-2xl" />
+            <HiXMark className="text-2xl" aria-hidden="true" />
           </button>
 
           <button
-            aria-label="Sebelumnya"
+            type="button"
+            aria-label="Foto sebelumnya"
             onClick={(e) => {
               e.stopPropagation();
               go(-1);
             }}
-            className="absolute left-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/15 text-ivory transition-colors hover:bg-ivory/30 sm:left-6"
+            className="absolute left-3 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:left-6"
           >
-            <HiChevronLeft className="text-2xl" />
+            <HiChevronLeft className="text-2xl" aria-hidden="true" />
           </button>
           <button
-            aria-label="Berikutnya"
+            type="button"
+            aria-label="Foto berikutnya"
             onClick={(e) => {
               e.stopPropagation();
               go(1);
             }}
-            className="absolute right-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-ivory/15 text-ivory transition-colors hover:bg-ivory/30 sm:right-6"
+            className="absolute right-3 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:right-6"
           >
-            <HiChevronRight className="text-2xl" />
+            <HiChevronRight className="text-2xl" aria-hidden="true" />
           </button>
 
           <motion.figure
             key={index}
             className="relative mx-auto flex max-h-[85vh] w-[90vw] max-w-3xl flex-col items-center"
-            initial={{ scale: 0.92, opacity: 0 }}
+            initial={reducedMotion ? false : { scale: 0.98, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.92, opacity: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            exit={reducedMotion ? undefined : { scale: 0.98, opacity: 0 }}
+            transition={transition}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative h-[70vh] w-full">
+            <div className="relative h-[70vh] w-full border border-ivory-50/20 bg-olive-950/30">
               <Image
                 src={current.src}
                 alt={current.caption || "Foto galeri"}
                 fill
                 sizes="90vw"
-                className="rounded-lg object-contain"
+                className="object-contain"
                 priority
               />
             </div>
             {current.caption && (
-              <figcaption className="mt-4 font-script text-2xl text-ivory">
+              <figcaption className="mt-4 font-display text-2xl italic text-ivory-50">
                 {current.caption}
               </figcaption>
             )}
-            <span className="mt-1 font-body text-xs text-ivory/60">
+            <span id="lightbox-count" className="mt-1 font-body text-sm text-ivory-50/70">
               {(index ?? 0) + 1} / {items.length}
             </span>
           </motion.figure>
