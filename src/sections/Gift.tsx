@@ -103,16 +103,16 @@ export function Gift() {
         </div>
 
         {gift.qris && (
-          <div className="mx-auto mt-12 w-fit">
-            <div className="keepsake-frame p-6 sm:p-8">
-              <p className="font-body text-sm font-medium uppercase tracking-[0.15em] text-olive-700">
+          <div className="mx-auto mt-12 w-full max-w-sm">
+            <div className="keepsake-frame w-full p-4 sm:p-6">
+              <p className="text-center font-body text-sm font-medium uppercase tracking-[0.15em] text-olive-700">
                 Scan QRIS
               </p>
               <button
                 type="button"
                 onClick={() => setQrisOpen(true)}
                 aria-label="Perbesar QRIS"
-                className="group relative mx-auto mt-4 block h-60 w-44 overflow-hidden border border-sage-300 bg-ivory-50"
+                className="group relative mx-auto mt-4 block aspect-[4/5] w-full max-w-[18rem] overflow-hidden border border-sage-300 bg-ivory-50"
               >
                 <Image
                   src={gift.qris}
@@ -129,18 +129,18 @@ export function Gift() {
                 </span>
               </button>
 
-              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+              <div className="mt-5 grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setQrisOpen(true)}
-                  className="btn-ghost"
+                  className="btn-ghost w-full px-3"
                 >
                   <HiOutlineMagnifyingGlassPlus aria-hidden="true" /> Perbesar
                 </button>
                 <a
                   href={gift.qris}
                   download={`QRIS-${coupleNames}.jpeg`}
-                  className="btn-ghost"
+                  className="btn-ghost w-full px-3"
                 >
                   <HiArrowDownTray aria-hidden="true" /> Unduh
                 </a>

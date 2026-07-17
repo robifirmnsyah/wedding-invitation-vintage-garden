@@ -10,9 +10,9 @@ import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
 const spanClass: Record<string, string> = {
-  tall: "row-span-2",
+  tall: "col-span-2 row-span-2 sm:col-span-1",
   wide: "col-span-2",
-  square: "",
+  square: "col-span-2 sm:col-span-1",
 };
 
 /**
@@ -33,7 +33,7 @@ export function Gallery() {
         title="Our Gallery"
       />
 
-      <div className="mx-auto mt-12 grid max-w-4xl auto-rows-[140px] grid-cols-2 gap-3 sm:auto-rows-[180px] sm:grid-cols-4">
+      <div className="mx-auto mt-12 grid max-w-4xl auto-rows-[190px] grid-cols-2 gap-3 sm:auto-rows-[180px] sm:grid-cols-4 sm:gap-4">
         {items.map((item, i) => (
           <motion.button
             key={item.src}
