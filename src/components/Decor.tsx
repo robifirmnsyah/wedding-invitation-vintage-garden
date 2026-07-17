@@ -62,7 +62,35 @@ export function SprigDivider({ className = "" }: { className?: string }) {
 export const LeafDivider = SprigDivider;
 
 /**
- * Chapter opener: eyebrow → title → rule (MASTER.md §14.3).
+ * A restrained botanical canopy for the cover: two hand-etched vines frame the
+ * photograph without competing with the couple. The motion is transform/path
+ * only and is disabled by the global reduced-motion rule.
+ */
+export function GardenVines() {
+  return (
+    <div className="garden-vines" aria-hidden="true">
+      <svg className="garden-vine garden-vine-left" viewBox="0 0 150 520" fill="none">
+        <path className="garden-stroke" d="M128 506C106 437 120 382 79 327C41 277 55 227 82 188C109 149 111 99 72 26" />
+        <path className="garden-stroke garden-leaf garden-leaf-1" d="M79 327C52 326 34 306 30 278C57 280 76 295 79 327Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-2" d="M66 291C91 276 108 251 106 224C82 232 67 253 66 291Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-3" d="M82 188C54 183 36 162 36 137C62 144 78 158 82 188Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-4" d="M89 155C111 139 121 114 115 91C94 104 84 126 89 155Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-5" d="M72 26C48 32 35 18 31 2C52 3 66 10 72 26Z" />
+      </svg>
+      <svg className="garden-vine garden-vine-right" viewBox="0 0 150 520" fill="none">
+        <path className="garden-stroke" d="M22 506C44 437 30 382 71 327C109 277 95 227 68 188C41 149 39 99 78 26" />
+        <path className="garden-stroke garden-leaf garden-leaf-1" d="M71 327C98 326 116 306 120 278C93 280 74 295 71 327Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-2" d="M84 291C59 276 42 251 44 224C68 232 83 253 84 291Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-3" d="M68 188C96 183 114 162 114 137C88 144 72 158 68 188Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-4" d="M61 155C39 139 29 114 35 91C56 104 66 126 61 155Z" />
+        <path className="garden-stroke garden-leaf garden-leaf-5" d="M78 26C102 32 115 18 119 2C98 3 84 10 78 26Z" />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Chapter opener: eyebrow → title → rule (MASTER §14.3).
  * Poppins uppercase eyebrow, Cormorant serif title, sprig hairline.
  */
 export function SectionTitle({

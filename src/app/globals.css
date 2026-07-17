@@ -186,6 +186,82 @@ body.locked {
   }
 }
 
+/* Animated etched garden canopy — the signature motion language of the cover. */
+.hero-garden-wash {
+  position: absolute;
+  inset: 10% 50% auto;
+  width: min(58rem, 125vw);
+  height: min(58rem, 125vw);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(221 226 209 / 0.42) 0%, rgb(234 224 206 / 0.16) 42%, transparent 70%);
+  pointer-events: none;
+}
+
+.garden-vines {
+  position: absolute;
+  z-index: 1;
+  inset: 50% 50% auto;
+  width: min(46rem, 100vw);
+  height: min(42rem, 92vh);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  color: var(--olive-600);
+  opacity: 0.62;
+}
+.garden-vine {
+  position: absolute;
+  top: 0;
+  width: 9.5rem;
+  height: 100%;
+  overflow: visible;
+}
+.garden-vine-left { left: 0; }
+.garden-vine-right { right: 0; }
+.garden-stroke {
+  stroke: currentColor;
+  stroke-width: 1.25;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 760;
+  stroke-dashoffset: 760;
+  animation: garden-draw 2.8s var(--motion-ease-out) forwards;
+}
+.garden-stroke:not(.garden-leaf) {
+  animation: garden-draw 2.8s var(--motion-ease-out) forwards, garden-sway 8s ease-in-out 2.8s infinite;
+}
+.garden-leaf {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: garden-draw 2.8s var(--motion-ease-out) forwards, garden-leaf-breathe 5s ease-in-out 2.8s infinite;
+}
+.garden-leaf-2, .garden-leaf-4 { animation-delay: 3.25s; }
+.garden-leaf-3, .garden-leaf-5 { animation-delay: 3.7s; }
+
+@keyframes garden-draw { to { stroke-dashoffset: 0; } }
+@keyframes garden-sway {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(1.2deg) translateY(-3px); }
+}
+@keyframes garden-leaf-breathe {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.035); }
+}
+
+@media (max-width: 640px) {
+  .garden-vines { width: 100vw; height: 33rem; opacity: 0.4; }
+  .garden-vine { width: 7rem; }
+  .hero-garden-wash { inset: 18% 50% auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-stroke,
+  .garden-leaf {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 /* Arabic verse — Amiri, generous leading, never letter-spaced */
 .arabic-verse {
   font-family: var(--font-arabic), serif;
