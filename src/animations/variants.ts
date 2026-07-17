@@ -1,32 +1,42 @@
 import type { Variants } from "framer-motion";
+import { motionTokens } from "./tokens";
 
 export const fadeIn: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.9, ease: "easeOut" } },
+  show: {
+    opacity: 1,
+    transition: { duration: motionTokens.durationBase, ease: "easeOut" },
+  },
 };
 
 export const slideUp: Variants = {
-  hidden: { opacity: 0, y: 36 },
+  hidden: { opacity: 0, y: motionTokens.distanceMobile },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+    transition: {
+      duration: motionTokens.durationBase,
+      ease: motionTokens.easeOut,
+    },
   },
 };
 
 export const scaleIn: Variants = {
-  hidden: { opacity: 0, scale: 0.9 },
+  hidden: { opacity: 0, scale: 0.96 },
   show: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+    transition: {
+      duration: motionTokens.durationBase,
+      ease: motionTokens.easeOut,
+    },
   },
 };
 
 export const staggerContainer: Variants = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    transition: { staggerChildren: motionTokens.stagger, delayChildren: 0.1 },
   },
 };
 

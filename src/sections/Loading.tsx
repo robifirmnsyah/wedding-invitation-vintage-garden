@@ -1,11 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { GiVineLeaf } from "react-icons/gi";
-import { Petals } from "@/components/Petals";
+import { Sprig } from "@/components/Decor";
 import config from "@/lib/config";
 
-/** Watercolor logo reveal loading screen that fades into the cover. */
+/** Quiet editorial loading screen: monogram, hairline, names on ivory paper. */
 export function Loading({ show }: { show: boolean }) {
   const { groom, bride } = config.couple;
 
@@ -13,37 +12,32 @@ export function Loading({ show }: { show: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-ivory"
+          className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-ivory-50"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
         >
-          <Petals count={10} />
           <motion.div
-            className="flex flex-col items-center"
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center px-6 text-center"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           >
-            <GiVineLeaf className="text-4xl text-olive" />
-            <p className="mt-4 font-script text-3xl text-olive">
+            <Sprig className="text-sage-500" />
+            <p className="mt-5 font-display text-3xl font-semibold text-olive-900">
               {groom.shortName} &amp; {bride.shortName}
             </p>
-            <p className="mt-2 font-sub text-sm italic tracking-widest text-ink/60">
+            <p className="mt-3 font-body text-sm uppercase tracking-[0.2em] text-olive-700">
               The Wedding Invitation
             </p>
-            <motion.div
-              className="mt-6 h-[3px] w-32 overflow-hidden rounded-full bg-sage"
-              aria-hidden
-            >
-              <motion.div
-                className="h-full bg-olive"
-                initial={{ x: "-100%" }}
-                animate={{ x: "0%" }}
-                transition={{ duration: 1.8, ease: "easeInOut" }}
-              />
-            </motion.div>
+            <span
+              aria-hidden="true"
+              className="mt-8 block h-px w-24 bg-gold-600"
+            />
           </motion.div>
+          <span className="sr-only" role="status">
+            Memuat undangan…
+          </span>
         </motion.div>
       )}
     </AnimatePresence>

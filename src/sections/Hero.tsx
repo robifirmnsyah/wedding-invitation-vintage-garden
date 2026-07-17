@@ -1,10 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineEnvelopeOpen } from "react-icons/hi2";
-import { WatercolorValley } from "@/components/WatercolorValley";
-import { Petals } from "@/components/Petals";
 import config from "@/lib/config";
 
 interface Props {
@@ -13,98 +11,92 @@ interface Props {
   onOpen: () => void;
 }
 
-/** Fullscreen opening cover: watercolor video valley + guest name overlay. */
+/**
+ * Editorial cover: arch-framed couple portrait on ivory paper, serif display
+ * names, guest addressing, and the opening CTA. Photography leads; ornament
+ * recedes (MASTER.md §1, P0.2/P0.3).
+ *
+ * The retired watercolor video/petals cover is replaced by a still photograph
+ * — the arch reveal is the single mask reveal allowed on this chapter.
+ */
 export function Hero({ guestName, opened, onOpen }: Props) {
   const { groom, bride } = config.couple;
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [videoReady, setVideoReady] = useState(false);
 
   return (
-    <section className="relative flex h-[100svh] min-h-[600px] w-full items-center justify-center overflow-hidden">
-      {/* Fallback painted valley — shown until/unless the video can play */}
-      <WatercolorValley variant="sunrise" />
-      {!videoReady && <Petals count={12} />}
-
-      {/* Background motion video (webm preferred, mp4 fallback) */}
-      <video
-        ref={videoRef}
-        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
-          videoReady ? "opacity-100" : "opacity-0"
-        }`}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        aria-hidden
-        onCanPlay={() => setVideoReady(true)}
-      >
-        <source src="/assets/backgrounds/hero.webm" type="video/webm" />
-        <source src="/assets/backgrounds/hero.mp4" type="video/mp4" />
-      </video>
-
-      {/* Soft ivory scrim to lift text legibility over the painting */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 80% at 50% 42%, rgba(250,248,243,0.55) 0%, rgba(250,248,243,0.18) 38%, transparent 68%), linear-gradient(180deg, rgba(250,248,243,0.35) 0%, transparent 22%, transparent 70%, rgba(59,59,59,0.18) 100%)",
-        }}
-      />
-
-      <motion.div
-        className="relative z-10 mx-auto flex max-w-xl flex-col items-center px-6 text-center [text-shadow:0_1px_14px_rgba(250,248,243,0.85)]"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <p className="font-sub text-base italic tracking-[0.3em] text-olive-dark">
-          {config.hero.tagline}
-        </p>
-
-        <h1 className="mt-3 font-heading text-5xl font-600 leading-tight text-olive-dark sm:text-6xl">
-          {groom.shortName}
-          <span className="mx-3 font-script text-4xl text-olive">&amp;</span>
-          {bride.shortName}
-        </h1>
-
-        <p className="mt-3 font-body text-sm tracking-wide text-ink/80">
-          {config.hero.dateLabel}
-        </p>
-
-        <div className="mt-10 rounded-2xl glass-soft px-6 py-4 shadow-sm ring-1 ring-olive/10 [text-shadow:none]">
-          <p className="font-body text-xs uppercase tracking-widest text-ink/50">
-            Kepada Yth.
-          </p>
-          <p className="mt-1 font-script text-3xl text-olive-dark">{guestName}</p>
-        </div>
-
-        {!opened && (
-          <motion.button
-            onClick={onOpen}
-            className="btn-olive mt-8 min-w-44 [text-shadow:none]"
-            aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
-            whileTap={{ scale: 0.96 }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1 }}
-          >
-            <HiOutlineEnvelopeOpen className="text-lg" />
-            Open Invitation
-          </motion.button>
-        )}
-      </motion.div>
-
-      {/* gentle scroll hint once opened */}
-      {opened && (
+    <section
+      aria-label="Sampul undangan"
+      className="relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-ivory-50 px-5 py-12"
+    >
+      <div className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
         <motion.div
-          className="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 text-olive-dark/70"
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.8, repeat: Infinity }}
+          className="flex w-full flex-col items-center"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
-          <span className="font-body text-xs tracking-widest">SCROLL</span>
+          <p className="eyebrow">{config.hero.tagline}</p>
+
+          {/* Arch portrait — LCP image, on a beige mat with a hairline border */}
+          <div className="arch-frame mt-6 w-[min(68vw,260px)] border border-sage-300 bg-beige-200 p-2 sm:w-72">
+            <div className="arch-frame relative aspect-[3/4] w-full">
+              <Image
+                src="/assets/gallery/gallery-1.jpg"
+                alt={`Foto ${groom.shortName} dan ${bride.shortName}`}
+                fill
+                priority
+                sizes="(max-width: 640px) 68vw, 18rem"
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          <h1
+            className="mt-8 font-display font-semibold leading-[1.1] tracking-[-0.01em] text-olive-900"
+            style={{ fontSize: "var(--text-display)" }}
+          >
+            {groom.shortName}
+            <span className="mx-3 font-accent font-normal text-gold-700">
+              &amp;
+            </span>
+            {bride.shortName}
+          </h1>
+
+          <p className="mt-4 font-body text-base tracking-[0.05em] text-olive-700">
+            {config.hero.dateLabel}
+          </p>
+
+          <div className="mt-8 w-full max-w-xs border-y border-sage-300 px-6 py-4">
+            <p className="font-body text-sm uppercase tracking-[0.2em] text-olive-700">
+              Kepada Yth.
+            </p>
+            <p className="mt-2 font-display text-2xl font-medium italic text-olive-900">
+              {guestName}
+            </p>
+          </div>
+
+          {!opened && (
+            <motion.button
+              onClick={onOpen}
+              className="btn-olive mt-8 min-w-44"
+              aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
+              whileTap={{ scale: 0.98 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.9 }}
+            >
+              <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
+              Buka Undangan
+            </motion.button>
+          )}
         </motion.div>
-      )}
+
+        {/* gentle scroll hint once opened */}
+        {opened && (
+          <div className="scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 text-olive-700">
+            <span className="font-body text-sm tracking-[0.2em]">SCROLL</span>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

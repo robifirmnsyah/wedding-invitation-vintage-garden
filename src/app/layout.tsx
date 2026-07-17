@@ -1,27 +1,39 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Infant, Great_Vibes, Poppins } from "next/font/google";
+import {
+  Amiri,
+  Cormorant_Garamond,
+  Great_Vibes,
+  Poppins,
+} from "next/font/google";
 import config from "@/lib/config";
 import "./globals.css";
 
-const heading = Great_Vibes({
+const display = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
+});
+
+const body = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+  display: "swap",
+});
+
+const arabic = Amiri({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  variable: "--font-arabic",
+  display: "swap",
+});
+
+const accent = Great_Vibes({
   subsets: ["latin"],
   weight: ["400"],
-  variable: "--font-heading",
-  display: "swap",
-});
-
-const cormorant = Cormorant_Infant({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-cormorant",
-  display: "swap",
-});
-
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-poppins",
+  variable: "--font-accent",
   display: "swap",
 });
 
@@ -39,9 +51,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#A94468",
+  themeColor: "#5A6642",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -50,9 +63,11 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${heading.variable} ${cormorant.variable} ${poppins.variable}`}
+      className={`${display.variable} ${body.variable} ${arabic.variable} ${accent.variable}`}
     >
-      <body className="bg-ivory font-body text-ink antialiased">{children}</body>
+      <body className="bg-ivory-50 font-body text-ink antialiased">
+        {children}
+      </body>
     </html>
   );
 }

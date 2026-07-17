@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useLenis } from "@/hooks/useLenis";
 import { useGuestName } from "@/hooks/useGuestName";
 import { MusicButton } from "@/components/MusicButton";
-import { StaticBackdrop } from "@/components/StaticBackdrop";
 import { Loading } from "@/sections/Loading";
 import { Hero } from "@/sections/Hero";
 import { Quote } from "@/sections/Quote";
@@ -22,6 +21,9 @@ import config from "@/lib/config";
 /**
  * Top-level client orchestrator: loading screen → cover → (on open) the full
  * scrollable invitation with smooth scroll and music.
+ *
+ * The page is a sequence of opaque paper "chapters" with alternating mat
+ * backgrounds (MASTER.md §14) — the fixed painted backdrop is retired.
  */
 export function InvitationShell() {
   const [loading, setLoading] = useState(true);
@@ -50,23 +52,25 @@ export function InvitationShell() {
   };
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
+      <a href="#isi-undangan" className="skip-link">
+        Lewati ke isi undangan
+      </a>
+
       <Loading show={loading} />
       <MusicButton src={config.music} active={opened} />
 
-      <main className="relative">
+      <main className="relative bg-ivory-50">
         <Hero guestName={guestName} opened={opened} onOpen={handleOpen} />
 
         <AnimatePresence>
           {opened && (
             <motion.div
+              id="isi-undangan"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8 }}
             >
-              {/* Static mountain background + foreground meadow, fixed across
-                  every section so they stay still while content scrolls. */}
-              <StaticBackdrop />
               <Quote />
               <Story />
               <BrideGroom />
@@ -80,6 +84,6 @@ export function InvitationShell() {
           )}
         </AnimatePresence>
       </main>
-    </>
+    </MotionConfig>
   );
 }

@@ -42,28 +42,25 @@ export function MusicButton({ src, active }: Props) {
     }
   };
 
-  if (!active) return <audio ref={audioRef} src={src} preload="auto" />;
+  if (!active) return <audio ref={audioRef} src={src} preload="none" />;
 
   return (
     <>
-      <audio ref={audioRef} src={src} preload="auto" />
+      <audio ref={audioRef} src={src} preload="none" />
       <button
         onClick={toggle}
         aria-label={playing ? "Jeda musik" : "Putar musik"}
-        className="fixed right-4 top-4 z-50 flex h-12 w-12 items-center justify-center rounded-full glass-soft text-olive shadow-lg ring-1 ring-olive/20 transition-transform hover:scale-105"
+        aria-pressed={playing}
+        className="btn-icon fixed right-4 top-4 z-50 shadow-paper"
+        style={{
+          top: "max(1rem, env(safe-area-inset-top))",
+          right: "max(1rem, env(safe-area-inset-right))",
+        }}
       >
-        <span
-          className={`absolute inset-0 rounded-full ${
-            playing ? "animate-ping" : ""
-          } bg-olive/10`}
-        />
         {playing ? (
-          <HiMiniMusicalNote
-            className="relative animate-spin text-xl"
-            style={{ animationDuration: "3s" }}
-          />
+          <HiMiniMusicalNote className="music-note-playing text-xl" />
         ) : (
-          <HiOutlineSpeakerXMark className="relative text-xl" />
+          <HiOutlineSpeakerXMark className="text-xl" />
         )}
       </button>
     </>
