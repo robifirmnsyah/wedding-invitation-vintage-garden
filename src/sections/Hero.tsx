@@ -25,7 +25,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
   return (
     <section
       aria-label="Sampul undangan"
-      className="relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-ivory-50 px-5 py-12"
+      className="relative flex min-h-svh w-full items-center justify-start overflow-hidden bg-ivory-50 px-5 pb-12 pt-8 sm:justify-center sm:py-12"
     >
       <div className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
         <motion.div
@@ -37,7 +37,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           <p className="eyebrow">{config.hero.tagline}</p>
 
           {/* Arch portrait — LCP image, on a beige mat with a hairline border */}
-          <div className="arch-frame mt-6 w-[min(68vw,260px)] border border-sage-300 bg-beige-200 p-2 sm:w-72">
+          <div className="arch-frame mt-4 w-[min(58vw,220px)] border border-sage-300 bg-beige-200 p-2 sm:mt-6 sm:w-72">
             <div className="arch-frame relative aspect-[3/4] w-full">
               <Image
                 src="/assets/gallery/gallery-1.jpg"
@@ -51,7 +51,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           </div>
 
           <h1
-            className="mt-8 font-display font-semibold leading-[1.1] tracking-[-0.01em] text-olive-900"
+            className="mt-5 font-display font-semibold leading-[1.1] tracking-[-0.01em] text-olive-900 sm:mt-8"
             style={{ fontSize: "var(--text-display)" }}
           >
             {groom.shortName}
@@ -61,11 +61,11 @@ export function Hero({ guestName, opened, onOpen }: Props) {
             {bride.shortName}
           </h1>
 
-          <p className="mt-4 font-body text-base tracking-[0.05em] text-olive-700">
+          <p className="mt-3 font-body text-base tracking-[0.05em] text-olive-700 sm:mt-4">
             {config.hero.dateLabel}
           </p>
 
-          <div className="mt-8 w-full max-w-xs border-y border-sage-300 px-6 py-4">
+          <div className="mt-5 w-full max-w-xs border-y border-sage-300 px-6 py-3 sm:mt-8 sm:py-4">
             <p className="font-body text-sm uppercase tracking-[0.2em] text-olive-700">
               Kepada Yth.
             </p>
@@ -77,7 +77,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           {!opened && (
             <motion.button
               onClick={onOpen}
-              className="btn-olive mt-8 min-w-44"
+              className="btn-olive mt-6 min-w-44 sm:mt-8"
               aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0 }}
