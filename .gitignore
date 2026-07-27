@@ -32,3 +32,11 @@ next-env.d.ts
 
 # raw full-res prewedding photos (optimized derivatives are committed instead)
 /public/assets/gallery/Prewedding-Photos/
+# Added by code-review-graph
+.code-review-graph/
+.claude/
+.vscode/
+.config/
+.claude-mem/
+graphify-out/
+design-system/
