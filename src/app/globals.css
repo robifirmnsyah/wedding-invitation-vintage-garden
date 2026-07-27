@@ -63,8 +63,8 @@
 
   /* motion */
   --motion-duration-fast: 200ms;
-  --motion-duration-base: 600ms;
-  --motion-duration-slow: 900ms;
+  --motion-duration-base: 800ms;
+  --motion-duration-slow: 1100ms;
   --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-ease-in: cubic-bezier(0.4, 0, 1, 1);
 }
@@ -149,30 +149,67 @@ body.locked {
 
   /* Primary button */
   .btn-olive {
-    @apply inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded bg-olive-600 px-8 py-3.5 font-body text-sm font-medium uppercase tracking-[0.05em] text-ivory-50 transition-colors duration-200;
+    @apply inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded bg-olive-600 px-8 py-3.5 font-body text-sm font-medium uppercase tracking-[0.05em] text-ivory-50;
+    box-shadow: 0 1px 2px rgb(37 42 31 / 0.08);
+    transition:
+      background-color var(--motion-duration-fast) var(--motion-ease-out),
+      transform var(--motion-duration-fast) var(--motion-ease-out),
+      box-shadow var(--motion-duration-fast) var(--motion-ease-out);
     touch-action: manipulation;
   }
   .btn-olive:hover {
     @apply bg-olive-700;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-paper);
   }
   .btn-olive:active {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 1px 2px rgb(37 42 31 / 0.08);
   }
 
   /* Secondary button */
   .btn-ghost {
-    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded border border-olive-600 bg-transparent px-5 py-2.5 font-body text-sm font-medium text-olive-700 transition-colors duration-200;
+    @apply inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded border border-olive-600 bg-transparent px-5 py-2.5 font-body text-sm font-medium text-olive-700;
+    transition:
+      background-color var(--motion-duration-fast) var(--motion-ease-out),
+      transform var(--motion-duration-fast) var(--motion-ease-out);
   }
   .btn-ghost:hover {
     @apply bg-sage-100;
+    transform: translateY(-1px);
+  }
+  .btn-ghost:active {
+    transform: translateY(0) scale(0.98);
   }
 
   /* Icon button: hairline circle, ≥44px target */
   .btn-icon {
-    @apply inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-sage-300 bg-ivory-100 text-olive-700 transition-colors duration-200;
+    @apply inline-flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-sage-300 bg-ivory-100 text-olive-700;
+    transition:
+      background-color var(--motion-duration-fast) var(--motion-ease-out),
+      transform var(--motion-duration-fast) var(--motion-ease-out);
   }
   .btn-icon:hover {
     @apply bg-sage-100;
+    transform: scale(1.05);
+  }
+  .btn-icon:active {
+    transform: scale(0.95);
+  }
+
+  /* Overlay control shared by the lightbox and QRIS modal */
+  .lightbox-control {
+    @apply flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-600;
+    transition:
+      background-color var(--motion-duration-fast) var(--motion-ease-out),
+      transform var(--motion-duration-fast) var(--motion-ease-out);
+  }
+  .lightbox-control:hover {
+    @apply bg-ivory-50/15;
+    transform: scale(1.05);
+  }
+  .lightbox-control:active {
+    transform: scale(0.94);
   }
 
   /* Standard chapter divider: hairline interrupted by an etched sprig */
@@ -295,5 +332,17 @@ body.locked {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  /* hover/press transforms become instant colour-only feedback */
+  .btn-olive:hover,
+  .btn-ghost:hover,
+  .btn-icon:hover,
+  .lightbox-control:hover,
+  .btn-olive:active,
+  .btn-ghost:active,
+  .btn-icon:active,
+  .lightbox-control:active {
+    transform: none;
   }
 }

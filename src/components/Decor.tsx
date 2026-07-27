@@ -1,5 +1,13 @@
 "use client";
 
+import { StaggerGroup, RevealItem } from "@/components/Reveal";
+import {
+  fadeIn,
+  riseIn,
+  drawLine,
+  staggerTight,
+} from "@/animations/variants";
+
 /**
  * Editorial ornament primitives — Vintage Garden Editorial
  * (design-system/MASTER.md §9, §14.3).
@@ -64,6 +72,8 @@ export const LeafDivider = SprigDivider;
 /**
  * Chapter opener: eyebrow → title → rule (MASTER §14.3).
  * Poppins uppercase eyebrow, Cormorant serif title, sprig hairline.
+ * The three parts enter in sequence so the heading always lands before the
+ * supporting content beneath it.
  */
 export function SectionTitle({
   eyebrow,
@@ -77,18 +87,27 @@ export function SectionTitle({
   light?: boolean;
 }) {
   return (
-    <div className="text-center">
+    <StaggerGroup className="text-center" variants={staggerTight}>
       {eyebrow && (
-        <p className={light ? "eyebrow !text-ivory-100" : "eyebrow"}>
+        <RevealItem
+          as="p"
+          variants={fadeIn}
+          className={light ? "eyebrow !text-ivory-100" : "eyebrow"}
+        >
           {eyebrow}
-        </p>
+        </RevealItem>
       )}
-      <h2 id={id} className={`chapter-title mt-3 ${light ? "!text-ivory-50" : ""}`}>
-        {title}
-      </h2>
-      <SprigDivider
-        className={light ? "mt-5 !text-ivory-100/80" : "mt-5 text-gold-600"}
-      />
-    </div>
+      <RevealItem variants={riseIn}>
+        <h2 id={id} className={`chapter-title mt-3 ${light ? "!text-ivory-50" : ""}`}>
+          {title}
+        </h2>
+      </RevealItem>
+      <RevealItem variants={drawLine}>
+        <SprigDivider
+          className={light ? "mt-5 !text-ivory-100/80" : "mt-5 text-gold-600"}
+        />
+      </RevealItem>
+    </StaggerGroup>
   );
 }
+

@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   HiOutlineClipboard,
   HiCheck,
   HiOutlineMagnifyingGlassPlus,
   HiArrowDownTray,
 } from "react-icons/hi2";
-import { Reveal } from "@/components/Reveal";
+import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SectionTitle } from "@/components/Decor";
 import { QrisModal } from "@/components/QrisModal";
+import { motionTokens } from "@/animations/tokens";
+import { fadeIn, slideUp, softMask, staggerContainer } from "@/animations/variants";
 import { copyToClipboard } from "@/lib/utils";
 import config from "@/lib/config";
 
@@ -24,19 +27,35 @@ function CopyButton({ value, holder }: { value: string; holder: string }) {
     }
   };
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onCopy}
       aria-label={`Salin nomor rekening ${holder}`}
       className="btn-ghost w-full shrink-0 sm:w-auto"
+      whileTap={{ scale: 0.97 }}
+      transition={{ duration: motionTokens.durationFast }}
     >
-      {copied ? (
-        <HiCheck aria-hidden="true" className="text-olive-600" />
-      ) : (
-        <HiOutlineClipboard aria-hidden="true" />
-      )}
-      <span aria-live="polite">{copied ? "Tersalin" : "Salin"}</span>
-    </button>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={copied ? "done" : "idle"}
+          className="inline-flex items-center gap-2"
+          initial={{ opacity: 0, scale: 0.85 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.85 }}
+          transition={{ duration: motionTokens.durationFast }}
+        >
+          {copied ? (
+            <HiCheck aria-hidden="true" className="text-olive-600" />
+          ) : (
+            <HiOutlineClipboard aria-hidden="true" />
+          )}
+          {copied ? "Tersalin" : "Salin"}
+        </motion.span>
+      </AnimatePresence>
+      <span aria-live="polite" className="sr-only">
+        {copied ? "Nomor rekening tersalin" : ""}
+      </span>
+    </motion.button>
   );
 }
 
@@ -54,15 +73,24 @@ export function Gift() {
     <section aria-labelledby="gift-title" className="section-pad bg-sage-100">
       <SectionTitle id="gift-title" eyebrow="With Love" title="Wedding Gift" />
 
-      <Reveal className="mx-auto mt-10 max-w-xl text-center">
-        <p className="mx-auto max-w-prose font-body text-base leading-relaxed text-olive-700">
+      <StaggerGroup
+        variants={staggerContainer}
+        early
+        className="mx-auto mt-10 max-w-xl text-center"
+      >
+        <RevealItem
+          as="p"
+          variants={fadeIn}
+          className="mx-auto max-w-prose font-body text-base leading-relaxed text-olive-700"
+        >
           {gift.note}
-        </p>
+        </RevealItem>
 
         <div className="mt-10 space-y-4">
           {gift.banks.map((b) => (
-            <div
+            <RevealItem
               key={b.number}
+              variants={slideUp}
               className="paper-card flex flex-col items-stretch gap-4 p-5 text-left sm:flex-row sm:items-center sm:justify-between sm:p-6"
             >
               <div>
@@ -98,12 +126,12 @@ export function Gift() {
                 </p>
               </div>
               <CopyButton value={b.number} holder={b.holder} />
-            </div>
+            </RevealItem>
           ))}
         </div>
 
         {gift.qris && (
-          <div className="mx-auto mt-12 w-full max-w-sm">
+          <RevealItem variants={softMask} className="mx-auto mt-12 w-full max-w-sm">
             <div className="keepsake-frame w-full p-4 sm:p-6">
               <p className="text-center font-body text-sm font-medium uppercase tracking-[0.15em] text-olive-700">
                 Scan QRIS
@@ -146,9 +174,9 @@ export function Gift() {
                 </a>
               </div>
             </div>
-          </div>
+          </RevealItem>
         )}
-      </Reveal>
+      </StaggerGroup>
 
       {gift.qris && (
         <QrisModal

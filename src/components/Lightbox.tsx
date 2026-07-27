@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiXMark, HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import type { GalleryItem } from "@/lib/types";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { motionTokens } from "@/animations/tokens";
 
 interface Props {
   items: GalleryItem[];
@@ -21,11 +22,13 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const reducedMotion = usePrefersReducedMotion();
+  const [direction, setDirection] = useState(0);
   const open = index !== null;
 
   const go = useCallback(
     (dir: number) => {
       if (index === null) return;
+      setDirection(dir);
       const next = (index + dir + items.length) % items.length;
       onNavigate(next);
     },
@@ -98,7 +101,18 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
   const current = index !== null ? items[index] : null;
   const transition = reducedMotion
     ? { duration: 0 }
-    : { duration: 0.3, ease: [0.22, 1, 0.36, 1] as const };
+    : { duration: 0.4, ease: motionTokens.easeOut };
+
+  /** next/prev slide in from the side they came from, so direction reads */
+  const slide = {
+    enter: reducedMotion
+      ? { opacity: 0 }
+      : { opacity: 0, x: direction * 40, scale: 0.98 },
+    center: { opacity: 1, x: 0, scale: 1 },
+    exit: reducedMotion
+      ? { opacity: 0 }
+      : { opacity: 0, x: direction * -40, scale: 0.98 },
+  };
 
   return (
     <AnimatePresence>
@@ -127,7 +141,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
             type="button"
             aria-label="Tutup galeri"
             onClick={onClose}
-            className="absolute right-4 top-4 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300"
+            className="lightbox-control absolute right-4 top-4 z-10"
           >
             <HiXMark className="text-2xl" aria-hidden="true" />
           </button>
@@ -139,7 +153,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
               e.stopPropagation();
               go(-1);
             }}
-            className="absolute left-3 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:left-6"
+            className="lightbox-control absolute left-3 z-10 sm:left-6"
           >
             <HiChevronLeft className="text-2xl" aria-hidden="true" />
           </button>
@@ -150,39 +164,46 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
               e.stopPropagation();
               go(1);
             }}
-            className="absolute right-3 z-10 flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 transition-colors hover:bg-ivory-50/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-300 sm:right-6"
+            className="lightbox-control absolute right-3 z-10 sm:right-6"
           >
             <HiChevronRight className="text-2xl" aria-hidden="true" />
           </button>
 
-          <motion.figure
-            key={index}
+          <div
             className="relative mx-auto flex max-h-[85vh] w-[90vw] max-w-3xl flex-col items-center"
-            initial={reducedMotion ? false : { scale: 0.98, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={reducedMotion ? undefined : { scale: 0.98, opacity: 0 }}
-            transition={transition}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative h-[70vh] w-full border border-ivory-50/20 bg-olive-950/30">
-              <Image
-                src={current.src}
-                alt={current.caption || "Foto galeri"}
-                fill
-                sizes="90vw"
-                className="object-contain"
-                priority
-              />
-            </div>
-            {current.caption && (
-              <figcaption className="mt-4 font-display text-2xl italic text-ivory-50">
-                {current.caption}
-              </figcaption>
-            )}
+            <AnimatePresence mode="popLayout" custom={direction}>
+              <motion.figure
+                key={index}
+                className="flex w-full flex-col items-center"
+                variants={slide}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={transition}
+              >
+                <div className="relative h-[70vh] w-full border border-ivory-50/20 bg-olive-950/30">
+                  <Image
+                    src={current.src}
+                    alt={current.caption || "Foto galeri"}
+                    fill
+                    sizes="90vw"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+                {current.caption && (
+                  <figcaption className="mt-4 font-display text-2xl italic text-ivory-50">
+                    {current.caption}
+                  </figcaption>
+                )}
+              </motion.figure>
+            </AnimatePresence>
             <span id="lightbox-count" className="mt-1 font-body text-sm text-ivory-50/70">
               {(index ?? 0) + 1} / {items.length}
             </span>
-          </motion.figure>
+          </div>
         </motion.div>
       )}
     </AnimatePresence>

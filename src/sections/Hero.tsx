@@ -1,8 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { HiOutlineEnvelopeOpen } from "react-icons/hi2";
 import { VintageGardenFrame } from "@/components/decorative/VintageGardenFrame";
+import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
 interface Props {
@@ -10,6 +11,27 @@ interface Props {
   opened: boolean;
   onOpen: () => void;
 }
+
+const EASE = motionTokens.easeOut;
+
+/** The central column enters after the veil lifts, one line at a time. */
+const CENTRE_DELAY = 1.7;
+
+const centre = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.14, delayChildren: CENTRE_DELAY },
+  },
+};
+
+const line = {
+  hidden: { opacity: 0, y: 18 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: motionTokens.durationSlow, ease: EASE },
+  },
+};
 
 export function Hero({ guestName, opened, onOpen }: Props) {
   const { groom, bride } = config.couple;
@@ -19,22 +41,26 @@ export function Hero({ guestName, opened, onOpen }: Props) {
       aria-label="Sampul undangan"
       className="vintage-garden-cover relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-ivory-50"
     >
-      <div className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-hidden bg-ivory-50 text-center shadow-paper">
-        <VintageGardenFrame />
+      <motion.div
+        className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-hidden bg-ivory-50 text-center shadow-paper"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.9, ease: EASE }}
+      >
+        <VintageGardenFrame opened={opened} />
 
         <motion.div
           className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: 0.9,
-            delay: 1.55,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          variants={centre}
+          initial="hidden"
+          animate="show"
         >
-          <p className="eyebrow">{config.hero.tagline}</p>
+          <motion.p variants={line} className="eyebrow">
+            {config.hero.tagline}
+          </motion.p>
 
-          <h1
+          <motion.h1
+            variants={line}
             className="mt-3 font-display font-semibold leading-[1.02] tracking-[-0.02em] text-olive-900"
             style={{ fontSize: "clamp(2.5rem, 11vw, 4rem)" }}
           >
@@ -43,43 +69,61 @@ export function Hero({ guestName, opened, onOpen }: Props) {
               &amp;
             </span>
             {bride.shortName}
-          </h1>
+          </motion.h1>
 
-          <p className="mt-2 font-body text-sm tracking-[0.08em] text-olive-700 sm:text-base">
+          <motion.p
+            variants={line}
+            className="mt-2 font-body text-sm tracking-[0.08em] text-olive-700 sm:text-base"
+          >
             {config.hero.dateLabel}
-          </p>
+          </motion.p>
 
-          <div className="mt-4 w-full max-w-[17rem] border-y border-gold-600/40 bg-ivory-50/35 px-4 py-3 backdrop-blur-[1.5px] sm:mt-6 sm:max-w-xs">
+          <motion.div
+            variants={line}
+            className="mt-4 w-full max-w-[17rem] border-y border-gold-600/40 bg-ivory-50/35 px-4 py-3 sm:mt-6 sm:max-w-xs"
+          >
             <p className="font-body text-xs uppercase tracking-[0.2em] text-olive-700 sm:text-sm">
               Kepada Yth.
             </p>
             <p className="mt-1 font-display text-xl font-medium italic text-olive-900 sm:text-2xl">
               {guestName}
             </p>
-          </div>
+          </motion.div>
 
-          {!opened && (
-            <motion.button
-              onClick={onOpen}
-              className="btn-olive mt-5 min-w-44 shadow-paper sm:mt-7"
-              aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
-              whileTap={{ scale: 0.98 }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2.15, duration: 0.7 }}
-            >
-              <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
-              Buka Undangan
-            </motion.button>
-          )}
+          <AnimatePresence>
+            {!opened && (
+              <motion.button
+                onClick={onOpen}
+                className="btn-olive mt-5 min-w-44 shadow-paper sm:mt-7"
+                aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
+                variants={line}
+                exit={{ opacity: 0, y: -10, scale: 0.97 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ duration: 0.55, ease: EASE }}
+              >
+                <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
+                Buka Undangan
+              </motion.button>
+            )}
+          </AnimatePresence>
         </motion.div>
 
-        {opened && (
-          <div className="scroll-cue absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700">
-            <span className="font-body text-sm tracking-[0.2em]">SCROLL</span>
-          </div>
-        )}
-      </div>
+        <AnimatePresence>
+          {opened && (
+            <motion.div
+              className="absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.7, delay: 0.9, ease: EASE }}
+            >
+              <span className="scroll-cue block font-body text-sm tracking-[0.2em]">
+                SCROLL
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </section>
   );
 }

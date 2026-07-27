@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   HiOutlinePaperAirplane,
   HiCheckBadge,
   HiOutlineArrowUturnLeft,
 } from "react-icons/hi2";
 import { SectionTitle } from "@/components/Decor";
-import { Reveal } from "@/components/Reveal";
+import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { useGuestInfo } from "@/hooks/useGuestName";
+import { motionTokens } from "@/animations/tokens";
+import {
+  slideFromLeft,
+  slideFromRight,
+  staggerContainer,
+} from "@/animations/variants";
 import { attendanceLabel, relativeTime } from "@/lib/utils";
 import type { Wish } from "@/lib/types";
 
@@ -36,6 +43,17 @@ interface RegisteredGuest {
   rsvp_status: string;
   wish_message: string;
 }
+
+/** Crossfade between the form's mutually-exclusive states. */
+const formState = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: {
+    duration: motionTokens.durationBase,
+    ease: motionTokens.easeOut,
+  },
+} as const;
 
 /**
  * Guestbook: RSVP counters + form + paginated wishes with replies.
@@ -197,20 +215,25 @@ export function Wishes() {
     <section aria-labelledby="wishes-title" className="section-pad bg-ivory-50">
       <SectionTitle id="wishes-title" eyebrow="Send Your Love" title="Wedding Wishes" />
 
-      <Reveal className="mx-auto mt-12 grid max-w-4xl gap-8 lg:grid-cols-2">
+      <StaggerGroup
+        variants={staggerContainer}
+        early
+        className="mx-auto mt-12 grid max-w-4xl gap-8 lg:grid-cols-2"
+      >
         {/* form */}
-        <div className="paper-card h-fit p-6 sm:p-8">
+        <RevealItem variants={slideFromLeft} className="paper-card h-fit p-6 sm:p-8">
+          <AnimatePresence mode="wait" initial={false}>
           {!guestLookupDone ? (
-            <div className="flex items-center justify-center py-8" role="status">
+            <motion.div key="loading" {...formState} className="flex items-center justify-center py-8" role="status">
               <div
                 aria-hidden="true"
                 className="h-6 w-6 animate-spin rounded-full border-2 border-olive-600 border-t-transparent"
               />
               <span className="sr-only">Memuat data tamu…</span>
-            </div>
+            </motion.div>
           ) : !hasInvitationCode ? (
             /* No invitation code — show a message */
-            <div className="py-8 text-center">
+            <motion.div key="no-code" {...formState} className="py-8 text-center">
               <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-sage-300 bg-sage-100">
                 <svg
                   aria-hidden="true"
@@ -232,10 +255,10 @@ export function Wishes() {
               <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 Untuk mengisi RSVP dan memberikan ucapan, silakan buka undangan melalui link khusus yang telah dikirimkan kepada Anda.
               </p>
-            </div>
+            </motion.div>
           ) : !registeredGuest ? (
             /* Invalid code */
-            <div className="py-8 text-center">
+            <motion.div key="invalid" {...formState} className="py-8 text-center">
               <p
                 className="font-display font-semibold text-error"
                 style={{ fontSize: "var(--text-h3)" }}
@@ -245,11 +268,16 @@ export function Wishes() {
               <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 Kode undangan yang Anda gunakan tidak ditemukan. Pastikan Anda membuka link yang benar.
               </p>
-            </div>
+            </motion.div>
           ) : status === "success" ? (
             /* Success message */
-            <div className="py-8 text-center" role="status">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-olive-600 bg-sage-100">
+            <motion.div key="success" {...formState} className="py-8 text-center" role="status">
+              <motion.div
+                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-olive-600 bg-sage-100"
+                initial={{ scale: 0.7, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ ...motionTokens.spring, delay: 0.1 }}
+              >
                 <svg
                   aria-hidden="true"
                   className="h-7 w-7 text-olive-600"
@@ -260,7 +288,7 @@ export function Wishes() {
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                 </svg>
-              </div>
+              </motion.div>
               <p
                 className="font-display font-semibold text-olive-900"
                 style={{ fontSize: "var(--text-h3)" }}
@@ -270,10 +298,10 @@ export function Wishes() {
               <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 RSVP dan ucapan Anda telah tersimpan. Kami sangat menantikan kehadiran Anda.
               </p>
-            </div>
+            </motion.div>
           ) : (
             /* RSVP Form for registered guests */
-            <form onSubmit={submitRsvp} className="space-y-5">
+            <motion.form key="form" {...formState} onSubmit={submitRsvp} className="space-y-5">
               <div className="border border-sage-300 bg-sage-100 p-3">
                 <div className="flex items-center gap-2">
                   <HiCheckBadge
@@ -350,17 +378,27 @@ export function Wishes() {
                 <HiOutlinePaperAirplane aria-hidden="true" />
                 {status === "sending" ? "Mengirim..." : "Kirim RSVP & Ucapan"}
               </button>
-              {status === "error" && (
-                <p role="alert" className="text-center font-body text-sm text-error">
-                  Gagal mengirim. Silakan coba lagi.
-                </p>
-              )}
-            </form>
+              <AnimatePresence>
+                {status === "error" && (
+                  <motion.p
+                    role="alert"
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: motionTokens.durationFast }}
+                    className="text-center font-body text-sm text-error"
+                  >
+                    Gagal mengirim. Silakan coba lagi.
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </motion.form>
           )}
-        </div>
+          </AnimatePresence>
+        </RevealItem>
 
         {/* list */}
-        <div className="flex flex-col">
+        <RevealItem variants={slideFromRight} className="flex flex-col">
           <p className="mb-3 font-body text-sm text-olive-700" aria-live="polite">
             {wishes.length} ucapan
           </p>
@@ -370,8 +408,20 @@ export function Wishes() {
                 Jadilah yang pertama memberi ucapan
               </p>
             )}
+            <AnimatePresence initial={false}>
             {wishes.slice(0, visible).map((w) => (
-              <article key={w.id} className="paper-card p-4 sm:p-5">
+              <motion.article
+                key={w.id}
+                layout
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{
+                  duration: motionTokens.durationBase,
+                  ease: motionTokens.easeOut,
+                }}
+                className="paper-card p-4 sm:p-5"
+              >
                 <div className="flex items-center justify-between gap-2">
                   <p className="flex items-center gap-1.5 font-body text-base font-medium text-olive-900">
                     {w.name}
@@ -437,7 +487,19 @@ export function Wishes() {
                 )}
 
                 {/* inline reply form */}
+                <AnimatePresence initial={false}>
                 {replyTo === w.id && (
+                  <motion.div
+                    key="reply-form"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{
+                      duration: motionTokens.durationBase,
+                      ease: motionTokens.easeOut,
+                    }}
+                    className="overflow-hidden"
+                  >
                   <div className="mt-3 space-y-3 border border-sage-300 bg-sage-100 p-3">
                     <div>
                       <label
@@ -495,9 +557,12 @@ export function Wishes() {
                       </button>
                     </div>
                   </div>
+                  </motion.div>
                 )}
-              </article>
+                </AnimatePresence>
+              </motion.article>
             ))}
+            </AnimatePresence>
           </div>
           {visible < wishes.length && (
             <button
@@ -507,8 +572,8 @@ export function Wishes() {
               Lihat ucapan lainnya
             </button>
           )}
-        </div>
-      </Reveal>
+        </RevealItem>
+      </StaggerGroup>
     </section>
   );
 }

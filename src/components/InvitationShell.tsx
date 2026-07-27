@@ -16,6 +16,8 @@ import { Gallery } from "@/sections/Gallery";
 import { Wishes } from "@/sections/Wishes";
 import { Gift } from "@/sections/Gift";
 import { Closing } from "@/sections/Closing";
+import { SoftDivider } from "@/components/SoftDivider";
+import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
 /**
@@ -67,18 +69,30 @@ export function InvitationShell() {
           {opened && (
             <motion.div
               id="isi-undangan"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: motionTokens.durationSection,
+                delay: 0.35,
+                ease: motionTokens.easeOut,
+              }}
             >
               <Quote />
+              <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
               <Story />
+              <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               <BrideGroom />
+              <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
               <SaveDate />
+              <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
               <EventDetails />
+              <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Gallery />
+              <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
               <Wishes />
+              <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
               <Gift />
+              <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Closing />
             </motion.div>
           )}

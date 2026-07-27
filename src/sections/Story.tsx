@@ -12,8 +12,11 @@ import config from "@/lib/config";
 /**
  * Vertical love-story timeline — semantic ordered list with one GSAP
  * ScrollTrigger reveal per milestone and a single scrub-linked line fill
- * (the chapter's one scrub timeline, MASTER.md §15.7). Under reduced motion
- * the final state is set immediately (§16.3).
+ * (the chapter's one scrub timeline, MASTER.md §15.7).
+ *
+ * On desktop entries alternate in from the side their photo sits on; on mobile
+ * every entry uses the same upward reveal so the rhythm stays predictable.
+ * Under reduced motion nothing runs and the final state is what renders.
  */
 export function Story() {
   const root = useRef<HTMLElement>(null);
@@ -24,19 +27,40 @@ export function Story() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
+      const wide = window.matchMedia("(min-width: 640px)").matches;
       const items = gsap.utils.toArray<HTMLElement>(".story-item");
-      items.forEach((item) => {
+
+      items.forEach((item, i) => {
+        const fromSide = wide ? (i % 2 === 1 ? 36 : -36) : 0;
+
         gsap.from(item, {
           opacity: 0,
           y: motionTokens.distanceMobile,
-          duration: motionTokens.durationBase,
+          x: fromSide,
+          duration: motionTokens.durationSlow,
           ease: "power3.out",
           scrollTrigger: {
             trigger: item,
-            start: "top 82%",
+            start: "top 84%",
             toggleActions: "play none none none",
           },
         });
+
+        const node = item.querySelector(".story-node");
+        if (node) {
+          gsap.from(node, {
+            scale: 0,
+            opacity: 0,
+            duration: motionTokens.durationBase,
+            delay: 0.18,
+            ease: "back.out(1.6)",
+            scrollTrigger: {
+              trigger: item,
+              start: "top 84%",
+              toggleActions: "play none none none",
+            },
+          });
+        }
       });
 
       gsap.from(".story-line-fill", {
@@ -59,7 +83,7 @@ export function Story() {
     <section
       ref={root}
       aria-labelledby="story-title"
-      className="section-pad bg-ivory-50"
+      className="section-pad relative overflow-hidden bg-ivory-50"
     >
       <SectionTitle id="story-title" eyebrow="Our Journey" title="Our Love Story" />
 
@@ -85,20 +109,20 @@ export function Story() {
                 {/* node */}
                 <span
                   aria-hidden="true"
-                  className="absolute left-4 top-2 z-10 h-3 w-3 -translate-x-1/2 border border-gold-600 bg-ivory-50 sm:left-1/2"
+                  className="story-node absolute left-4 top-2 z-10 h-3 w-3 -translate-x-1/2 border border-gold-600 bg-ivory-50 sm:left-1/2"
                 />
 
                 {/* photo on a beige mat */}
                 <div className="sm:w-1/2">
                   <div className="border border-sage-300 bg-beige-200 p-2">
-                    <div className="relative aspect-[4/3] w-full">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden">
                       <Image
                         src={m.photo}
                         alt={`${m.title} — ${m.date}`}
                         fill
                         loading="lazy"
                         sizes="(max-width: 640px) 90vw, 40vw"
-                        className="object-cover"
+                        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.04]"
                       />
                     </div>
                   </div>
