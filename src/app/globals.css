@@ -200,6 +200,27 @@ body.locked {
   overflow: hidden;
 }
 
+.vintage-garden-cover {
+  background-image:
+    radial-gradient(circle at 20% 15%, rgb(180 188 162 / 0.12), transparent 34%),
+    radial-gradient(circle at 80% 85%, rgb(220 207 182 / 0.2), transparent 38%);
+}
+
+.vintage-garden-arch {
+  border: 1px solid rgb(140 116 67 / 0.34);
+  border-bottom-color: rgb(140 116 67 / 0.18);
+  border-radius: 999px 999px 10px 10px;
+  box-shadow:
+    inset 0 0 0 4px rgb(251 249 243 / 0.28),
+    0 0 28px rgb(246 242 232 / 0.42);
+}
+
+@media (max-height: 680px) {
+  .vintage-garden-cover .eyebrow {
+    font-size: 0.65rem;
+  }
+}
+
 /* Music button playing indicator — the one allowed continuous animation
    (MASTER.md §15.4); halted entirely under prefers-reduced-motion. */
 @keyframes music-bob {

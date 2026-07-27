@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineEnvelopeOpen } from "react-icons/hi2";
+import { VintageGardenFrame } from "@/components/decorative/VintageGardenFrame";
 import config from "@/lib/config";
 
 interface Props {
@@ -11,65 +11,49 @@ interface Props {
   onOpen: () => void;
 }
 
-/**
- * Editorial cover: arch-framed couple portrait on ivory paper, serif display
- * names, guest addressing, and the opening CTA. Photography leads; ornament
- * recedes (MASTER.md §1, P0.2/P0.3).
- *
- * The retired watercolor video/petals cover is replaced by a still photograph
- * — the arch reveal is the single mask reveal allowed on this chapter.
- */
 export function Hero({ guestName, opened, onOpen }: Props) {
   const { groom, bride } = config.couple;
 
   return (
     <section
       aria-label="Sampul undangan"
-      className="relative flex min-h-svh w-full items-center justify-start overflow-hidden bg-ivory-50 px-5 pb-12 pt-8 sm:justify-center sm:py-12"
+      className="vintage-garden-cover relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-ivory-50"
     >
-      <div className="mx-auto flex w-full max-w-xl flex-col items-center text-center">
+      <div className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-hidden bg-ivory-50 text-center shadow-paper">
+        <VintageGardenFrame />
+
         <motion.div
-          className="flex w-full flex-col items-center"
+          className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{
+            duration: 0.9,
+            delay: 0.55,
+            ease: [0.22, 1, 0.36, 1],
+          }}
         >
           <p className="eyebrow">{config.hero.tagline}</p>
 
-          {/* Arch portrait — LCP image, on a beige mat with a hairline border */}
-          <div className="arch-frame mt-4 w-[min(58vw,220px)] border border-sage-300 bg-beige-200 p-2 sm:mt-6 sm:w-72">
-            <div className="arch-frame relative aspect-[3/4] w-full">
-              <Image
-                src="/assets/gallery/gallery-1.jpg"
-                alt={`Foto ${groom.shortName} dan ${bride.shortName}`}
-                fill
-                priority
-                sizes="(max-width: 640px) 68vw, 18rem"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
           <h1
-            className="mt-5 font-display font-semibold leading-[1.1] tracking-[-0.01em] text-olive-900 sm:mt-8"
-            style={{ fontSize: "var(--text-display)" }}
+            className="mt-3 font-display font-semibold leading-[1.02] tracking-[-0.02em] text-olive-900"
+            style={{ fontSize: "clamp(2.5rem, 11vw, 4rem)" }}
           >
             {groom.shortName}
-            <span className="mx-3 font-accent font-normal text-gold-700">
+            <span className="mx-2 font-accent font-normal text-gold-700 sm:mx-3">
               &amp;
             </span>
             {bride.shortName}
           </h1>
 
-          <p className="mt-3 font-body text-base tracking-[0.05em] text-olive-700 sm:mt-4">
+          <p className="mt-2 font-body text-sm tracking-[0.08em] text-olive-700 sm:text-base">
             {config.hero.dateLabel}
           </p>
 
-          <div className="mt-5 w-full max-w-xs border-y border-sage-300 px-6 py-3 sm:mt-8 sm:py-4">
-            <p className="font-body text-sm uppercase tracking-[0.2em] text-olive-700">
+          <div className="mt-4 w-full max-w-[17rem] border-y border-gold-600/40 bg-ivory-50/35 px-4 py-3 backdrop-blur-[1.5px] sm:mt-6 sm:max-w-xs">
+            <p className="font-body text-xs uppercase tracking-[0.2em] text-olive-700 sm:text-sm">
               Kepada Yth.
             </p>
-            <p className="mt-2 font-display text-2xl font-medium italic text-olive-900">
+            <p className="mt-1 font-display text-xl font-medium italic text-olive-900 sm:text-2xl">
               {guestName}
             </p>
           </div>
@@ -77,12 +61,12 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           {!opened && (
             <motion.button
               onClick={onOpen}
-              className="btn-olive mt-6 min-w-44 sm:mt-8"
+              className="btn-olive mt-5 min-w-44 shadow-paper sm:mt-7"
               aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.9 }}
+              transition={{ delay: 1.2 }}
             >
               <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
               Buka Undangan
@@ -90,9 +74,8 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           )}
         </motion.div>
 
-        {/* gentle scroll hint once opened */}
         {opened && (
-          <div className="scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 text-olive-700">
+          <div className="scroll-cue absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700">
             <span className="font-body text-sm tracking-[0.2em]">SCROLL</span>
           </div>
         )}
