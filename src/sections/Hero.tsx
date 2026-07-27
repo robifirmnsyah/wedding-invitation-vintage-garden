@@ -28,7 +28,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           animate={{ opacity: 1, y: 0 }}
           transition={{
             duration: 0.9,
-            delay: 0.55,
+            delay: 1.55,
             ease: [0.22, 1, 0.36, 1],
           }}
         >
@@ -66,7 +66,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
               whileTap={{ scale: 0.98 }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
+              transition={{ delay: 2.15, duration: 0.7 }}
             >
               <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
               Buka Undangan
