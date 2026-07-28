@@ -15,32 +15,21 @@ interface Props {
 const EASE = motionTokens.easeOut;
 
 /** The central column enters after the veil lifts, one line at a time. */
-const CENTRE_DELAY = 2.72;
+const CENTRE_DELAY = 1.7;
 
 const centre = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.13, delayChildren: CENTRE_DELAY },
-  },
-  open: {
-    transition: { staggerChildren: 0.035, staggerDirection: -1 },
+    transition: { staggerChildren: 0.14, delayChildren: CENTRE_DELAY },
   },
 };
 
 const line = {
-  hidden: { opacity: 0, y: 18, filter: "blur(3px)" },
+  hidden: { opacity: 0, y: 18 },
   show: {
     opacity: 1,
     y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.72, ease: EASE },
-  },
-  open: {
-    opacity: 0,
-    y: -12,
-    scale: 0.985,
-    filter: "blur(2px)",
-    transition: { duration: 0.36, ease: motionTokens.easeIn },
+    transition: { duration: motionTokens.durationSlow, ease: EASE },
   },
 };
 
@@ -64,7 +53,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
           className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
           variants={centre}
           initial="hidden"
-          animate={opened ? "open" : "show"}
+          animate="show"
         >
           <motion.p variants={line} className="eyebrow">
             {config.hero.tagline}
@@ -118,45 +107,6 @@ export function Hero({ guestName, opened, onOpen }: Props) {
             )}
           </AnimatePresence>
         </motion.div>
-
-        <AnimatePresence>
-          {opened && (
-            <>
-              <motion.div
-                className="pointer-events-none absolute inset-y-0 left-0 z-20 w-1/2 origin-right border-r border-gold-600/20 bg-gradient-to-r from-ivory-50 via-ivory-50/95 to-ivory-50/80"
-                initial={{ x: 0, opacity: 0, rotateY: 0 }}
-                animate={{
-                  x: ["0%", "0%", "-106%"],
-                  opacity: [0, 0.96, 0.96],
-                  rotateY: [0, 0, -7],
-                }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 1.08,
-                  times: [0, 0.2, 1],
-                  ease: EASE,
-                }}
-                style={{ transformPerspective: 1200 }}
-              />
-              <motion.div
-                className="pointer-events-none absolute inset-y-0 right-0 z-20 w-1/2 origin-left border-l border-gold-600/20 bg-gradient-to-l from-ivory-50 via-ivory-50/95 to-ivory-50/80"
-                initial={{ x: 0, opacity: 0, rotateY: 0 }}
-                animate={{
-                  x: ["0%", "0%", "106%"],
-                  opacity: [0, 0.96, 0.96],
-                  rotateY: [0, 0, 7],
-                }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 1.08,
-                  times: [0, 0.2, 1],
-                  ease: EASE,
-                }}
-                style={{ transformPerspective: 1200 }}
-              />
-            </>
-          )}
-        </AnimatePresence>
 
         <AnimatePresence>
           {opened && (
