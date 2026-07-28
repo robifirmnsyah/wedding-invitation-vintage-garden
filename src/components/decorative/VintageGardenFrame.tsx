@@ -1,31 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { motionTokens } from "@/animations/tokens";
 
 const ASSET_ROOT = "/assets/decorative/vintage-garden-frame";
 const EASE = motionTokens.easeOut;
 const SOFT = motionTokens.easeSoft;
+const AMBIENT_START = 4.15;
 
-/**
- * The cover entrance is one choreographed sequence. Each asset enters at its
- * own beat, settles, and only then begins breathing — nothing sways while
- * something else is still arriving.
- */
 const BEAT = {
-  landscape: 0.15,
-  arch: 0.5,
-  top: 0.62,
-  left: 0.82,
-  right: 0.92,
-  bottom: 1.15,
-  veil: 1.45,
-  birds: 1.85,
+  landscape: 0.12,
+  arch: 0.38,
+  topLeft: 0.58,
+  topRight: 0.76,
+  sideLeft: 0.92,
+  sideRight: 1.1,
+  topCenter: 1.32,
+  bottom: 1.72,
+  birds: 2.18,
 } as const;
-
-/** Ambient loops all start after the last asset has landed. */
-const AMBIENT_START = 2.4;
 
 type DecorativeImageProps = {
   src: string;
@@ -53,55 +47,116 @@ function DecorativeImage({
   );
 }
 
+type FloralClusterProps = {
+  className: string;
+  imageClassName: string;
+  src: string;
+  sizes: string;
+  initial: { x?: number; y?: number; rotate: number; scale: number };
+  delay: number;
+  opened: boolean;
+  openX?: number;
+  openY?: number;
+  origin: string;
+  wind: { x?: number[]; y?: number[]; rotate: number[] };
+  windDuration: number;
+};
+
+function FloralCluster({
+  className,
+  imageClassName,
+  src,
+  sizes,
+  initial,
+  delay,
+  opened,
+  openX = 0,
+  openY = 0,
+  origin,
+  wind,
+  windDuration,
+}: FloralClusterProps) {
+  return (
+    <motion.div
+      className={className}
+      style={{ transformOrigin: origin }}
+      initial={{ opacity: 0, ...initial }}
+      animate={{
+        opacity: opened ? 0.32 : 1,
+        x: opened ? openX : 0,
+        y: opened ? openY : 0,
+        rotate: opened ? initial.rotate * 0.35 : 0,
+        scale: opened ? 1.025 : 1,
+      }}
+      transition={{
+        opacity: { duration: opened ? 0.5 : 0.82, delay: opened ? 0.08 : delay, ease: EASE },
+        x: { duration: opened ? 0.92 : 1.15, delay: opened ? 0.08 : delay, ease: EASE },
+        y: { duration: opened ? 0.92 : 1.15, delay: opened ? 0.08 : delay, ease: EASE },
+        rotate: { duration: opened ? 0.92 : 1.35, delay: opened ? 0.08 : delay, ease: EASE },
+        scale: { duration: opened ? 0.92 : 1.35, delay: opened ? 0.08 : delay, ease: EASE },
+      }}
+    >
+      <motion.div
+        className="absolute inset-0"
+        style={{ transformOrigin: origin }}
+        animate={wind}
+        transition={{
+          duration: windDuration,
+          delay: AMBIENT_START,
+          repeat: Infinity,
+          ease: SOFT,
+        }}
+      >
+        <DecorativeImage
+          src={src}
+          sizes={sizes}
+          className={imageClassName}
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
 interface Props {
-  /** true once "Buka Undangan" is pressed — the frame opens outward */
   opened?: boolean;
 }
 
 export function VintageGardenFrame({ opened = false }: Props) {
-  const reduced = useReducedMotion();
-
-  /** ambient loop props, or nothing at all under reduced motion */
-  const loop = (
-    keyframes: Record<string, number[]>,
-    duration: number,
-    delay = AMBIENT_START
-  ) =>
-    reduced
-      ? {}
-      : {
-          animate: keyframes,
-          transition: Object.fromEntries(
-            Object.keys(keyframes).map((k) => [
-              k,
-              { duration, delay, repeat: Infinity, ease: SOFT },
-            ])
-          ),
-        };
-
   return (
     <div
       className="pointer-events-none absolute inset-0 isolate overflow-hidden"
       aria-hidden="true"
     >
-      {/* 1 — the garden reveals from the ground upward */}
       <motion.div
-        className="absolute inset-x-[6%] bottom-[3%] top-[3%] z-0"
-        initial={{ opacity: 0, scale: 1.06, clipPath: "inset(100% 0 0 0)" }}
+        className="absolute inset-x-[5%] bottom-[2%] top-[2%] z-0 will-change-transform"
+        initial={{
+          opacity: 0,
+          scale: 1.12,
+          y: 24,
+          clipPath: "inset(100% 8% 0 8% round 48% 48% 0 0)",
+        }}
         animate={{
-          opacity: 0.84,
-          scale: opened ? 1.05 : 1,
-          clipPath: "inset(0% 0 0 0)",
+          opacity: opened ? 0.48 : 0.86,
+          scale: opened ? 1.055 : 1,
+          y: opened ? -8 : 0,
+          clipPath: "inset(0% 0% 0 0% round 0% 0% 0 0)",
         }}
         transition={{
-          opacity: { duration: 1.6, delay: BEAT.landscape, ease: EASE },
-          clipPath: { duration: 1.7, delay: BEAT.landscape, ease: EASE },
-          scale: { duration: opened ? 1.4 : 1.6, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          opacity: { duration: 1.15, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          scale: { duration: 1.65, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          y: { duration: 1.65, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          clipPath: { duration: 1.55, delay: BEAT.landscape, ease: EASE },
         }}
       >
         <motion.div
-          className="absolute inset-0"
-          {...loop({ y: [0, -7, 0], scale: [1, 1.012, 1] }, motionTokens.loopSlow)}
+          className="absolute inset-0 origin-bottom"
+          animate={{ y: [0, -7, 0], scale: [1, 1.018, 1] }}
+          transition={{
+            duration: 21,
+            delay: AMBIENT_START,
+            repeat: Infinity,
+            ease: SOFT,
+          }}
         >
           <DecorativeImage
             src="garden-landscape.png"
@@ -112,121 +167,137 @@ export function VintageGardenFrame({ opened = false }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* 2 — the classical arch draws itself around the centre */}
-      <motion.div
-        className="vintage-garden-arch absolute inset-x-[11%] bottom-[9%] top-[9%] z-[1] origin-bottom"
-        initial={{ opacity: 0, scaleY: 0.94 }}
-        animate={{ opacity: 1, scaleY: 1 }}
-        transition={{ duration: 1.2, delay: BEAT.arch, ease: EASE }}
+      <motion.svg
+        className="absolute inset-x-[10.5%] bottom-[8.5%] top-[8.5%] z-[1] h-[83%] w-[79%]"
+        viewBox="0 0 100 160"
+        fill="none"
+        preserveAspectRatio="none"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: opened ? 0.25 : 0.78 }}
+        transition={{ duration: 0.4, delay: BEAT.arch, ease: EASE }}
+      >
+        <motion.path
+          d="M 3 160 L 3 63 C 3 29 24 4 50 4 C 76 4 97 29 97 63 L 97 160"
+          stroke="rgba(157, 116, 48, 0.62)"
+          strokeWidth="0.8"
+          vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.4, delay: BEAT.arch, ease: EASE }}
+        />
+        <motion.path
+          d="M 6 160 L 6 64 C 6 32 25 8 50 8 C 75 8 94 32 94 64 L 94 160"
+          stroke="rgba(157, 116, 48, 0.28)"
+          strokeWidth="0.45"
+          vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 1.55, delay: BEAT.arch + 0.12, ease: EASE }}
+        />
+      </motion.svg>
+
+      <FloralCluster
+        className="absolute -left-[12%] -top-[7%] z-[4] h-[33%] w-[66%]"
+        imageClassName="object-contain object-left-top"
+        src="floral-top-left.png"
+        sizes="(max-width: 640px) 66vw, 23rem"
+        initial={{ x: -92, y: -82, rotate: -7, scale: 0.92 }}
+        delay={BEAT.topLeft}
+        opened={opened}
+        openX={-62}
+        openY={-26}
+        origin="18% 10%"
+        wind={{ x: [0, 3, 0], y: [0, 2, 0], rotate: [-0.55, 0.42, -0.55] }}
+        windDuration={9.4}
       />
 
-      {/* 7 — the ivory veil lifts to reveal the invitation area */}
-      <motion.div
-        className="absolute inset-x-[11%] bottom-[9%] top-[9%] z-[5] overflow-hidden rounded-t-[48%] bg-[#fffaf0]/85"
-        initial={{ opacity: 0.92, scaleY: 1 }}
-        animate={{ opacity: 0, scaleY: 0.97 }}
-        transition={{ duration: 1.2, delay: BEAT.veil, ease: EASE }}
+      <FloralCluster
+        className="absolute -right-[12%] -top-[7%] z-[4] h-[33%] w-[66%]"
+        imageClassName="object-contain object-right-top"
+        src="floral-top-right.png"
+        sizes="(max-width: 640px) 66vw, 23rem"
+        initial={{ x: 92, y: -82, rotate: 7, scale: 0.92 }}
+        delay={BEAT.topRight}
+        opened={opened}
+        openX={62}
+        openY={-26}
+        origin="82% 10%"
+        wind={{ x: [0, -3, 0], y: [0, 3, 0], rotate: [0.62, -0.38, 0.62] }}
+        windDuration={10.8}
       />
 
-      {/* 4 — top floral ornament descends */}
-      <motion.div
-        className="absolute -left-[14%] -right-[14%] -top-[1.5%] z-[4] h-[31%] origin-top"
-        initial={{ opacity: 0, y: -28, scale: 1.03 }}
-        animate={{
-          opacity: 0.98,
-          y: opened ? -18 : 0,
-          scale: 1,
-        }}
-        transition={{
-          opacity: { duration: 1.1, delay: BEAT.top, ease: EASE },
-          y: { duration: opened ? 1.2 : 1.1, delay: opened ? 0 : BEAT.top, ease: EASE },
-          scale: { duration: 1.35, delay: BEAT.top, ease: EASE },
-        }}
-      >
-        <motion.div
-          className="absolute inset-0"
-          {...loop({ rotate: [-0.35, 0.35, -0.35] }, 9)}
-        >
-          <DecorativeImage
-            src="floral-top.png"
-            sizes="(max-width: 640px) 128vw, 44rem"
-            className="object-contain object-top"
-          />
-        </motion.div>
-      </motion.div>
+      <FloralCluster
+        className="absolute left-[14%] -top-[5.5%] z-[5] h-[31%] w-[72%]"
+        imageClassName="object-contain object-top"
+        src="floral-top-center.png"
+        sizes="(max-width: 640px) 72vw, 25rem"
+        initial={{ y: -116, rotate: -2, scale: 0.9 }}
+        delay={BEAT.topCenter}
+        opened={opened}
+        openY={-48}
+        origin="50% 6%"
+        wind={{ y: [0, 3, 0], rotate: [-0.32, 0.38, -0.32] }}
+        windDuration={8.7}
+      />
 
-      {/* 5a — left arrangement grows in from its own edge */}
-      <motion.div
-        className="absolute -left-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] origin-bottom-left sm:-left-[17%]"
-        initial={{ opacity: 0, x: -36, rotate: -1.6 }}
-        animate={{
-          opacity: 0.95,
-          x: opened ? -22 : 0,
-          rotate: 0,
-        }}
-        transition={{
-          opacity: { duration: 1.2, delay: BEAT.left, ease: EASE },
-          x: { duration: opened ? 1.2 : 1.2, delay: opened ? 0 : BEAT.left, ease: EASE },
-          rotate: { duration: 1.45, delay: BEAT.left, ease: EASE },
-        }}
-      >
-        <motion.div
-          className="absolute inset-0 origin-bottom-left"
-          {...loop({ rotate: [-0.55, 0.25, -0.55] }, motionTokens.loopMedium)}
-        >
-          <DecorativeImage
-            src="floral-left.png"
-            sizes="(max-width: 640px) 69vw, 24rem"
-            className="object-contain object-left-bottom"
-          />
-        </motion.div>
-      </motion.div>
+      <FloralCluster
+        className="absolute -left-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] sm:-left-[17%]"
+        imageClassName="object-contain object-left-bottom"
+        src="floral-left.png"
+        sizes="(max-width: 640px) 69vw, 24rem"
+        initial={{ x: -132, y: 24, rotate: -5, scale: 0.94 }}
+        delay={BEAT.sideLeft}
+        opened={opened}
+        openX={-88}
+        origin="16% 92%"
+        wind={{ x: [0, 4, 0], y: [0, -3, 0], rotate: [-0.82, 0.48, -0.82] }}
+        windDuration={11.3}
+      />
 
-      {/* 5b — right arrangement, a beat behind so the pair reads as two gestures */}
-      <motion.div
-        className="absolute -right-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] origin-bottom-right sm:-right-[17%]"
-        initial={{ opacity: 0, x: 36, rotate: 1.6 }}
-        animate={{
-          opacity: 0.95,
-          x: opened ? 22 : 0,
-          rotate: 0,
-        }}
-        transition={{
-          opacity: { duration: 1.2, delay: BEAT.right, ease: EASE },
-          x: { duration: 1.2, delay: opened ? 0 : BEAT.right, ease: EASE },
-          rotate: { duration: 1.45, delay: BEAT.right, ease: EASE },
-        }}
-      >
-        <motion.div
-          className="absolute inset-0 origin-bottom-right"
-          {...loop({ rotate: [0.55, -0.25, 0.55] }, 12)}
-        >
-          <DecorativeImage
-            src="floral-right.png"
-            sizes="(max-width: 640px) 69vw, 24rem"
-            className="object-contain object-right-bottom"
-          />
-        </motion.div>
-      </motion.div>
+      <FloralCluster
+        className="absolute -right-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] sm:-right-[17%]"
+        imageClassName="object-contain object-right-bottom"
+        src="floral-right.png"
+        sizes="(max-width: 640px) 69vw, 24rem"
+        initial={{ x: 132, y: 28, rotate: 5, scale: 0.94 }}
+        delay={BEAT.sideRight}
+        opened={opened}
+        openX={88}
+        origin="84% 92%"
+        wind={{ x: [0, -4, 0], y: [0, -4, 0], rotate: [0.76, -0.46, 0.76] }}
+        windDuration={12.6}
+      />
 
-      {/* 6 — bottom ornament rises last and holds the composition down */}
       <motion.div
-        className="absolute -bottom-[2%] -left-[16%] -right-[16%] z-[6] h-[27%] origin-bottom"
-        initial={{ opacity: 0, y: 36, scale: 1.02 }}
+        className="absolute -bottom-[2%] -left-[16%] -right-[16%] z-[6] h-[27%] origin-bottom overflow-hidden"
+        initial={{
+          opacity: 0,
+          y: 82,
+          scale: 0.96,
+          clipPath: "inset(100% 0 0 0)",
+        }}
         animate={{
-          opacity: 0.98,
-          y: opened ? 16 : 0,
-          scale: 1,
+          opacity: opened ? 0.3 : 0.98,
+          y: opened ? 72 : 0,
+          scale: opened ? 1.025 : 1,
+          clipPath: "inset(0% 0 0 0)",
         }}
         transition={{
-          opacity: { duration: 1.15, delay: BEAT.bottom, ease: EASE },
-          y: { duration: 1.25, delay: opened ? 0 : BEAT.bottom, ease: EASE },
-          scale: { duration: 1.5, delay: BEAT.bottom, ease: EASE },
+          opacity: { duration: 0.9, delay: opened ? 0.08 : BEAT.bottom, ease: EASE },
+          y: { duration: opened ? 0.92 : 1.18, delay: opened ? 0.08 : BEAT.bottom, ease: EASE },
+          scale: { duration: 1.25, delay: BEAT.bottom, ease: EASE },
+          clipPath: { duration: 1.15, delay: BEAT.bottom, ease: EASE },
         }}
       >
         <motion.div
-          className="absolute inset-0"
-          {...loop({ y: [0, 3, 0] }, 8)}
+          className="absolute inset-0 origin-bottom"
+          animate={{ y: [0, 4, 0], rotate: [-0.18, 0.22, -0.18] }}
+          transition={{
+            duration: 8.2,
+            delay: AMBIENT_START + 0.35,
+            repeat: Infinity,
+            ease: SOFT,
+          }}
         >
           <DecorativeImage
             src="floral-bottom.png"
@@ -236,47 +307,33 @@ export function VintageGardenFrame({ opened = false }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* birds hover in place — they never travel across the frame */}
       <motion.div
-        className="absolute bottom-[1%] left-[8%] z-[2] h-[10%] w-[20%]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.72 }}
-        transition={{ duration: 0.9, delay: BEAT.birds, ease: EASE }}
+        className="absolute bottom-[2%] left-[8%] z-[2] h-[9%] w-[18%]"
+        initial={{ opacity: 0, y: 16, scale: 0.9 }}
+        animate={{ opacity: opened ? 0 : 0.68, y: 0, scale: 1 }}
+        transition={{ duration: 0.75, delay: BEAT.birds, ease: EASE }}
       >
         <motion.div
           className="absolute inset-0"
-          {...loop(
-            { x: [-4, 5, -4], y: [2, -5, 2], rotate: [-1.5, 1.5, -1.5] },
-            motionTokens.loopFast
-          )}
+          animate={{ x: [-3, 4, -3], y: [2, -5, 2], rotate: [-1.2, 1.1, -1.2] }}
+          transition={{ duration: 7.4, delay: AMBIENT_START, repeat: Infinity, ease: SOFT }}
         >
-          <DecorativeImage
-            src="bird-flying-right.png"
-            sizes="8rem"
-            className="object-contain"
-          />
+          <DecorativeImage src="bird-flying-right.png" sizes="7rem" className="object-contain" />
         </motion.div>
       </motion.div>
 
       <motion.div
-        className="absolute right-[7%] top-[36%] z-[2] h-[11%] w-[20%]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 0.68 }}
-        transition={{ duration: 0.9, delay: BEAT.birds + 0.15, ease: EASE }}
+        className="absolute right-[7%] top-[37%] z-[2] h-[10%] w-[18%]"
+        initial={{ opacity: 0, y: 14, scale: 0.9 }}
+        animate={{ opacity: opened ? 0 : 0.64, y: 0, scale: 1 }}
+        transition={{ duration: 0.75, delay: BEAT.birds + 0.16, ease: EASE }}
       >
         <motion.div
           className="absolute inset-0"
-          {...loop(
-            { x: [4, -5, 4], y: [-1, -7, -1], rotate: [1.5, -1.5, 1.5] },
-            8.5,
-            AMBIENT_START + 0.6
-          )}
+          animate={{ x: [3, -4, 3], y: [0, -6, 0], rotate: [1.2, -1.1, 1.2] }}
+          transition={{ duration: 8.6, delay: AMBIENT_START + 0.5, repeat: Infinity, ease: SOFT }}
         >
-          <DecorativeImage
-            src="bird-hovering.png"
-            sizes="8rem"
-            className="object-contain"
-          />
+          <DecorativeImage src="bird-hovering.png" sizes="7rem" className="object-contain" />
         </motion.div>
       </motion.div>
     </div>
