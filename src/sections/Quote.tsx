@@ -22,6 +22,18 @@ export function Quote() {
         opacity={0.07}
         distance={44}
       />
+      <BotanicalParallax
+        src="floral-right.png"
+        side="right"
+        className="-right-[18%] bottom-[4%] h-[48%] w-[44%] sm:-right-[6%] sm:w-[24%]"
+        opacity={0.06}
+        distance={36}
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-[9%] inset-y-[12%] rounded-[48%] bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.96)_0%,_rgba(255,250,240,0.76)_48%,_transparent_76%)]"
+      />
 
       <StaggerGroup
         variants={staggerLoose}
@@ -49,6 +61,10 @@ export function Quote() {
           className="mx-auto mt-8 max-w-prose font-display text-lg font-medium italic leading-relaxed text-olive-700"
         >
           <span lang="id">&ldquo;{quote.translation}&rdquo;</span>
+        </RevealItem>
+
+        <RevealItem variants={drawLine} className="mt-8 w-full">
+          <SprigDivider />
         </RevealItem>
       </StaggerGroup>
     </section>
