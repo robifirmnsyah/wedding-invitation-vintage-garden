@@ -70,7 +70,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
           className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
           variants={centre}
           initial="hidden"
-          animate={opened ? "open" : "show"}
+          animate="show"
         >
           <motion.p variants={line} className="eyebrow">
             {config.hero.tagline}
