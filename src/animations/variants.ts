@@ -45,10 +45,11 @@ export const slideFromRight: Variants = {
 
 /** Ornamental hairlines and dividers — drawn rather than faded. */
 export const drawLine: Variants = {
-  hidden: { opacity: 0, scaleX: 0.3 },
+  hidden: { opacity: 0, scaleX: 0.3, originX: "50%" },
   show: {
     opacity: 1,
     scaleX: 1,
+    originX: "50%",
     transition: { duration: durationSlow, ease: easeOut },
   },
 };

@@ -69,11 +69,11 @@ export function InvitationShell() {
           {opened && (
             <motion.div
               id="isi-undangan"
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: motionTokens.durationSection,
-                delay: 0.35,
+                delay: 0.55,
                 ease: motionTokens.easeOut,
               }}
             >
