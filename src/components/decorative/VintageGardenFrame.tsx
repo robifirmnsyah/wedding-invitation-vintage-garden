@@ -15,17 +15,17 @@ const SOFT = motionTokens.easeSoft;
  */
 const BEAT = {
   landscape: 0.15,
-  arch: 0.5,
-  top: 0.62,
-  left: 0.82,
-  right: 0.92,
-  bottom: 1.15,
-  veil: 1.45,
-  birds: 1.85,
+  arch: 0.42,
+  top: 0.6,
+  left: 0.92,
+  right: 1.08,
+  bottom: 1.48,
+  veil: 1.86,
+  birds: 2.28,
 } as const;
 
 /** Ambient loops all start after the last asset has landed. */
-const AMBIENT_START = 2.4;
+const AMBIENT_START = 3.85;
 
 type DecorativeImageProps = {
   src: string;
@@ -87,16 +87,18 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 1 — the garden reveals from the ground upward */}
       <motion.div
         className="absolute inset-x-[6%] bottom-[3%] top-[3%] z-0"
-        initial={{ opacity: 0, scale: 1.06, clipPath: "inset(100% 0 0 0)" }}
+        initial={{ opacity: 0, scale: 1.12, y: 24, clipPath: "inset(100% 6% 0 6% round 48% 48% 0 0)" }}
         animate={{
           opacity: 0.84,
           scale: opened ? 1.05 : 1,
-          clipPath: "inset(0% 0 0 0)",
+          y: opened ? -8 : 0,
+          clipPath: "inset(0% 0 0 0 round 0 0 0 0)",
         }}
         transition={{
-          opacity: { duration: 1.6, delay: BEAT.landscape, ease: EASE },
-          clipPath: { duration: 1.7, delay: BEAT.landscape, ease: EASE },
-          scale: { duration: opened ? 1.4 : 1.6, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          opacity: { duration: 1.3, delay: BEAT.landscape, ease: EASE },
+          clipPath: { duration: 1.55, delay: BEAT.landscape, ease: EASE },
+          scale: { duration: opened ? 1.4 : 1.55, delay: opened ? 0 : BEAT.landscape, ease: EASE },
+          y: { duration: opened ? 1.4 : 1.55, delay: opened ? 0 : BEAT.landscape, ease: EASE },
         }}
       >
         <motion.div
@@ -115,9 +117,9 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 2 — the classical arch draws itself around the centre */}
       <motion.div
         className="vintage-garden-arch absolute inset-x-[11%] bottom-[9%] top-[9%] z-[1] origin-bottom"
-        initial={{ opacity: 0, scaleY: 0.94 }}
-        animate={{ opacity: 1, scaleY: 1 }}
-        transition={{ duration: 1.2, delay: BEAT.arch, ease: EASE }}
+        initial={{ opacity: 0, scaleY: 0.78, clipPath: "inset(100% 0 0 0)" }}
+        animate={{ opacity: 1, scaleY: 1, clipPath: "inset(0% 0 0 0)" }}
+        transition={{ duration: 1.35, delay: BEAT.arch, ease: EASE }}
       />
 
       {/* 7 — the ivory veil lifts to reveal the invitation area */}
@@ -131,21 +133,23 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 4 — top floral ornament descends */}
       <motion.div
         className="absolute -left-[14%] -right-[14%] -top-[1.5%] z-[4] h-[31%] origin-top"
-        initial={{ opacity: 0, y: -28, scale: 1.03 }}
+        initial={{ opacity: 0, y: -82, rotate: -4, scale: 0.93 }}
         animate={{
           opacity: 0.98,
           y: opened ? -18 : 0,
+          rotate: opened ? -1.5 : 0,
           scale: 1,
         }}
         transition={{
-          opacity: { duration: 1.1, delay: BEAT.top, ease: EASE },
-          y: { duration: opened ? 1.2 : 1.1, delay: opened ? 0 : BEAT.top, ease: EASE },
-          scale: { duration: 1.35, delay: BEAT.top, ease: EASE },
+          opacity: { duration: 0.92, delay: BEAT.top, ease: EASE },
+          y: { duration: opened ? 1.2 : 1.28, delay: opened ? 0 : BEAT.top, ease: EASE },
+          rotate: { duration: 1.28, delay: BEAT.top, ease: EASE },
+          scale: { duration: 1.28, delay: BEAT.top, ease: EASE },
         }}
       >
         <motion.div
           className="absolute inset-0"
-          {...loop({ rotate: [-0.35, 0.35, -0.35] }, 9)}
+          {...loop({ y: [0, 3, 0], rotate: [-0.42, 0.42, -0.42] }, 9.6)}
         >
           <DecorativeImage
             src="floral-top.png"
@@ -158,21 +162,25 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 5a — left arrangement grows in from its own edge */}
       <motion.div
         className="absolute -left-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] origin-bottom-left sm:-left-[17%]"
-        initial={{ opacity: 0, x: -36, rotate: -1.6 }}
+        initial={{ opacity: 0, x: -108, y: 24, rotate: -5, scale: 0.94 }}
         animate={{
           opacity: 0.95,
           x: opened ? -22 : 0,
           rotate: 0,
+          y: 0,
+          scale: 1,
         }}
         transition={{
-          opacity: { duration: 1.2, delay: BEAT.left, ease: EASE },
-          x: { duration: opened ? 1.2 : 1.2, delay: opened ? 0 : BEAT.left, ease: EASE },
-          rotate: { duration: 1.45, delay: BEAT.left, ease: EASE },
+          opacity: { duration: 0.95, delay: BEAT.left, ease: EASE },
+          x: { duration: opened ? 1.2 : 1.3, delay: opened ? 0 : BEAT.left, ease: EASE },
+          y: { duration: 1.3, delay: BEAT.left, ease: EASE },
+          rotate: { duration: 1.38, delay: BEAT.left, ease: EASE },
+          scale: { duration: 1.3, delay: BEAT.left, ease: EASE },
         }}
       >
         <motion.div
           className="absolute inset-0 origin-bottom-left"
-          {...loop({ rotate: [-0.55, 0.25, -0.55] }, motionTokens.loopMedium)}
+          {...loop({ x: [0, 4, 0], y: [0, -3, 0], rotate: [-0.8, 0.48, -0.8] }, 11.3)}
         >
           <DecorativeImage
             src="floral-left.png"
@@ -185,21 +193,25 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 5b — right arrangement, a beat behind so the pair reads as two gestures */}
       <motion.div
         className="absolute -right-[23%] bottom-[1%] z-[3] h-[78%] w-[69%] origin-bottom-right sm:-right-[17%]"
-        initial={{ opacity: 0, x: 36, rotate: 1.6 }}
+        initial={{ opacity: 0, x: 108, y: 28, rotate: 5, scale: 0.94 }}
         animate={{
           opacity: 0.95,
           x: opened ? 22 : 0,
           rotate: 0,
+          y: 0,
+          scale: 1,
         }}
         transition={{
-          opacity: { duration: 1.2, delay: BEAT.right, ease: EASE },
-          x: { duration: 1.2, delay: opened ? 0 : BEAT.right, ease: EASE },
-          rotate: { duration: 1.45, delay: BEAT.right, ease: EASE },
+          opacity: { duration: 0.95, delay: BEAT.right, ease: EASE },
+          x: { duration: 1.3, delay: opened ? 0 : BEAT.right, ease: EASE },
+          y: { duration: 1.3, delay: BEAT.right, ease: EASE },
+          rotate: { duration: 1.38, delay: BEAT.right, ease: EASE },
+          scale: { duration: 1.3, delay: BEAT.right, ease: EASE },
         }}
       >
         <motion.div
           className="absolute inset-0 origin-bottom-right"
-          {...loop({ rotate: [0.55, -0.25, 0.55] }, 12)}
+          {...loop({ x: [0, -4, 0], y: [0, -4, 0], rotate: [0.76, -0.46, 0.76] }, 12.6)}
         >
           <DecorativeImage
             src="floral-right.png"
@@ -212,21 +224,23 @@ export function VintageGardenFrame({ opened = false }: Props) {
       {/* 6 — bottom ornament rises last and holds the composition down */}
       <motion.div
         className="absolute -bottom-[2%] -left-[16%] -right-[16%] z-[6] h-[27%] origin-bottom"
-        initial={{ opacity: 0, y: 36, scale: 1.02 }}
+        initial={{ opacity: 0, y: 78, scale: 0.96, clipPath: "inset(100% 0 0 0)" }}
         animate={{
           opacity: 0.98,
           y: opened ? 16 : 0,
           scale: 1,
+          clipPath: "inset(0% 0 0 0)",
         }}
         transition={{
-          opacity: { duration: 1.15, delay: BEAT.bottom, ease: EASE },
-          y: { duration: 1.25, delay: opened ? 0 : BEAT.bottom, ease: EASE },
-          scale: { duration: 1.5, delay: BEAT.bottom, ease: EASE },
+          opacity: { duration: 0.9, delay: BEAT.bottom, ease: EASE },
+          y: { duration: 1.18, delay: opened ? 0 : BEAT.bottom, ease: EASE },
+          scale: { duration: 1.2, delay: BEAT.bottom, ease: EASE },
+          clipPath: { duration: 1.12, delay: BEAT.bottom, ease: EASE },
         }}
       >
         <motion.div
           className="absolute inset-0"
-          {...loop({ y: [0, 3, 0] }, 8)}
+          {...loop({ y: [0, 4, 0], rotate: [-0.18, 0.22, -0.18] }, 8.2)}
         >
           <DecorativeImage
             src="floral-bottom.png"

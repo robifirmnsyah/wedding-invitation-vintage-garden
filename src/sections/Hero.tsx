@@ -15,7 +15,7 @@ interface Props {
 const EASE = motionTokens.easeOut;
 
 /** The central column enters after the veil lifts, one line at a time. */
-const CENTRE_DELAY = 1.7;
+const CENTRE_DELAY = 2.65;
 
 const centre = {
   hidden: {},
@@ -25,11 +25,12 @@ const centre = {
 };
 
 const line = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 18, filter: "blur(3px)" },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: motionTokens.durationSlow, ease: EASE },
+    filter: "blur(0px)",
+    transition: { duration: 0.72, ease: EASE },
   },
 };
 
