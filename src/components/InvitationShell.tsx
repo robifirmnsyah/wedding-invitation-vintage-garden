@@ -20,6 +20,11 @@ import { SoftDivider } from "@/components/SoftDivider";
 import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
+const easeInOutCubic = (progress: number) =>
+  progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - (-2 * progress + 2) ** 3 / 2;
+
 /**
  * Top-level client orchestrator: loading screen → cover → (on open) the full
  * scrollable invitation with smooth scroll and music.
@@ -52,19 +57,25 @@ export function InvitationShell() {
       window.scrollTo({ top: 0, behavior: "auto" });
     });
 
-    window.setTimeout(() => {
-      document.getElementById("isi-undangan")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 820);
+    window.setTimeout(scrollToInvitation, 820);
   };
 
   const scrollToInvitation = () => {
-    document.getElementById("isi-undangan")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    const destination = document.getElementById("isi-undangan");
+    if (!destination) return;
+
+    const startY = window.scrollY;
+    const targetY = startY + destination.getBoundingClientRect().top;
+    const duration = 1050;
+    const startedAt = performance.now();
+
+    const scrollFrame = (now: number) => {
+      const elapsed = Math.min((now - startedAt) / duration, 1);
+      window.scrollTo({ top: startY + (targetY - startY) * easeInOutCubic(elapsed) });
+      if (elapsed < 1) requestAnimationFrame(scrollFrame);
+    };
+
+    requestAnimationFrame(scrollFrame);
   };
 
   return (
