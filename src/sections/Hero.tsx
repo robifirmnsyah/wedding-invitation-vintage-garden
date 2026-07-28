@@ -121,14 +121,17 @@ export function Hero({ guestName, opened, onOpen }: Props) {
             <motion.div
               className="absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1, y: [0, 8, 0] }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{
-                opacity: { duration: 0.45, delay: 0.9, ease: EASE },
-                y: { duration: 1.35, delay: 1.25, repeat: Infinity, ease: "easeInOut" },
-              }}
+              transition={{ opacity: { duration: 0.45, delay: 0.9, ease: EASE } }}
             >
-              <HiArrowDown className="h-7 w-7" aria-label="Scroll ke bawah" />
+              <motion.span
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 shadow-paper"
+                animate={{ y: [0, 7, 0] }}
+                transition={{ duration: 1.35, delay: 1.25, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <HiArrowDown className="h-6 w-6" aria-label="Scroll ke bawah" />
+              </motion.span>
             </motion.div>
           )}
         </AnimatePresence>
