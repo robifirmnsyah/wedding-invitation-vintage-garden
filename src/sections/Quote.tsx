@@ -13,13 +13,13 @@ export function Quote() {
   return (
     <section
       aria-labelledby="quote-ref"
-      className="section-pad relative overflow-hidden bg-sage-100"
+      className="section-pad relative overflow-hidden bg-white"
     >
       <BotanicalParallax
         src="floral-left.png"
         side="left"
         className="-left-[18%] top-[6%] h-[52%] w-[46%] sm:-left-[6%] sm:w-[26%]"
-        opacity={0.16}
+        opacity={0.07}
         distance={44}
       />
 
