@@ -51,6 +51,13 @@ export function InvitationShell() {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "auto" });
     });
+
+    window.setTimeout(() => {
+      document.getElementById("isi-undangan")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 900);
   };
 
   return (
