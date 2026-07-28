@@ -23,6 +23,7 @@ const centre = {
   show: {
     transition: { staggerChildren: 0.14, delayChildren: CENTRE_DELAY },
   },
+  open: { transition: { staggerChildren: 0.035, staggerDirection: -1 } },
 };
 
 const line = {
@@ -32,6 +33,13 @@ const line = {
     y: 0,
     filter: "blur(0px)",
     transition: { duration: 0.72, ease: EASE },
+  },
+  open: {
+    opacity: 0,
+    y: -16,
+    scale: 0.985,
+    filter: "blur(2px)",
+    transition: { duration: 0.32, ease: motionTokens.easeIn },
   },
 };
 
@@ -62,7 +70,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
           className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
           variants={centre}
           initial="hidden"
-          animate="show"
+          animate={opened ? "open" : "show"}
         >
           <motion.p variants={line} className="eyebrow">
             {config.hero.tagline}
