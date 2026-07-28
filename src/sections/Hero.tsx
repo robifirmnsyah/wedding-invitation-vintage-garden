@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { HiOutlineEnvelopeOpen } from "react-icons/hi2";
+import { HiArrowDown, HiOutlineEnvelopeOpen } from "react-icons/hi2";
 import { VintageGardenFrame } from "@/components/decorative/VintageGardenFrame";
 import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
@@ -121,13 +121,14 @@ export function Hero({ guestName, opened, onOpen }: Props) {
             <motion.div
               className="absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: 1, y: [0, 8, 0] }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.7, delay: 0.9, ease: EASE }}
+              transition={{
+                opacity: { duration: 0.45, delay: 0.9, ease: EASE },
+                y: { duration: 1.35, delay: 1.25, repeat: Infinity, ease: "easeInOut" },
+              }}
             >
-              <span className="scroll-cue block font-body text-sm tracking-[0.2em]">
-                SCROLL
-              </span>
+              <HiArrowDown className="h-7 w-7" aria-label="Scroll ke bawah" />
             </motion.div>
           )}
         </AnimatePresence>
