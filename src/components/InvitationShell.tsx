@@ -54,7 +54,7 @@ export function InvitationShell() {
   };
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       <a href="#isi-undangan" className="skip-link">
         Lewati ke isi undangan
       </a>

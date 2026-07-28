@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { motionTokens } from "@/animations/tokens";
 
 const ASSET_ROOT = "/assets/decorative/vintage-garden-frame";
@@ -59,25 +59,20 @@ interface Props {
 }
 
 export function VintageGardenFrame({ opened = false }: Props) {
-  const reduced = useReducedMotion();
-
-  /** ambient loop props, or nothing at all under reduced motion */
+  /** Ambient motion intentionally remains active for the animated cover. */
   const loop = (
     keyframes: Record<string, number[]>,
     duration: number,
     delay = AMBIENT_START
-  ) =>
-    reduced
-      ? {}
-      : {
-          animate: keyframes,
-          transition: Object.fromEntries(
-            Object.keys(keyframes).map((k) => [
-              k,
-              { duration, delay, repeat: Infinity, ease: SOFT },
-            ])
-          ),
-        };
+  ) => ({
+    animate: keyframes,
+    transition: Object.fromEntries(
+      Object.keys(keyframes).map((k) => [
+        k,
+        { duration, delay, repeat: Infinity, ease: SOFT },
+      ])
+    ),
+  });
 
   return (
     <div
@@ -149,7 +144,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
       >
         <motion.div
           className="absolute inset-0"
-          {...loop({ y: [0, 3, 0], rotate: [-0.42, 0.42, -0.42] }, 9.6)}
+          {...loop({ y: [0, 5, 0], rotate: [-0.7, 0.7, -0.7] }, 8.8)}
         >
           <DecorativeImage
             src="floral-top.png"
@@ -180,7 +175,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
       >
         <motion.div
           className="absolute inset-0 origin-bottom-left"
-          {...loop({ x: [0, 4, 0], y: [0, -3, 0], rotate: [-0.8, 0.48, -0.8] }, 11.3)}
+          {...loop({ x: [0, 7, 0], y: [0, -5, 0], rotate: [-1.2, 0.8, -1.2] }, 10.2)}
         >
           <DecorativeImage
             src="floral-left.png"
@@ -211,7 +206,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
       >
         <motion.div
           className="absolute inset-0 origin-bottom-right"
-          {...loop({ x: [0, -4, 0], y: [0, -4, 0], rotate: [0.76, -0.46, 0.76] }, 12.6)}
+          {...loop({ x: [0, -7, 0], y: [0, -6, 0], rotate: [1.15, -0.75, 1.15] }, 11.6)}
         >
           <DecorativeImage
             src="floral-right.png"
@@ -240,7 +235,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
       >
         <motion.div
           className="absolute inset-0"
-          {...loop({ y: [0, 4, 0], rotate: [-0.18, 0.22, -0.18] }, 8.2)}
+          {...loop({ y: [0, 6, 0], rotate: [-0.3, 0.34, -0.3] }, 7.8)}
         >
           <DecorativeImage
             src="floral-bottom.png"
