@@ -46,7 +46,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
         className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-hidden bg-ivory-50 text-center shadow-paper"
         initial={{ opacity: 0 }}
         animate={{
-          opacity: opened ? [1, 1, 0.72] : 1,
+          opacity: 1,
           scale: opened ? [1, 1.075, 0.985] : 1,
         }}
         transition={{
