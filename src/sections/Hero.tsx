@@ -45,8 +45,15 @@ export function Hero({ guestName, opened, onOpen }: Props) {
       <motion.div
         className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-hidden bg-ivory-50 text-center shadow-paper"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.9, ease: EASE }}
+        animate={{
+          opacity: opened ? [1, 1, 0.72] : 1,
+          scale: opened ? [1, 1.075, 0.985] : 1,
+        }}
+        transition={{
+          duration: opened ? 1.05 : 0.9,
+          times: opened ? [0, 0.34, 1] : undefined,
+          ease: EASE,
+        }}
       >
         <VintageGardenFrame opened={opened} />
 

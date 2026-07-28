@@ -25,7 +25,7 @@ const BEAT = {
 } as const;
 
 /** Ambient loops all start after the last asset has landed. */
-const AMBIENT_START = 3.85;
+const AMBIENT_START = 0.15;
 
 type DecorativeImageProps = {
   src: string;

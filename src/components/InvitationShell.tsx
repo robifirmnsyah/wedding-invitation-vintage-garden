@@ -73,7 +73,7 @@ export function InvitationShell() {
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: motionTokens.durationSection,
-                delay: 0.55,
+                delay: 0.72,
                 ease: motionTokens.easeOut,
               }}
             >
