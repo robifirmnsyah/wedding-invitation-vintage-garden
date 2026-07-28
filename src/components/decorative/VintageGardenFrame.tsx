@@ -76,7 +76,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
 
   return (
     <div
-      className="pointer-events-none absolute inset-0 isolate overflow-hidden"
+      className="pointer-events-none absolute inset-0 isolate overflow-visible"
       aria-hidden="true"
     >
       {/* 1 — the garden reveals from the ground upward */}
@@ -218,7 +218,7 @@ export function VintageGardenFrame({ opened = false }: Props) {
 
       {/* 6 — bottom ornament rises last and holds the composition down */}
       <motion.div
-        className="absolute bottom-0 -left-[16%] -right-[16%] z-[6] h-[27%] origin-bottom"
+        className="absolute -bottom-[8%] -left-[16%] -right-[16%] z-[6] h-[27%] origin-bottom"
         initial={{ opacity: 0, y: 78, scale: 0.96, clipPath: "inset(100% 0 0 0)" }}
         animate={{
           opacity: 0.98,
