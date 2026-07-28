@@ -20,10 +20,15 @@ import { SoftDivider } from "@/components/SoftDivider";
 import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
-const easeInOutCubic = (progress: number) =>
-  progress < 0.5
-    ? 4 * progress * progress * progress
-    : 1 - (-2 * progress + 2) ** 3 / 2;
+const easeInFastSlowOut = (progress: number) => {
+  const split = 0.3;
+  if (progress < split) {
+    return 0.46 * (progress / split) ** 1.35;
+  }
+
+  const remaining = (progress - split) / (1 - split);
+  return 0.46 + 0.54 * (1 - (1 - remaining) ** 2.35);
+};
 
 /**
  * Top-level client orchestrator: loading screen → cover → (on open) the full
@@ -71,7 +76,7 @@ export function InvitationShell() {
 
     const scrollFrame = (now: number) => {
       const elapsed = Math.min((now - startedAt) / duration, 1);
-      window.scrollTo({ top: startY + (targetY - startY) * easeInOutCubic(elapsed) });
+      window.scrollTo({ top: startY + (targetY - startY) * easeInFastSlowOut(elapsed) });
       if (elapsed < 1) requestAnimationFrame(scrollFrame);
     };
 
