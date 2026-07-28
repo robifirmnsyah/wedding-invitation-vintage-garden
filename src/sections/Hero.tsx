@@ -10,6 +10,7 @@ interface Props {
   guestName: string;
   opened: boolean;
   onOpen: () => void;
+  onScrollToContent: () => void;
 }
 
 const EASE = motionTokens.easeOut;
@@ -34,7 +35,7 @@ const line = {
   },
 };
 
-export function Hero({ guestName, opened, onOpen }: Props) {
+export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
   const { groom, bride } = config.couple;
 
   return (
@@ -118,7 +119,10 @@ export function Hero({ guestName, opened, onOpen }: Props) {
 
         <AnimatePresence>
           {opened && (
-            <motion.div
+            <motion.button
+              type="button"
+              onClick={onScrollToContent}
+              aria-label="Scroll ke isi undangan"
               className="absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -132,7 +136,7 @@ export function Hero({ guestName, opened, onOpen }: Props) {
               >
                 <HiArrowDown className="h-6 w-6" aria-label="Scroll ke bawah" />
               </motion.span>
-            </motion.div>
+            </motion.button>
           )}
         </AnimatePresence>
       </motion.div>

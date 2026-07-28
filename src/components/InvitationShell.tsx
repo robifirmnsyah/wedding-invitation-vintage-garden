@@ -51,13 +51,13 @@ export function InvitationShell() {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "auto" });
     });
+  };
 
-    window.setTimeout(() => {
-      document.getElementById("isi-undangan")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 900);
+  const scrollToInvitation = () => {
+    document.getElementById("isi-undangan")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
   };
 
   return (
@@ -70,7 +70,12 @@ export function InvitationShell() {
       <MusicButton src={config.music} active={opened} />
 
       <main className="relative bg-ivory-50">
-        <Hero guestName={guestName} opened={opened} onOpen={handleOpen} />
+        <Hero
+          guestName={guestName}
+          opened={opened}
+          onOpen={handleOpen}
+          onScrollToContent={scrollToInvitation}
+        />
 
         <AnimatePresence>
           {opened && (
