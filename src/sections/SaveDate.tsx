@@ -1,7 +1,7 @@
 "use client";
 
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
-import { SectionTitle } from "@/components/Decor";
+import { SprigDivider } from "@/components/Decor";
 import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { useCountdown } from "@/hooks/useCountdown";
 import {
@@ -43,60 +43,69 @@ export function SaveDate() {
       aria-labelledby="save-date-title"
       className="section-pad relative isolate overflow-hidden bg-ivory-50"
     >
-      <WatercolorLayer
-        src="ornamental-calendar-frame.png"
-        className="left-1/2 top-6 h-[min(43rem,112vw)] w-[min(31rem,96vw)] -translate-x-1/2 sm:top-8"
-        opacity={0.84}
-        sizes="(max-width: 640px) 96vw, 31rem"
-      />
-      <div className="relative z-[1]">
-        <SectionTitle
-          id="save-date-title"
-          eyebrow="Save The Date"
-          title="Counting The Days"
+      <div className="relative mx-auto w-full max-w-[31rem] aspect-[2/3]">
+        <WatercolorLayer
+          src="ornamental-calendar-frame.png"
+          className="inset-0"
+          opacity={0.9}
+          sizes="(max-width: 640px) 100vw, 31rem"
         />
-
         <StaggerGroup
           variants={staggerContainer}
-          className="mx-auto mt-10 flex min-h-[23rem] max-w-lg flex-col items-center justify-center text-center sm:min-h-[29rem]"
+          className="relative z-[1] flex h-full flex-col items-center justify-center px-[14%] pt-[8%] text-center"
         >
-        <RevealItem variants={riseIn}>
-          <time
-            dateTime={config.countdownTarget}
-            className="font-display font-medium italic text-gold-700"
-            style={{ fontSize: "var(--text-lead)" }}
-          >
-            {config.hero.dateLabel}
-          </time>
-        </RevealItem>
-
-        <div
-          role="timer"
-          aria-label={`${t.days} hari ${t.hours} jam ${t.minutes} menit ${t.seconds} detik menuju hari pernikahan`}
-          className="mt-8 w-full"
-        >
-          <StaggerGroup
-            as="div"
-            variants={staggerTight}
-            aria-hidden="true"
-            className="grid grid-cols-4 divide-x divide-sage-300 border-y border-sage-300 py-6"
-          >
-            <Unit value={t.days} label="Hari" />
-            <Unit value={t.hours} label="Jam" />
-            <Unit value={t.minutes} label="Menit" />
-            <Unit value={t.seconds} label="Detik" />
-          </StaggerGroup>
-        </div>
-
-        {t.done && (
-          <RevealItem
-            as="p"
-            variants={fadeIn}
-            className="mt-8 font-display text-lg font-medium italic text-olive-700"
-          >
-            Alhamdulillah, hari bahagia telah tiba 🤍
+          <RevealItem variants={riseIn}>
+            <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
+              Save The Date
+            </p>
+            <h2
+              id="save-date-title"
+              className="mt-3 font-display font-semibold text-olive-900"
+              style={{ fontSize: "var(--text-h2)" }}
+            >
+              Counting The Days
+            </h2>
           </RevealItem>
-        )}
+          <RevealItem variants={fadeIn}>
+            <SprigDivider className="!my-4 text-gold-600" />
+          </RevealItem>
+          <RevealItem variants={riseIn}>
+            <time
+              dateTime={config.countdownTarget}
+              className="font-display font-medium italic text-gold-700"
+              style={{ fontSize: "var(--text-lead)" }}
+            >
+              {config.hero.dateLabel}
+            </time>
+          </RevealItem>
+
+          <div
+            role="timer"
+            aria-label={`${t.days} hari ${t.hours} jam ${t.minutes} menit ${t.seconds} detik menuju hari pernikahan`}
+            className="mt-7 w-full"
+          >
+            <StaggerGroup
+              as="div"
+              variants={staggerTight}
+              aria-hidden="true"
+              className="grid grid-cols-4 divide-x divide-sage-300 border-y border-sage-300 py-6"
+            >
+              <Unit value={t.days} label="Hari" />
+              <Unit value={t.hours} label="Jam" />
+              <Unit value={t.minutes} label="Menit" />
+              <Unit value={t.seconds} label="Detik" />
+            </StaggerGroup>
+          </div>
+
+          {t.done && (
+            <RevealItem
+              as="p"
+              variants={fadeIn}
+              className="mt-8 font-display text-lg font-medium italic text-olive-700"
+            >
+              Alhamdulillah, hari bahagia telah tiba 🤍
+            </RevealItem>
+          )}
         </StaggerGroup>
       </div>
     </section>

@@ -33,8 +33,8 @@ export function WatercolorLayer({
     <motion.div
       aria-hidden="true"
       className={`pointer-events-none absolute select-none ${className}`}
-      style={{ opacity, zIndex }}
-      initial={reduced ? false : { opacity: 0, scale: 0.985, y: 10 }}
+      style={{ zIndex }}
+      initial={reduced ? { opacity } : { opacity: 0, scale: 0.985, y: 10 }}
       whileInView={reduced ? undefined : { opacity, scale: 1, y: 0 }}
       viewport={{ once: true, amount: 0.18 }}
       transition={{ duration: motionTokens.durationSlow, ease: motionTokens.easeOut }}

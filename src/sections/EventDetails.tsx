@@ -1,7 +1,7 @@
 "use client";
 
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
-import { SectionTitle, SprigDivider } from "@/components/Decor";
+import { SprigDivider } from "@/components/Decor";
 import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
 import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import {
@@ -144,17 +144,30 @@ export function EventDetails() {
         distance={-48}
       />
 
-      <WatercolorLayer
-        src="event-garden-arch.png"
-        className="left-1/2 top-14 h-[min(56rem,150vw)] w-[min(43rem,112vw)] -translate-x-1/2"
-        opacity={0.8}
-        sizes="(max-width: 640px) 112vw, 43rem"
-      />
-
-      <div className="relative z-[1]">
-        <SectionTitle id="event-title" eyebrow="Save The Moment" title="Wedding Event" />
-        <div className="relative mx-auto mt-12 flex min-h-[44rem] max-w-4xl flex-col items-center justify-center sm:min-h-[50rem]">
-          <EventCard event={config.event.resepsi} />
+      <div className="relative mx-auto flex min-h-[52rem] w-full max-w-[43rem] flex-col items-center justify-center py-20 sm:min-h-[56rem] sm:py-24">
+        <WatercolorLayer
+          src="event-garden-arch.png"
+          className="inset-0"
+          opacity={0.82}
+          sizes="(max-width: 640px) 100vw, 43rem"
+        />
+        <div className="relative z-[1] flex w-full flex-col items-center px-[12%] text-center sm:px-[16%]">
+          <div>
+            <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
+              Save The Moment
+            </p>
+            <h2
+              id="event-title"
+              className="mt-3 font-display font-semibold text-olive-900"
+              style={{ fontSize: "var(--text-h2)" }}
+            >
+              Wedding Event
+            </h2>
+            <SprigDivider className="!my-4 text-gold-600" />
+          </div>
+          <div className="mt-3 w-full">
+            <EventCard event={config.event.resepsi} />
+          </div>
         </div>
       </div>
     </section>

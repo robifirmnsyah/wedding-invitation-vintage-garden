@@ -77,8 +77,8 @@ export function Gift() {
     >
       <WatercolorLayer
         src="gift-garden-path.png"
-        className="bottom-0 left-1/2 h-[min(54rem,150vw)] w-[min(36rem,110vw)] -translate-x-1/2"
-        opacity={0.42}
+        className="bottom-[-18rem] left-1/2 h-[min(42rem,118vw)] w-[min(32rem,102vw)] -translate-x-1/2 sm:bottom-[-15rem]"
+        opacity={0.18}
         sizes="(max-width: 640px) 110vw, 36rem"
       />
       <div className="relative z-[1]">
