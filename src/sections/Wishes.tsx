@@ -9,6 +9,7 @@ import {
 } from "react-icons/hi2";
 import { SectionTitle } from "@/components/Decor";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
+import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { useGuestInfo } from "@/hooks/useGuestName";
 import { motionTokens } from "@/animations/tokens";
 import {
@@ -212,8 +213,18 @@ export function Wishes() {
   };
 
   return (
-    <section aria-labelledby="wishes-title" className="section-pad bg-ivory-50">
-      <SectionTitle id="wishes-title" eyebrow="Send Your Love" title="Wedding Wishes" />
+    <section
+      aria-labelledby="wishes-title"
+      className="section-pad relative isolate overflow-hidden bg-ivory-50"
+    >
+      <WatercolorLayer
+        src="watercolor-tree-grove.png"
+        className="bottom-0 left-1/2 h-[min(21rem,54vw)] w-[min(62rem,128vw)] -translate-x-1/2"
+        opacity={0.16}
+        sizes="(max-width: 640px) 128vw, 62rem"
+      />
+      <div className="relative z-[1]">
+        <SectionTitle id="wishes-title" eyebrow="Send Your Love" title="Wedding Wishes" />
 
       <StaggerGroup
         variants={staggerContainer}
@@ -574,6 +585,7 @@ export function Wishes() {
           )}
         </RevealItem>
       </StaggerGroup>
+      </div>
     </section>
   );
 }

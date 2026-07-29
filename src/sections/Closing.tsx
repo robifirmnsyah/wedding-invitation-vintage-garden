@@ -3,6 +3,7 @@
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { Sprig, SprigDivider } from "@/components/Decor";
 import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
+import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { fadeIn, riseIn, drawLine, staggerLoose } from "@/animations/variants";
 import config from "@/lib/config";
 
@@ -19,11 +20,17 @@ export function Closing() {
       aria-labelledby="closing-title"
       className="section-pad relative flex min-h-svh w-full items-center justify-center overflow-hidden bg-beige-200"
     >
+      <WatercolorLayer
+        src="watercolor-tree-grove.png"
+        className="bottom-0 left-1/2 h-[min(28rem,62vw)] w-[min(72rem,132vw)] -translate-x-1/2"
+        opacity={0.5}
+        sizes="(max-width: 640px) 132vw, 72rem"
+      />
       <BotanicalParallax
         src="floral-bottom.png"
         side="left"
-        className="-bottom-[6%] -left-[10%] -right-[10%] h-[30%]"
-        opacity={0.2}
+        className="-bottom-[6%] -left-[10%] -right-[10%] h-[25%]"
+        opacity={0.13}
         distance={30}
         sizes="120vw"
       />

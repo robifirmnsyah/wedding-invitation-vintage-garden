@@ -2,6 +2,7 @@
 
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SectionTitle } from "@/components/Decor";
+import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { useCountdown } from "@/hooks/useCountdown";
 import {
   fadeIn,
@@ -38,17 +39,27 @@ export function SaveDate() {
   const t = useCountdown(config.countdownTarget);
 
   return (
-    <section aria-labelledby="save-date-title" className="section-pad bg-ivory-50">
-      <SectionTitle
-        id="save-date-title"
-        eyebrow="Save The Date"
-        title="Counting The Days"
+    <section
+      aria-labelledby="save-date-title"
+      className="section-pad relative isolate overflow-hidden bg-ivory-50"
+    >
+      <WatercolorLayer
+        src="ornamental-calendar-frame.png"
+        className="left-1/2 top-6 h-[min(43rem,112vw)] w-[min(31rem,96vw)] -translate-x-1/2 sm:top-8"
+        opacity={0.84}
+        sizes="(max-width: 640px) 96vw, 31rem"
       />
+      <div className="relative z-[1]">
+        <SectionTitle
+          id="save-date-title"
+          eyebrow="Save The Date"
+          title="Counting The Days"
+        />
 
-      <StaggerGroup
-        variants={staggerContainer}
-        className="mx-auto mt-10 flex max-w-lg flex-col items-center text-center"
-      >
+        <StaggerGroup
+          variants={staggerContainer}
+          className="mx-auto mt-10 flex min-h-[23rem] max-w-lg flex-col items-center justify-center text-center sm:min-h-[29rem]"
+        >
         <RevealItem variants={riseIn}>
           <time
             dateTime={config.countdownTarget}
@@ -86,7 +97,8 @@ export function SaveDate() {
             Alhamdulillah, hari bahagia telah tiba 🤍
           </RevealItem>
         )}
-      </StaggerGroup>
+        </StaggerGroup>
+      </div>
     </section>
   );
 }

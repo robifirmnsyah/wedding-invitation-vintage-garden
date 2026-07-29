@@ -12,6 +12,7 @@ import {
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SectionTitle } from "@/components/Decor";
 import { QrisModal } from "@/components/QrisModal";
+import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { motionTokens } from "@/animations/tokens";
 import { fadeIn, slideUp, softMask, staggerContainer } from "@/animations/variants";
 import { copyToClipboard } from "@/lib/utils";
@@ -70,14 +71,24 @@ export function Gift() {
   const coupleNames = `${config.couple.groom.shortName}-${config.couple.bride.shortName}`;
 
   return (
-    <section aria-labelledby="gift-title" className="section-pad bg-sage-100">
-      <SectionTitle id="gift-title" eyebrow="With Love" title="Wedding Gift" />
+    <section
+      aria-labelledby="gift-title"
+      className="section-pad relative isolate overflow-hidden bg-ivory-50"
+    >
+      <WatercolorLayer
+        src="gift-garden-path.png"
+        className="bottom-0 left-1/2 h-[min(54rem,150vw)] w-[min(36rem,110vw)] -translate-x-1/2"
+        opacity={0.42}
+        sizes="(max-width: 640px) 110vw, 36rem"
+      />
+      <div className="relative z-[1]">
+        <SectionTitle id="gift-title" eyebrow="With Love" title="Wedding Gift" />
 
-      <StaggerGroup
-        variants={staggerContainer}
-        early
-        className="mx-auto mt-10 max-w-xl text-center"
-      >
+        <StaggerGroup
+          variants={staggerContainer}
+          early
+          className="mx-auto mt-10 max-w-xl text-center"
+        >
         <RevealItem
           as="p"
           variants={fadeIn}
@@ -176,16 +187,17 @@ export function Gift() {
             </div>
           </RevealItem>
         )}
-      </StaggerGroup>
+        </StaggerGroup>
 
-      {gift.qris && (
-        <QrisModal
-          src={gift.qris}
-          open={qrisOpen}
-          onClose={() => setQrisOpen(false)}
-          downloadName={`QRIS-${coupleNames}.jpeg`}
-        />
-      )}
+        {gift.qris && (
+          <QrisModal
+            src={gift.qris}
+            open={qrisOpen}
+            onClose={() => setQrisOpen(false)}
+            downloadName={`QRIS-${coupleNames}.jpeg`}
+          />
+        )}
+      </div>
     </section>
   );
 }

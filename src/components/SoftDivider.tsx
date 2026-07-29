@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 import { motionTokens } from "@/animations/tokens";
 import { viewportOnce } from "@/animations/variants";
 
@@ -38,10 +39,8 @@ export function SoftDivider({ from, to, className = "" }: Props) {
         }}
       />
 
-      <motion.svg
-        viewBox="0 0 320 40"
-        preserveAspectRatio="xMidYMid meet"
-        className="absolute left-1/2 top-1/2 h-10 w-full max-w-xs -translate-x-1/2 -translate-y-1/2 text-gold-600"
+      <motion.div
+        className="absolute left-1/2 top-1/2 h-12 w-full max-w-xs -translate-x-1/2 -translate-y-1/2"
         initial={reduced ? { opacity: 0 } : { opacity: 0, scaleX: 0.4 }}
         whileInView={{ opacity: 0.75, scaleX: 1 }}
         viewport={viewportOnce}
@@ -50,42 +49,14 @@ export function SoftDivider({ from, to, className = "" }: Props) {
           ease: motionTokens.easeOut,
         }}
       >
-        <path
-          d="M20 20 H128"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-          opacity="0.55"
+        <Image
+          src="/assets/decorative/vintage-garden-frame/botanical-divider.png"
+          alt=""
+          fill
+          sizes="20rem"
+          className="object-contain"
         />
-        <path
-          d="M192 20 H300"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-          opacity="0.55"
-        />
-        <path
-          d="M136 20 C 146 20, 154 20, 184 20"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinecap="round"
-        />
-        <path
-          d="M150 20 C 149 15, 146 12.5, 142 12 C 143 16.5, 146.5 19.5, 150 20 Z"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <path
-          d="M170 20 C 171 25, 174 27.5, 178 28 C 177 23.5, 173.5 20.5, 170 20 Z"
-          stroke="currentColor"
-          strokeWidth="1"
-          strokeLinejoin="round"
-          fill="none"
-        />
-        <circle cx="160" cy="20" r="2" stroke="currentColor" strokeWidth="1" fill="none" />
-      </motion.svg>
+      </motion.div>
     </div>
   );
 }

@@ -23,18 +23,29 @@ function PersonCard({ person, delay = 0 }: { person: Person; delay?: number }) {
     >
       {/* arched portrait on an ivory mat — the signature shape (MASTER.md §8, §10.2) */}
       <RevealItem variants={softMask}>
-        <div className="arch-frame w-56 border border-sage-300 bg-ivory-100 p-2 sm:w-64">
-          <div className="arch-frame relative aspect-[3/4] w-full">
+        <div className="relative w-60 sm:w-72">
+          <div className="arch-frame relative aspect-[2/3] w-full border border-sage-300 bg-ivory-100 p-2">
+            <div className="arch-frame relative h-full w-full">
             <Image
               src={person.photo}
               alt={`Potret ${person.fullName}`}
               fill
               loading="lazy"
-              sizes="(max-width: 640px) 14rem, 16rem"
+              sizes="(max-width: 640px) 15rem, 18rem"
               className="object-cover"
               style={{ objectPosition: "center top" }}
             />
+            </div>
           </div>
+          <Image
+            src="/assets/decorative/vintage-garden-frame/portrait-arch-frame.png"
+            alt=""
+            fill
+            loading="lazy"
+            sizes="(max-width: 640px) 15rem, 18rem"
+            className="pointer-events-none z-[1] scale-[1.08] object-contain"
+            aria-hidden="true"
+          />
         </div>
       </RevealItem>
 

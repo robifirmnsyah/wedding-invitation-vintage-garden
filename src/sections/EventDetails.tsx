@@ -3,6 +3,7 @@
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SectionTitle, SprigDivider } from "@/components/Decor";
 import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
+import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import {
   fadeIn,
   slideUp,
@@ -143,9 +144,18 @@ export function EventDetails() {
         distance={-48}
       />
 
-      <SectionTitle id="event-title" eyebrow="Save The Moment" title="Wedding Event" />
-      <div className="relative mx-auto mt-12 flex max-w-4xl flex-col items-center justify-center">
-        <EventCard event={config.event.resepsi} />
+      <WatercolorLayer
+        src="event-garden-arch.png"
+        className="left-1/2 top-14 h-[min(56rem,150vw)] w-[min(43rem,112vw)] -translate-x-1/2"
+        opacity={0.8}
+        sizes="(max-width: 640px) 112vw, 43rem"
+      />
+
+      <div className="relative z-[1]">
+        <SectionTitle id="event-title" eyebrow="Save The Moment" title="Wedding Event" />
+        <div className="relative mx-auto mt-12 flex min-h-[44rem] max-w-4xl flex-col items-center justify-center sm:min-h-[50rem]">
+          <EventCard event={config.event.resepsi} />
+        </div>
       </div>
     </section>
   );
