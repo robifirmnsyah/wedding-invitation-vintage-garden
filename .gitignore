@@ -38,5 +38,7 @@ next-env.d.ts
 .vscode/
 .config/
 .claude-mem/
+.agents/
 graphify-out/
 design-system/
+
