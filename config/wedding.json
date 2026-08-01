@@ -20,7 +20,7 @@
   "hero": {
     "tagline": "The Wedding Of",
     "dateLabel": "Sabtu, 5 September 2026",
-    "photo": "/assets/gallery/gallery-1.jpg"
+    "photo": "/assets/gallery/prewed/prewed-27.webp"
   },
   "quote": {
     "ref": "QS. Ar-Rum: 21",
@@ -68,33 +68,183 @@
   "countdownTarget": "2026-09-05T10:00:00",
   "gallery": [
     {
-      "src": "/assets/gallery/gallery-1.jpg",
-      "caption": "A Walk to Forever",
-      "span": "wide"
+      "src": "/assets/gallery/prewed/prewed-01.webp",
+      "caption": "Our Moment 01",
+      "span": "square"
     },
     {
-      "src": "/assets/gallery/gallery-2.jpg",
-      "caption": "Side by Side",
-      "span": "tall"
+      "src": "/assets/gallery/prewed/prewed-02.webp",
+      "caption": "Our Moment 02",
+      "span": "square"
     },
     {
-      "src": "/assets/gallery/gallery-3.jpg",
-      "caption": "Our Little Pause",
-      "span": "tall"
+      "src": "/assets/gallery/prewed/prewed-03.webp",
+      "caption": "Our Moment 03",
+      "span": "square"
     },
     {
-      "src": "/assets/gallery/gallery-4.jpg",
-      "caption": "Only Us",
-      "span": "wide"
+      "src": "/assets/gallery/prewed/prewed-04.webp",
+      "caption": "Our Moment 04",
+      "span": "square"
     },
     {
-      "src": "/assets/gallery/gallery-5.jpg",
-      "caption": "In Every Season",
-      "span": "wide"
+      "src": "/assets/gallery/prewed/prewed-05.webp",
+      "caption": "Our Moment 05",
+      "span": "square"
     },
     {
-      "src": "/assets/gallery/gallery-6.jpg",
-      "caption": "Where We Belong",
+      "src": "/assets/gallery/prewed/prewed-06.webp",
+      "caption": "Our Moment 06",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-07.webp",
+      "caption": "Our Moment 07",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-08.webp",
+      "caption": "Our Moment 08",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-09.webp",
+      "caption": "Our Moment 09",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-10.webp",
+      "caption": "Our Moment 10",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-11.webp",
+      "caption": "Our Moment 11",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-12.webp",
+      "caption": "Our Moment 12",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-13.webp",
+      "caption": "Our Moment 13",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-14.webp",
+      "caption": "Our Moment 14",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-15.webp",
+      "caption": "Our Moment 15",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-16.webp",
+      "caption": "Our Moment 16",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-17.webp",
+      "caption": "Our Moment 17",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-18.webp",
+      "caption": "Our Moment 18",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-19.webp",
+      "caption": "Our Moment 19",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-20.webp",
+      "caption": "Our Moment 20",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-21.webp",
+      "caption": "Our Moment 21",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-22.webp",
+      "caption": "Our Moment 22",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-23.webp",
+      "caption": "Our Moment 23",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-24.webp",
+      "caption": "Our Moment 24",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-25.webp",
+      "caption": "Our Moment 25",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-26.webp",
+      "caption": "Our Moment 26",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-27.webp",
+      "caption": "Our Moment 27",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-28.webp",
+      "caption": "Our Moment 28",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-29.webp",
+      "caption": "Our Moment 29",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-30.webp",
+      "caption": "Our Moment 30",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-31.webp",
+      "caption": "Our Moment 31",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-32.webp",
+      "caption": "Our Moment 32",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-33.webp",
+      "caption": "Our Moment 33",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-34.webp",
+      "caption": "Our Moment 34",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-35.webp",
+      "caption": "Our Moment 35",
+      "span": "square"
+    },
+    {
+      "src": "/assets/gallery/prewed/prewed-36.webp",
+      "caption": "Our Moment 36",
       "span": "square"
     }
   ],

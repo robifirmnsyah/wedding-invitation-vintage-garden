@@ -50,7 +50,7 @@ export function Gallery() {
                 src={current.src}
                 alt={current.caption}
                 fill
-                priority
+                loading="lazy"
                 sizes="(max-width: 640px) calc(100vw - 2.5rem), 42rem"
                 className="object-cover"
               />
