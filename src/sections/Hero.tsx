@@ -1,8 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { HiArrowDown, HiOutlineEnvelopeOpen } from "react-icons/hi2";
+import { HiArrowDown } from "react-icons/hi2";
 import { VintageGardenFrame } from "@/components/decorative/VintageGardenFrame";
+import { PetalFall } from "@/components/decorative/PetalFall";
+import { Sprig } from "@/components/Decor";
 import { motionTokens } from "@/animations/tokens";
 import config from "@/lib/config";
 
@@ -15,15 +18,22 @@ interface Props {
 
 const EASE = motionTokens.easeOut;
 
-/** The central column enters after the veil lifts, one line at a time. */
+/** The cover column enters after the veil lifts, one line at a time. */
 const CENTRE_DELAY = 2.65;
 
-const centre = {
+const coverStack = {
   hidden: {},
   show: {
     transition: { staggerChildren: 0.14, delayChildren: CENTRE_DELAY },
   },
-  open: { transition: { staggerChildren: 0.035, staggerDirection: -1 } },
+};
+
+/** The revealed column enters immediately after the button is pressed. */
+const openedStack = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.13, delayChildren: 0.28 },
+  },
 };
 
 const line = {
@@ -34,17 +44,30 @@ const line = {
     filter: "blur(0px)",
     transition: { duration: 0.72, ease: EASE },
   },
-  open: {
-    opacity: 0,
-    y: -16,
-    scale: 0.985,
-    filter: "blur(2px)",
-    transition: { duration: 0.32, ease: motionTokens.easeIn },
+};
+
+/** The portrait settles rather than slides — it is the anchor of the reveal. */
+const framePop = {
+  hidden: { opacity: 0, y: 26, scale: 0.94 },
+  show: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.95, ease: EASE },
   },
 };
 
 export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
   const { groom, bride } = config.couple;
+  const names = (
+    <>
+      <span className="block">
+        {groom.shortName}
+        <span className="ml-2 text-gold-700 sm:ml-3">&amp;</span>
+      </span>
+      <span className="block">{bride.shortName}</span>
+    </>
+  );
 
   return (
     <section
@@ -65,65 +88,118 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
         }}
       >
         <VintageGardenFrame opened={opened} />
+        {opened && <PetalFall />}
 
-        <motion.div
-          className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center rounded-[46%] px-3 py-7 sm:top-[19%] sm:px-8"
-          variants={centre}
-          initial="hidden"
-          animate="show"
-        >
-          <motion.p variants={line} className="eyebrow">
-            {config.hero.tagline}
-          </motion.p>
+        {/* ── Cover: names, guest, invitation button ───────────────────── */}
+        <AnimatePresence>
+          {!opened && (
+            <motion.div
+              className="absolute inset-x-[13%] top-[20%] z-10 flex flex-col items-center px-3 sm:top-[19%] sm:px-8"
+              variants={coverStack}
+              initial="hidden"
+              animate="show"
+              exit={{ opacity: 0, transition: { duration: 0.4, ease: motionTokens.easeIn } }}
+            >
+              <motion.h1
+                variants={line}
+                className="font-accent leading-[1.06] text-olive-900"
+                style={{ fontSize: "clamp(3rem, 13vw, 4.75rem)" }}
+              >
+                {names}
+              </motion.h1>
 
-          <motion.h1
-            variants={line}
-            className="mt-3 font-display font-semibold leading-[1.02] tracking-[-0.02em] text-olive-900"
-            style={{ fontSize: "clamp(2.5rem, 11vw, 4rem)" }}
-          >
-            {groom.shortName}
-            <span className="mx-2 font-accent font-normal text-gold-700 sm:mx-3">
-              &amp;
-            </span>
-            {bride.shortName}
-          </motion.h1>
+              <motion.div variants={line} className="mt-6 sm:mt-8">
+                <p className="font-display text-base text-olive-700 sm:text-lg">
+                  Kepada
+                </p>
+                <p className="mt-1 font-display text-xl font-medium text-olive-900 sm:text-2xl">
+                  {guestName}
+                </p>
+              </motion.div>
 
-          <motion.p
-            variants={line}
-            className="mt-2 font-body text-sm tracking-[0.08em] text-olive-700 sm:text-base"
-          >
-            {config.hero.dateLabel}
-          </motion.p>
-
-          <motion.div
-            variants={line}
-            className="mt-4 w-full max-w-[17rem] border-y border-gold-600/40 bg-ivory-50/35 px-4 py-3 sm:mt-6 sm:max-w-xs"
-          >
-            <p className="font-body text-xs uppercase tracking-[0.2em] text-olive-700 sm:text-sm">
-              Kepada Yth.
-            </p>
-            <p className="mt-1 font-display text-xl font-medium italic text-olive-900 sm:text-2xl">
-              {guestName}
-            </p>
-          </motion.div>
-
-          <AnimatePresence>
-            {!opened && (
               <motion.button
                 onClick={onOpen}
-                className="btn-olive mt-5 min-w-44 shadow-paper sm:mt-7"
+                className="btn-olive mt-6 min-w-48 rounded-full normal-case tracking-[0.02em] shadow-paper sm:mt-8"
                 aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
                 variants={line}
-                exit={{ opacity: 0, y: -10, scale: 0.97 }}
                 whileTap={{ scale: 0.96 }}
-                transition={{ duration: 0.55, ease: EASE }}
               >
-                <HiOutlineEnvelopeOpen className="text-lg" aria-hidden="true" />
                 Buka Undangan
               </motion.button>
-            )}
-          </AnimatePresence>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* ── Revealed: monogram, names, date, framed portrait ─────────── */}
+        <AnimatePresence>
+          {opened && (
+            <motion.div
+              className="absolute inset-x-[8%] top-[13%] z-10 flex flex-col items-center"
+              variants={openedStack}
+              initial="hidden"
+              animate="show"
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                variants={line}
+                aria-hidden="true"
+                className="flex items-center gap-2 text-gold-700"
+              >
+                <Sprig style={{ transform: "scaleX(-1)" }} />
+                <span className="font-accent text-xl leading-none">
+                  {groom.shortName[0]}
+                  {bride.shortName[0]}
+                </span>
+                <Sprig />
+              </motion.div>
+
+              <motion.p variants={line} className="eyebrow mt-3">
+                {config.hero.tagline}
+              </motion.p>
+
+              <motion.h2
+                variants={line}
+                className="mt-2 font-accent leading-[1.06] text-olive-900"
+                style={{ fontSize: "clamp(2.5rem, 11.5vw, 4.25rem)" }}
+              >
+                {names}
+              </motion.h2>
+
+              <motion.p
+                variants={line}
+                className="mt-3 font-body text-sm tracking-[0.08em] text-olive-700 sm:text-base"
+              >
+                {config.hero.dateLabel}
+              </motion.p>
+
+              <motion.div
+                variants={framePop}
+                className="relative mt-7 w-[60%] max-w-[17rem]"
+              >
+                <div className="arch-frame relative aspect-[2/3] w-full border border-gold-600/40 bg-ivory-100 p-2 shadow-paper">
+                  <div className="arch-frame relative h-full w-full">
+                    <Image
+                      src={config.hero.photo}
+                      alt={`${groom.shortName} & ${bride.shortName}`}
+                      fill
+                      sizes="(max-width: 640px) 52vw, 17rem"
+                      className="object-cover"
+                      style={{ objectPosition: "center 22%" }}
+                    />
+                  </div>
+                </div>
+                <Image
+                  src="/assets/decorative/vintage-garden-frame/portrait-arch-frame.png"
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 58vw, 19rem"
+                  className="pointer-events-none z-[1] scale-[1.12] object-contain"
+                  aria-hidden="true"
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence>
           {opened && (
@@ -131,16 +207,16 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
               type="button"
               onClick={onScrollToContent}
               aria-label="Scroll ke isi undangan"
-              className="absolute bottom-[11%] left-1/2 z-10 -translate-x-1/2 text-olive-700"
+              className="absolute bottom-[4%] left-1/2 z-20 -translate-x-1/2 text-olive-700"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ opacity: { duration: 0.45, delay: 0.9, ease: EASE } }}
+              transition={{ opacity: { duration: 0.45, delay: 1.2, ease: EASE } }}
             >
               <motion.span
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white/95 shadow-paper"
                 animate={{ y: [0, 7, 0] }}
-                transition={{ duration: 1.35, delay: 1.25, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 1.35, delay: 1.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 <HiArrowDown className="h-6 w-6" aria-label="Scroll ke bawah" />
               </motion.span>

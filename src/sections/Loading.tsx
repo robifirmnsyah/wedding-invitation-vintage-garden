@@ -1,40 +1,51 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Sprig } from "@/components/Decor";
-import config from "@/lib/config";
 
-/** Quiet editorial loading screen: monogram, hairline, names on ivory paper. */
+/**
+ * Minimalist loading screen: a breathing heart mark (its two lobes read as
+ * two figures leaning together) over a plain white ground.
+ */
+function HeartMark() {
+  return (
+    <svg
+      viewBox="0 0 64 56"
+      className="h-12 w-12"
+      aria-hidden="true"
+    >
+      <path
+        d="M32 50
+           C 14 38, 4 27, 4 16.5
+           C 4 7.5, 11 2, 18.5 2
+           C 24.5 2, 29 5.5, 32 11
+           C 35 5.5, 39.5 2, 45.5 2
+           C 53 2, 60 7.5, 60 16.5
+           C 60 27, 50 38, 32 50 Z"
+        fill="#e11d6f"
+      />
+    </svg>
+  );
+}
+
 export function Loading({ show }: { show: boolean }) {
-  const { groom, bride } = config.couple;
-
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-ivory-50"
+          className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-white"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.6, ease: "easeInOut" }}
         >
           <motion.div
-            className="flex flex-col items-center px-6 text-center"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            animate={{ scale: [1, 1.08, 1] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
           >
-            <Sprig className="text-sage-500" />
-            <p className="mt-5 font-display text-3xl font-semibold text-olive-900">
-              {groom.shortName} &amp; {bride.shortName}
-            </p>
-            <p className="mt-3 font-body text-sm uppercase tracking-[0.2em] text-olive-700">
-              The Wedding Invitation
-            </p>
-            <span
-              aria-hidden="true"
-              className="mt-8 block h-px w-24 bg-gold-600"
-            />
+            <HeartMark />
           </motion.div>
+          <p className="mt-4 font-body text-sm tracking-[0.05em] text-neutral-500">
+            Loading...
+          </p>
           <span className="sr-only" role="status">
             Memuat undangan…
           </span>

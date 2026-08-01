@@ -19,7 +19,8 @@
   },
   "hero": {
     "tagline": "The Wedding Of",
-    "dateLabel": "Sabtu, 5 September 2026"
+    "dateLabel": "Sabtu, 5 September 2026",
+    "photo": "/assets/gallery/gallery-1.jpg"
   },
   "quote": {
     "ref": "QS. Ar-Rum: 21",

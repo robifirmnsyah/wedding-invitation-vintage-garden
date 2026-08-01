@@ -279,6 +279,45 @@ body.locked {
   animation: music-bob 1.6s ease-in-out infinite;
 }
 
+/* Vinyl record spin — matches the music button's playing state. */
+@keyframes vinyl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.vinyl-spinning {
+  animation: vinyl-spin 3.2s linear infinite;
+}
+
+/* Falling blossom petals — gentle continuous drift (transform/opacity only). */
+@keyframes petal-fall {
+  0% {
+    transform: translate(0, -10vh) rotate(0deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(12px, 50vh) rotate(150deg);
+  }
+  92% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-10px, 112vh) rotate(300deg);
+    opacity: 0;
+  }
+}
+.petal {
+  position: absolute;
+  top: 0;
+  animation: petal-fall linear infinite;
+  animation-duration: var(--petal-duration, 12s);
+  animation-delay: var(--petal-delay, 0s);
+  will-change: transform, opacity;
+}
+
 /* Cover scroll cue — the only other allowed loop (§15.4). */
 @keyframes cue-drift {
   0%,

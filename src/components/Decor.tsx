@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import {
   fadeIn,
@@ -17,13 +18,20 @@ import {
  */
 
 /** Etched botanical sprig — single-weight engraving stroke, one ink color. */
-export function Sprig({ className = "" }: { className?: string }) {
+export function Sprig({
+  className = "",
+  style,
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
   return (
     <svg
       aria-hidden="true"
       viewBox="0 0 48 20"
       fill="none"
       className={`h-5 w-12 ${className}`}
+      style={style}
     >
       <path
         d="M8 10 C16 10 22 10 40 10"
