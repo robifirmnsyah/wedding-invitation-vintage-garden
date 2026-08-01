@@ -69,42 +69,32 @@
   "gallery": [
     {
       "src": "/assets/gallery/gallery-1.jpg",
-      "caption": "You & Me",
-      "span": "tall"
+      "caption": "A Walk to Forever",
+      "span": "wide"
     },
     {
       "src": "/assets/gallery/gallery-2.jpg",
-      "caption": "Bloom of Love",
-      "span": "wide"
-    },
-    {
-      "src": "/assets/gallery/gallery-3.jpg",
-      "caption": "",
-      "span": "square"
-    },
-    {
-      "src": "/assets/gallery/gallery-4.jpg",
-      "caption": "Rain or Shine",
-      "span": "square"
-    },
-    {
-      "src": "/assets/gallery/gallery-5.jpg",
-      "caption": "",
+      "caption": "Side by Side",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/gallery-6.jpg",
-      "caption": "Golden Hour",
+      "src": "/assets/gallery/gallery-3.jpg",
+      "caption": "Our Little Pause",
+      "span": "tall"
+    },
+    {
+      "src": "/assets/gallery/gallery-4.jpg",
+      "caption": "Only Us",
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/gallery-7.jpg",
-      "caption": "",
-      "span": "square"
+      "src": "/assets/gallery/gallery-5.jpg",
+      "caption": "In Every Season",
+      "span": "wide"
     },
     {
-      "src": "/assets/gallery/gallery-8.jpg",
-      "caption": "Forever Begins",
+      "src": "/assets/gallery/gallery-6.jpg",
+      "caption": "Where We Belong",
       "span": "square"
     }
   ],
