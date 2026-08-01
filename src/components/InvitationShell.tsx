@@ -61,8 +61,6 @@ export function InvitationShell() {
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "auto" });
     });
-
-    window.setTimeout(scrollToInvitation, 820);
   };
 
   const scrollToInvitation = () => {

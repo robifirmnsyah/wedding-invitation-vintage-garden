@@ -28,11 +28,11 @@ const coverStack = {
   },
 };
 
-/** The revealed column enters immediately after the button is pressed. */
+/** The revealed column enters after the cover panel has dissolved away. */
 const openedStack = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.13, delayChildren: 0.28 },
+    transition: { staggerChildren: 0.13, delayChildren: 0.54 },
   },
 };
 
@@ -79,11 +79,11 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
         initial={{ opacity: 0 }}
         animate={{
           opacity: 1,
-          scale: opened ? [1, 1.075, 0.985] : 1,
+          scale: opened ? [1, 1.055, 1] : 1,
         }}
         transition={{
-          duration: opened ? 1.05 : 0.9,
-          times: opened ? [0, 0.34, 1] : undefined,
+          duration: opened ? 1.28 : 0.9,
+          times: opened ? [0, 0.38, 1] : undefined,
           ease: EASE,
         }}
       >
@@ -98,7 +98,13 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
               variants={coverStack}
               initial="hidden"
               animate="show"
-              exit={{ opacity: 0, transition: { duration: 0.4, ease: motionTokens.easeIn } }}
+              exit={{
+                opacity: 0,
+                scale: 0.94,
+                y: -20,
+                filter: "blur(5px)",
+                transition: { duration: 0.56, ease: motionTokens.easeIn },
+              }}
             >
               <motion.h1
                 variants={line}
@@ -127,6 +133,21 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
                 Buka Undangan
               </motion.button>
             </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* A soft ivory veil makes the cover feel as though it opens into
+            the invitation, instead of immediately becoming the next page. */}
+        <AnimatePresence>
+          {opened && (
+            <motion.div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-[9] bg-ivory-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.7, 0] }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, times: [0, 0.38, 1], ease: EASE }}
+            />
           )}
         </AnimatePresence>
 
