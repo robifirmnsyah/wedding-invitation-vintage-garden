@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
 import { Lightbox } from "@/components/Lightbox";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import config from "@/lib/config";
 
 const AUTO_ADVANCE_MS = 3000;
@@ -17,10 +16,7 @@ const AUTO_ADVANCE_MS = 3000;
 export function Gallery() {
   const [selected, setSelected] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const galleryRef = useRef<HTMLElement>(null);
   const thumbnailStripRef = useRef<HTMLDivElement>(null);
-  const galleryInView = useInView(galleryRef, { amount: 0.35 });
-  const reducedMotion = usePrefersReducedMotion();
   const items = config.gallery;
   const current = items[selected];
   const nextIndex = (selected + 1) % items.length;
@@ -43,31 +39,30 @@ export function Gallery() {
     const selectedThumbnail = thumbnailStripRef.current?.querySelector<HTMLElement>(
       `[data-gallery-index="${selected}"]`,
     );
-    selectedThumbnail?.scrollIntoView({
-      behavior: reducedMotion ? "auto" : "smooth",
-      block: "nearest",
-      inline: "center",
+    const strip = thumbnailStripRef.current;
+    if (!strip || !selectedThumbnail) return;
+
+    strip.scrollTo({
+      left: selectedThumbnail.offsetLeft - (strip.clientWidth - selectedThumbnail.offsetWidth) / 2,
+      behavior: "smooth",
     });
-  }, [reducedMotion, selected]);
+  }, [selected]);
 
-  // Autoplay gives the gallery a living, editorial rhythm. It only runs while
-  // visible, pauses for the lightbox, and honours the system motion setting.
+  // A self-scheduling timer avoids intersection-observer edge cases on mobile
+  // browsers. It keeps sliding every three seconds until the guest opens a
+  // photo in the lightbox, then resumes after they close it.
   useEffect(() => {
-    if (reducedMotion || !galleryInView || lightboxIndex !== null) return;
+    if (lightboxIndex !== null) return;
 
-    const interval = window.setInterval(() => {
+    const timeout = window.setTimeout(() => {
       setSelected((index) => (index + 1) % items.length);
     }, AUTO_ADVANCE_MS);
 
-    return () => window.clearInterval(interval);
-  }, [galleryInView, items.length, lightboxIndex, reducedMotion, selected]);
+    return () => window.clearTimeout(timeout);
+  }, [items.length, lightboxIndex, selected]);
 
   return (
-    <section
-      ref={galleryRef}
-      aria-labelledby="gallery-title"
-      className="section-pad overflow-hidden bg-ivory-50"
-    >
+    <section aria-labelledby="gallery-title" className="section-pad overflow-hidden bg-ivory-50">
       <div className="mx-auto max-w-3xl text-center">
         <p className="font-accent text-[clamp(2.55rem,11vw,4rem)] leading-none text-olive-800">
           Portraits of Us
