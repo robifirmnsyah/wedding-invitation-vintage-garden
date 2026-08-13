@@ -28,6 +28,29 @@ interface Guest {
 
 const CONTACT_TYPES = ["WhatsApp", "Email", "Instagram", "Telegram", "Lainnya"];
 
+const DEFAULT_WHATSAPP_TEMPLATE = `Assalamu'alaikum Warahmatullahi Wabarakatuh,
+
+Kepada Yth. Bapak/Ibu/Saudara/i {nama},
+
+Dengan penuh kebahagiaan, kami mengundang Anda untuk hadir di pernikahan kami.
+
+Silakan buka undangan personal Anda:
+{link}
+
+Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh
+
+Robi & Tiara`;
+
+function normalizeWhatsAppNumber(contact: string): string | null {
+  const digits = contact.replace(/\D/g, "");
+  if (digits.startsWith("0") && digits.length >= 10) return `62${digits.slice(1)}`;
+  if (digits.startsWith("8") && digits.length >= 9) return `62${digits}`;
+  if (digits.startsWith("62") && digits.length >= 10) return digits;
+  return null;
+}
+
 type SortKey = "name" | "unique_code" | "category" | "pax" | "rsvp_status" | "created_at";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
@@ -59,6 +82,11 @@ function GuestsContent() {
   const [filterRsvp, setFilterRsvp] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [showWhatsAppPanel, setShowWhatsAppPanel] = useState(false);
+  const [whatsAppTemplate, setWhatsAppTemplate] = useState(DEFAULT_WHATSAPP_TEMPLATE);
+  const [selectedWhatsAppIds, setSelectedWhatsAppIds] = useState<string[]>([]);
+  const [whatsAppQueueIndex, setWhatsAppQueueIndex] = useState(0);
+  const [whatsAppStatus, setWhatsAppStatus] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [bulkStatus, setBulkStatus] = useState<string | null>(null);
@@ -147,6 +175,79 @@ function GuestsContent() {
       setSortKey(key);
       setSortDir(key === "created_at" || key === "pax" ? "desc" : "asc");
     }
+  };
+
+  const whatsAppEligibleGuests = useMemo(
+    () => sorted.filter((guest) => guest.contact_type === "WhatsApp" && normalizeWhatsAppNumber(guest.contact)),
+    [sorted]
+  );
+
+  const selectedWhatsAppGuests = useMemo(
+    () => guests.filter((guest) => selectedWhatsAppIds.includes(guest.id) && normalizeWhatsAppNumber(guest.contact)),
+    [guests, selectedWhatsAppIds]
+  );
+
+  const invitationLinkFor = (guest: Guest) => {
+    const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+    return `${baseUrl}/?to=${encodeURIComponent(guest.name)}&id=${guest.unique_code}`;
+  };
+
+  const messageFor = (guest: Guest) =>
+    whatsAppTemplate
+      .replaceAll("{nama}", guest.name)
+      .replaceAll("{link}", invitationLinkFor(guest));
+
+  const toggleWhatsAppGuest = (guestId: string) => {
+    setSelectedWhatsAppIds((previous) =>
+      previous.includes(guestId) ? previous.filter((id) => id !== guestId) : [...previous, guestId]
+    );
+    setWhatsAppQueueIndex(0);
+  };
+
+  const toggleVisibleWhatsAppGuests = () => {
+    const visibleIds = whatsAppEligibleGuests.map((guest) => guest.id);
+    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedWhatsAppIds.includes(id));
+    setSelectedWhatsAppIds((previous) =>
+      allVisibleSelected
+        ? previous.filter((id) => !visibleIds.includes(id))
+        : [...new Set([...previous, ...visibleIds])]
+    );
+    setWhatsAppQueueIndex(0);
+  };
+
+  const copyWhatsAppMessage = async () => {
+    const previewGuest = selectedWhatsAppGuests[0] ?? whatsAppEligibleGuests[0];
+    if (!previewGuest) {
+      setWhatsAppStatus("Tambahkan nomor WhatsApp yang valid terlebih dahulu.");
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(messageFor(previewGuest));
+      setWhatsAppStatus(`Pesan untuk ${previewGuest.name} telah disalin.`);
+    } catch {
+      setWhatsAppStatus("Pesan belum dapat disalin. Silakan salin dari pratinjau.");
+    }
+  };
+
+  const openNextWhatsAppChat = () => {
+    if (selectedWhatsAppGuests.length === 0) {
+      setWhatsAppStatus("Pilih minimal satu tamu dengan nomor WhatsApp yang valid.");
+      return;
+    }
+    const guest = selectedWhatsAppGuests[whatsAppQueueIndex % selectedWhatsAppGuests.length];
+    const phoneNumber = normalizeWhatsAppNumber(guest.contact);
+    if (!phoneNumber) {
+      setWhatsAppStatus(`Nomor WhatsApp ${guest.name} belum valid.`);
+      return;
+    }
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(messageFor(guest))}`, "_blank", "noopener,noreferrer");
+    const nextIndex = (whatsAppQueueIndex + 1) % selectedWhatsAppGuests.length;
+    setWhatsAppQueueIndex(nextIndex);
+    setWhatsAppStatus(
+      selectedWhatsAppGuests.length === 1
+        ? `Chat ${guest.name} sudah dibuka.`
+        : `Chat ${guest.name} sudah dibuka. Berikutnya: ${selectedWhatsAppGuests[nextIndex].name}.`
+    );
   };
 
   const openAddModal = () => {
@@ -387,6 +488,150 @@ function GuestsContent() {
             </button>
           </div>
         </div>
+
+        {/* WhatsApp sender */}
+        <section className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
+          <div className="flex flex-col gap-4 bg-gradient-to-r from-emerald-50 via-white to-amber-50 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 0 1-.375-.375V7.5a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375V7.5a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Zm-4.875 4.875a.375.375 0 0 1-.375-.375v-1.875A.375.375 0 0 1 8.625 12h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375v-1.875A.375.375 0 0 1 13.5 12h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 5.25A2.25 2.25 0 0 1 6.75 3h10.5a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25H12l-3.75 3v-3H6.75A2.25 2.25 0 0 1 4.5 14.25v-9Z" />
+                </svg>
+              </div>
+              <div>
+                <h2 className="font-semibold text-slate-900">Kirim Undangan WhatsApp</h2>
+                <p className="mt-1 max-w-2xl text-sm leading-5 text-slate-600">
+                  Siapkan pesan dan buka chat personal satu per satu. Nama serta link undangan tiap tamu akan terisi otomatis.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowWhatsAppPanel((isOpen) => !isOpen)}
+              aria-expanded={showWhatsAppPanel}
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm font-semibold text-emerald-800 shadow-sm transition-colors hover:bg-emerald-50"
+            >
+              {showWhatsAppPanel ? "Tutup pengiriman" : "Atur pengiriman"}
+              <svg className={`h-4 w-4 transition-transform ${showWhatsAppPanel ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+          </div>
+
+          {showWhatsAppPanel && (
+            <div className="grid gap-6 border-t border-emerald-100 p-5 sm:p-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(19rem,.85fr)]">
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-800">Pilih penerima</h3>
+                    <p className="mt-1 text-xs text-slate-500">
+                      {whatsAppEligibleGuests.length} nomor WhatsApp valid dari daftar yang sedang tampil.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={toggleVisibleWhatsAppGuests}
+                    disabled={whatsAppEligibleGuests.length === 0}
+                    className="rounded-lg px-3 py-2 text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-50 disabled:cursor-not-allowed disabled:text-slate-400"
+                  >
+                    {whatsAppEligibleGuests.length > 0 && whatsAppEligibleGuests.every((guest) => selectedWhatsAppIds.includes(guest.id))
+                      ? "Batal pilih semua"
+                      : "Pilih semua yang tampil"}
+                  </button>
+                </div>
+
+                <div className="max-h-56 divide-y divide-slate-100 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/50">
+                  {whatsAppEligibleGuests.length > 0 ? (
+                    whatsAppEligibleGuests.map((guest) => {
+                      const checked = selectedWhatsAppIds.includes(guest.id);
+                      return (
+                        <label key={guest.id} className="flex cursor-pointer items-center gap-3 px-3 py-3 transition-colors hover:bg-white">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={() => toggleWhatsAppGuest(guest.id)}
+                            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
+                          />
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-medium text-slate-800">{guest.name}</span>
+                            <span className="block truncate text-xs text-slate-500">{guest.contact}</span>
+                          </span>
+                          <code className="hidden rounded bg-white px-2 py-1 text-[10px] font-semibold text-slate-500 ring-1 ring-slate-200 sm:block">{guest.unique_code}</code>
+                        </label>
+                      );
+                    })
+                  ) : (
+                    <p className="px-4 py-7 text-center text-sm text-slate-500">Tidak ada nomor WhatsApp valid pada daftar ini.</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="whatsapp-template" className="mb-2 block text-sm font-semibold text-slate-800">Template pesan</label>
+                  <textarea
+                    id="whatsapp-template"
+                    value={whatsAppTemplate}
+                    onChange={(event) => setWhatsAppTemplate(event.target.value)}
+                    rows={11}
+                    maxLength={3000}
+                    className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm leading-6 text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+                    aria-describedby="whatsapp-template-help"
+                  />
+                  <p id="whatsapp-template-help" className="mt-2 text-xs leading-5 text-slate-500">
+                    Gunakan <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">{`{nama}`}</code> untuk nama tamu dan <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">{`{link}`}</code> untuk link undangan personal.
+                  </p>
+                </div>
+              </div>
+
+              <aside className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">Pratinjau & antrean</p>
+                    <p className="mt-1 text-xs text-slate-500">{selectedWhatsAppGuests.length} tamu dipilih</p>
+                  </div>
+                  <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">Manual</span>
+                </div>
+
+                <div className="mt-4 min-h-44 whitespace-pre-wrap rounded-xl border border-slate-200 bg-white p-3.5 text-sm leading-6 text-slate-600">
+                  {selectedWhatsAppGuests.length > 0
+                    ? messageFor(selectedWhatsAppGuests[whatsAppQueueIndex % selectedWhatsAppGuests.length])
+                    : whatsAppEligibleGuests[0]
+                      ? messageFor(whatsAppEligibleGuests[0])
+                      : "Pilih tamu dengan nomor WhatsApp valid untuk melihat pratinjau pesan."}
+                </div>
+
+                {whatsAppStatus && (
+                  <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs leading-5 text-emerald-800" role="status">{whatsAppStatus}</p>
+                )}
+
+                <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
+                  <button
+                    type="button"
+                    onClick={openNextWhatsAppChat}
+                    disabled={selectedWhatsAppGuests.length === 0}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 10.5a.375.375 0 0 1-.375-.375V8.25a.375.375 0 0 1 .375-.375H10.5a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375V8.25a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5A2.25 2.25 0 0 1 6.75 2.25h10.5a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-5.25l-3.75 3v-3H6.75A2.25 2.25 0 0 1 4.5 13.5v-9Z" /></svg>
+                    {selectedWhatsAppGuests.length > 1 ? "Buka chat berikutnya" : "Buka chat WhatsApp"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={copyWhatsAppMessage}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.75A2.25 2.25 0 0 1 10.5 4.5h6.75a2.25 2.25 0 0 1 2.25 2.25v6.75a2.25 2.25 0 0 1-2.25 2.25h-.75m-8.25-8.25H6.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25H8.25Z" /></svg>
+                    Salin pesan
+                  </button>
+                </div>
+
+                <div className="mt-5 rounded-xl border border-dashed border-slate-300 bg-white/60 p-3.5">
+                  <p className="text-xs font-semibold text-slate-700">Gateway otomatis</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">Belum diaktifkan. Mode ini akan tersedia setelah token provider WhatsApp dikonfigurasi dengan aman di server.</p>
+                </div>
+              </aside>
+            </div>
+          )}
+        </section>
 
         {/* Table / List */}
         {loading ? (
