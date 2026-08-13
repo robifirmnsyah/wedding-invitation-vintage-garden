@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
@@ -8,9 +8,9 @@ import { Lightbox } from "@/components/Lightbox";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import config from "@/lib/config";
 
-const AUTO_ADVANCE_MS = 5200;
+const AUTO_ADVANCE_MS = 4800;
 const SLIDE_DURATION = 0.9;
-const RAIL_DURATION = 1.35;
+const RAIL_SECONDS_PER_PHOTO = 4.8;
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
@@ -19,22 +19,19 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  */
 export function Gallery() {
   const items = config.gallery;
-  const [railPosition, setRailPosition] = useState(items.length);
   const [displayedIndex, setDisplayedIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<1 | -1>(1);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const railViewportRef = useRef<HTMLDivElement>(null);
   const railTrackRef = useRef<HTMLDivElement>(null);
-  const [railMetrics, setRailMetrics] = useState({ offset: 0, step: 92 });
+  const [railDistance, setRailDistance] = useState(0);
   const reducedMotion = usePrefersReducedMotion();
-  const activeIndex = railPosition % items.length;
   const current = items[displayedIndex];
-  const nextIndex = (activeIndex + 1) % items.length;
-  const railItems = [...items, ...items, ...items];
+  const nextIndex = (displayedIndex + 1) % items.length;
+  const railItems = [...items, ...items];
 
   const move = (direction: -1 | 1) => {
     setSlideDirection(direction);
-    setRailPosition((position) => position + direction);
+    setDisplayedIndex((index) => (index + direction + items.length) % items.length);
   };
 
   // Keep one upcoming image warm so the gentle crossfade never waits for a
@@ -44,23 +41,17 @@ export function Gallery() {
     preloaded.src = items[nextIndex].src;
   }, [items, nextIndex]);
 
-  // Center the middle copy of the infinite rail. Measuring its real thumbnail
-  // width keeps the movement exact on both phone and desktop layouts.
-  useLayoutEffect(() => {
-    const updateMetrics = () => {
-      const viewport = railViewportRef.current;
-      const firstThumbnail = railTrackRef.current?.firstElementChild as HTMLElement | null;
-      if (!viewport || !firstThumbnail) return;
-      const gap = Number.parseFloat(getComputedStyle(railTrackRef.current!).gap) || 0;
-      setRailMetrics({
-        offset: viewport.clientWidth / 2 - firstThumbnail.offsetWidth / 2,
-        step: firstThumbnail.offsetWidth + gap,
-      });
+  // The rail contains two identical runs. Translating exactly one run means
+  // the restart is invisible: it is a continuous right-to-left marquee.
+  useEffect(() => {
+    const updateDistance = () => {
+      const track = railTrackRef.current;
+      if (track) setRailDistance(track.scrollWidth / 2);
     };
 
-    updateMetrics();
-    window.addEventListener("resize", updateMetrics);
-    return () => window.removeEventListener("resize", updateMetrics);
+    updateDistance();
+    window.addEventListener("resize", updateDistance);
+    return () => window.removeEventListener("resize", updateDistance);
   }, []);
 
   // A self-scheduling timer avoids intersection-observer edge cases on mobile
@@ -71,20 +62,11 @@ export function Gallery() {
 
     const timeout = window.setTimeout(() => {
       setSlideDirection(1);
-      setRailPosition((position) => position + 1);
+      setDisplayedIndex((index) => (index + 1) % items.length);
     }, AUTO_ADVANCE_MS);
 
     return () => window.clearTimeout(timeout);
-  }, [lightboxIndex, railPosition]);
-
-  const settleRail = () => {
-    setDisplayedIndex(activeIndex);
-
-    // Jump only between identical copies, so the loop remains visually
-    // continuous after it has travelled through a complete album.
-    if (railPosition >= items.length * 2) setRailPosition(items.length);
-    if (railPosition <= 0) setRailPosition(items.length);
-  };
+  }, [items.length, lightboxIndex, displayedIndex]);
 
   return (
     <section aria-labelledby="gallery-title" className="section-pad overflow-hidden bg-ivory-50">
@@ -148,34 +130,35 @@ export function Gallery() {
           Foto {displayedIndex + 1} dari {items.length}
         </p>
 
-        <div
-          ref={railViewportRef}
-          className="mt-4 overflow-hidden pb-2 sm:mt-5"
-        >
+        <div className="mt-4 overflow-hidden pb-2 sm:mt-5">
           <motion.div
             ref={railTrackRef}
             className="flex gap-3"
             initial={false}
-            animate={{ x: railMetrics.offset - railPosition * railMetrics.step }}
-            transition={{ duration: reducedMotion ? 0 : RAIL_DURATION, ease: EASE }}
-            onAnimationComplete={settleRail}
+            animate={railDistance && !reducedMotion ? { x: [0, -railDistance] } : { x: 0 }}
+            transition={{
+              duration: railDistance ? items.length * RAIL_SECONDS_PER_PHOTO : 0,
+              ease: "linear",
+              repeat: Infinity,
+              repeatType: "loop",
+            }}
           >
             {railItems.map((item, railIndex) => {
               const index = railIndex % items.length;
-              const isMiddleCopy = railIndex >= items.length && railIndex < items.length * 2;
+              const isPrimaryCopy = railIndex < items.length;
               return (
                 <button
                   key={`${item.src}-${railIndex}`}
                   type="button"
                   onClick={() => {
-                    setSlideDirection(index >= activeIndex ? 1 : -1);
-                    setRailPosition(items.length + index);
+                    setSlideDirection(index >= displayedIndex ? 1 : -1);
+                    setDisplayedIndex(index);
                   }}
                   aria-label={`Pilih foto ${index + 1}: ${item.caption}`}
-                  aria-current={activeIndex === index ? "true" : undefined}
-                  tabIndex={isMiddleCopy ? 0 : -1}
+                  aria-current={displayedIndex === index ? "true" : undefined}
+                  tabIndex={isPrimaryCopy ? 0 : -1}
                   className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-24 sm:w-24 ${
-                    activeIndex === index
+                    displayedIndex === index
                       ? "border-gold-600 shadow-paper"
                       : "border-transparent opacity-70 hover:opacity-100"
                   }`}
@@ -201,7 +184,6 @@ export function Gallery() {
         onNavigate={(index) => {
           setLightboxIndex(index);
           setSlideDirection(index >= displayedIndex ? 1 : -1);
-          setRailPosition(items.length + index);
           setDisplayedIndex(index);
         }}
       />
