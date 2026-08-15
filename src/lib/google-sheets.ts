@@ -44,10 +44,16 @@ function requiredEnv(name: string) {
 }
 
 function getSheets(): sheets_v4.Sheets {
+  const rawPrivateKey = requiredEnv("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY");
+  const private_key = rawPrivateKey
+    .replace(/^"(.*)"$/, "$1")
+    .replace(/^'(.*)'$/, "$1")
+    .replace(/\\n/g, "\n");
+
   const auth = new google.auth.GoogleAuth({
     credentials: {
       client_email: requiredEnv("GOOGLE_SERVICE_ACCOUNT_EMAIL"),
-      private_key: requiredEnv("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY").replace(/\\n/g, "\n"),
+      private_key,
     },
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
