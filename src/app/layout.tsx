@@ -43,6 +43,10 @@ const bride = config.couple.bride.shortName;
 export const metadata: Metadata = {
   title: `${groom} & ${bride} — Wedding Invitation`,
   description: `Undangan pernikahan ${config.couple.groom.name} & ${config.couple.bride.name}`,
+  icons: {
+    icon: "/assets/logo/favicon-olive.png",
+    apple: "/assets/logo/favicon-olive.png",
+  },
   openGraph: {
     title: `${groom} & ${bride} — Wedding Invitation`,
     description: `Undangan pernikahan ${config.couple.groom.name} & ${config.couple.bride.name}`,

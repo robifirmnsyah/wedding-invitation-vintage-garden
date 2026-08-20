@@ -89,7 +89,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-06.webp",
+      "src": "/assets/gallery/prewed/prewed-15.webp",
       "caption": "Our Moment 06",
       "span": "tall"
     },
@@ -99,7 +99,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-08.webp",
+      "src": "/assets/gallery/prewed/prewed-18.webp",
       "caption": "Our Moment 08",
       "span": "tall"
     },
@@ -119,7 +119,7 @@
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-12.webp",
+      "src": "/assets/gallery/prewed/prewed-36.webp",
       "caption": "Our Moment 12",
       "span": "wide"
     },
@@ -134,7 +134,7 @@
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-15.webp",
+      "src": "/assets/gallery/prewed/prewed-28i.webp",
       "caption": "Our Moment 15",
       "span": "wide"
     },
@@ -149,7 +149,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-18.webp",
+      "src": "/assets/gallery/prewed/prewed-28j.webp",
       "caption": "Our Moment 18",
       "span": "tall"
     },
@@ -164,7 +164,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-21.webp",
+      "src": "/assets/gallery/prewed/prewed-35.webp",
       "caption": "Our Moment 21",
       "span": "tall"
     },
@@ -232,16 +232,6 @@
       "src": "/assets/gallery/prewed/prewed-34.webp",
       "caption": "Our Moment 34",
       "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-35.webp",
-      "caption": "Our Moment 35",
-      "span": "wide"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-36.webp",
-      "caption": "Our Moment 36",
-      "span": "wide"
     }
   ],
   "gift": {

@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
 /**
  * Minimalist loading screen: a breathing heart mark (its two lobes read as
@@ -8,22 +9,16 @@ import { AnimatePresence, motion } from "framer-motion";
  */
 function HeartMark() {
   return (
-    <svg
-      viewBox="0 0 64 56"
-      className="h-12 w-12"
-      aria-hidden="true"
-    >
-      <path
-        d="M32 50
-           C 14 38, 4 27, 4 16.5
-           C 4 7.5, 11 2, 18.5 2
-           C 24.5 2, 29 5.5, 32 11
-           C 35 5.5, 39.5 2, 45.5 2
-           C 53 2, 60 7.5, 60 16.5
-           C 60 27, 50 38, 32 50 Z"
-        fill="#e11d6f"
+    <div className="relative h-24 w-24">
+      <Image
+        src="/assets/logo/logo-olive.png"
+        alt="Loading"
+        fill
+        sizes="96px"
+        className="object-contain"
+        priority
       />
-    </svg>
+    </div>
   );
 }
 
