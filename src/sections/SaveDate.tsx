@@ -62,12 +62,12 @@ export function SaveDate() {
             className="absolute inset-0 z-[1] flex flex-col items-center justify-center px-[20%] pt-[10%] pb-[10%] text-center sm:px-[22%]"
           >
             <RevealItem variants={riseIn}>
-              <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
+              <p className="font-body text-[10px] font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
                 Save The Date
               </p>
               <h2
                 id="save-date-title"
-                className="mt-2 font-display font-semibold text-olive-900 sm:mt-3"
+                className="mt-1 font-display font-semibold text-olive-900 sm:mt-3"
                 style={{ fontSize: "var(--text-h2)" }}
               >
                 Counting The Days
@@ -75,7 +75,7 @@ export function SaveDate() {
             </RevealItem>
 
             <RevealItem variants={fadeIn}>
-              <SprigDivider className="!my-3 text-gold-600 sm:!my-4" />
+              <SprigDivider className="!my-1.5 text-gold-600 sm:!my-4" />
             </RevealItem>
 
             <RevealItem variants={riseIn}>
@@ -91,13 +91,13 @@ export function SaveDate() {
             <div
               role="timer"
               aria-label={`${t.days} days ${t.hours} hours ${t.minutes} minutes ${t.seconds} seconds to the wedding`}
-              className="mt-4 w-full max-w-[12rem] sm:mt-5 sm:max-w-[14rem] mx-auto"
+              className="mt-2 w-full max-w-[12rem] sm:mt-5 sm:max-w-[14rem] mx-auto"
             >
               <StaggerGroup
                 as="div"
                 variants={staggerTight}
                 aria-hidden="true"
-                className="grid grid-cols-2 gap-y-5 gap-x-4 py-2 sm:py-3"
+                className="grid grid-cols-2 gap-y-2 gap-x-4 py-1 sm:py-3 sm:gap-y-5"
               >
                 <Unit value={t.days} label="Days" />
                 <Unit value={t.hours} label="Hours" />
