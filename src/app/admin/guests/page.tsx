@@ -185,7 +185,7 @@ function GuestsContent() {
 
   const invitationLinkFor = (guest: Guest) => {
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    return `${baseUrl}/?to=${encodeURIComponent(guest.name)}&id=${guest.unique_code}`;
+    return `${baseUrl}/?to=${encodeURIComponent(guest.name)}`;
   };
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -337,7 +337,7 @@ function GuestsContent() {
 
   const copyInvitationLink = (guest: Guest) => {
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
-    const link = `${baseUrl}/?to=${encodeURIComponent(guest.name)}&id=${guest.unique_code}`;
+    const link = `${baseUrl}/?to=${encodeURIComponent(guest.name)}`;
     navigator.clipboard?.writeText(link);
   };
 

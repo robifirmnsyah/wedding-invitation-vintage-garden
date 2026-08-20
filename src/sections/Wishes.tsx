@@ -144,41 +144,50 @@ export function Wishes() {
   const submitRsvp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!hasInvitationCode || !registeredGuest) return;
-    if (!message.trim()) return;
+    const senderName = (registeredGuest ? registeredGuest.name : name).trim();
+    if (!senderName || !message.trim()) return;
 
     setStatus("sending");
 
     try {
-      // Submit RSVP to Supabase via the RSVP API
-      const rsvpRes = await fetch("/api/rsvp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: guestCode,
-          rsvp_status: attendance,
-          wish_message: message.trim(),
-        }),
-      });
+      // If registered guest with code, submit RSVP to backend/sheets
+      if (guestCode && registeredGuest) {
+        try {
+          await fetch("/api/rsvp", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              code: guestCode,
+              rsvp_status: attendance,
+              wish_message: message.trim(),
+            }),
+          });
+        } catch {
+          // Non-blocking if sheets API fails
+        }
+      }
 
-      if (!rsvpRes.ok) throw new Error();
+      // Add to the wishes guestbook for display
+      const verified = Boolean(
+        registeredGuest ||
+        (isPersonalised && senderName.toLowerCase() === guestName.trim().toLowerCase())
+      );
 
-      // Also add to the wishes guestbook (file-based) for display
       const wishRes = await fetch("/api/wishes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: registeredGuest.name,
+          name: senderName,
           message: message.trim(),
           attendance,
-          verified: true,
+          verified,
         }),
       });
 
-      if (wishRes.ok) {
-        const { wish } = await wishRes.json();
-        setWishes((prev) => [wish, ...prev]);
-      }
+      if (!wishRes.ok) throw new Error();
+
+      const { wish } = await wishRes.json();
+      setWishes((prev) => [wish, ...prev]);
 
       setStatus("success");
     } catch {
@@ -234,53 +243,7 @@ export function Wishes() {
         {/* form */}
         <RevealItem variants={slideFromLeft} className="paper-card h-fit p-6 sm:p-8">
           <AnimatePresence mode="wait" initial={false}>
-          {!guestLookupDone ? (
-            <motion.div key="loading" {...formState} className="flex items-center justify-center py-8" role="status">
-              <div
-                aria-hidden="true"
-                className="h-6 w-6 animate-spin rounded-full border-2 border-olive-600 border-t-transparent"
-              />
-              <span className="sr-only">Memuat data tamu…</span>
-            </motion.div>
-          ) : !hasInvitationCode ? (
-            /* No invitation code — show a message */
-            <motion.div key="no-code" {...formState} className="py-8 text-center">
-              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-sage-300 bg-sage-100">
-                <svg
-                  aria-hidden="true"
-                  className="h-7 w-7 text-olive-700"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                </svg>
-              </div>
-              <p
-                className="font-display font-semibold text-olive-900"
-                style={{ fontSize: "var(--text-h3)" }}
-              >
-                RSVP Khusus Tamu Terdaftar
-              </p>
-              <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
-                Untuk mengisi RSVP dan memberikan ucapan, silakan buka undangan melalui link khusus yang telah dikirimkan kepada Anda.
-              </p>
-            </motion.div>
-          ) : !registeredGuest ? (
-            /* Invalid code */
-            <motion.div key="invalid" {...formState} className="py-8 text-center">
-              <p
-                className="font-display font-semibold text-error"
-                style={{ fontSize: "var(--text-h3)" }}
-              >
-                Kode Undangan Tidak Valid
-              </p>
-              <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
-                Kode undangan yang Anda gunakan tidak ditemukan. Pastikan Anda membuka link yang benar.
-              </p>
-            </motion.div>
-          ) : status === "success" ? (
+          {status === "success" ? (
             /* Success message */
             <motion.div key="success" {...formState} className="py-8 text-center" role="status">
               <motion.div
@@ -304,29 +267,49 @@ export function Wishes() {
                 className="font-display font-semibold text-olive-900"
                 style={{ fontSize: "var(--text-h3)" }}
               >
-                Terima Kasih, {registeredGuest.name}!
+                Terima Kasih, {registeredGuest?.name || name || "Tamu Undangan"}!
               </p>
               <p className="mt-3 font-body text-base leading-relaxed text-olive-700">
                 RSVP dan ucapan Anda telah tersimpan. Kami sangat menantikan kehadiran Anda.
               </p>
             </motion.div>
           ) : (
-            /* RSVP Form for registered guests */
+            /* RSVP Form open for all guests */
             <motion.form key="form" {...formState} onSubmit={submitRsvp} className="space-y-5">
-              <div className="border border-sage-300 bg-sage-100 p-3">
-                <div className="flex items-center gap-2">
-                  <HiCheckBadge
-                    aria-hidden="true"
-                    className="text-lg text-olive-600"
-                  />
-                  <span className="font-body text-base font-medium text-olive-900">
-                    {registeredGuest.name}
-                  </span>
+              {registeredGuest ? (
+                <div className="border border-sage-300 bg-sage-100 p-3">
+                  <div className="flex items-center gap-2">
+                    <HiCheckBadge
+                      aria-hidden="true"
+                      className="text-lg text-olive-600"
+                    />
+                    <span className="font-body text-base font-medium text-olive-900">
+                      {registeredGuest.name}
+                    </span>
+                  </div>
+                  <p className="mt-1 font-body text-sm text-olive-700">
+                    Kode: {registeredGuest.unique_code} · Kuota: {registeredGuest.pax} orang
+                  </p>
                 </div>
-                <p className="mt-1 font-body text-sm text-olive-700">
-                  Kode: {registeredGuest.unique_code} · Kuota: {registeredGuest.pax} orang
-                </p>
-              </div>
+              ) : (
+                <div>
+                  <label
+                    htmlFor="guest-name"
+                    className="font-body text-sm font-medium text-olive-700"
+                  >
+                    Nama Anda
+                  </label>
+                  <input
+                    id="guest-name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={60}
+                    required
+                    placeholder="Nama Anda"
+                    className="mt-2 min-h-11 w-full rounded border border-sage-300 bg-ivory-50 px-4 py-2.5 font-body text-base text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
+                  />
+                </div>
+              )}
 
               <div>
                 <span
