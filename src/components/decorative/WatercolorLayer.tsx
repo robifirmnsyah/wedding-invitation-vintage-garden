@@ -13,6 +13,8 @@ interface Props {
   sizes?: string;
   /** Decorative art is rendered below readable section content by default. */
   zIndex?: number;
+  quality?: number;
+  priority?: boolean;
 }
 
 /**
@@ -26,6 +28,8 @@ export function WatercolorLayer({
   opacity = 1,
   sizes = "(max-width: 640px) 100vw, 48rem",
   zIndex = 0,
+  quality,
+  priority = false,
 }: Props) {
   const reduced = useReducedMotion();
 
@@ -43,7 +47,9 @@ export function WatercolorLayer({
         src={`${ASSET_ROOT}/${src}`}
         alt=""
         fill
-        loading="lazy"
+        loading={priority ? "eager" : "lazy"}
+        priority={priority}
+        quality={quality}
         sizes={sizes}
         className="object-contain"
       />

@@ -20,7 +20,7 @@
   "hero": {
     "tagline": "The Wedding Of",
     "dateLabel": "Sabtu, 5 September 2026",
-    "photo": "/assets/gallery/prewed/prewed-27.webp"
+    "photo": "/assets/gallery/prewed/prewed-03.webp"
   },
   "quote": {
     "ref": "QS. Ar-Rum: 21",
@@ -31,26 +31,22 @@
     {
       "title": "First Met",
       "date": "2019",
-      "story": "Pertama kali kami dipertemukan di sebuah tempat yang sederhana. Tak ada yang istimewa saat itu, hanya sebuah sapaan kecil yang ternyata menjadi awal dari segalanya.",
-      "photo": "/assets/story/story-1.jpg"
+      "story": "Pertama kali kami dipertemukan di sebuah tempat yang sederhana. Tak ada yang istimewa saat itu, hanya sebuah sapaan kecil yang ternyata menjadi awal dari segalanya."
     },
     {
       "title": "In Relationship",
       "date": "2021",
-      "story": "Dari obrolan ringan menjadi cerita panjang setiap hari. Kami belajar saling memahami, tumbuh bersama, dan menyadari bahwa kebersamaan ini terasa begitu menenangkan.",
-      "photo": "/assets/story/story-2.jpg"
+      "story": "Dari obrolan ringan menjadi cerita panjang setiap hari. Kami belajar saling memahami, tumbuh bersama, dan menyadari bahwa kebersamaan ini terasa begitu menenangkan."
     },
     {
       "title": "Engagement",
       "date": "2025",
-      "story": "Dengan restu kedua keluarga, kami mantapkan langkah menuju jenjang yang lebih serius. Sebuah janji kecil yang kami rawat dengan penuh harapan.",
-      "photo": "/assets/story/story-3.jpg"
+      "story": "Dengan restu kedua keluarga, kami mantapkan langkah menuju jenjang yang lebih serius. Sebuah janji kecil yang kami rawat dengan penuh harapan."
     },
     {
       "title": "Toward Marriage",
       "date": "2026",
-      "story": "Kini, dengan menyebut nama Allah, kami siap menyatukan dua hati dalam ikatan yang suci. Mohon doa restu agar diberi kelancaran sampai hari bahagia kami.",
-      "photo": "/assets/story/story-4.jpg"
+      "story": "Kini, dengan menyebut nama Allah, kami siap menyatukan dua hati dalam ikatan yang suci. Mohon doa restu agar diberi kelancaran sampai hari bahagia kami."
     }
   ],
   "event": {

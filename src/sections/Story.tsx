@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionTitle } from "@/components/Decor";
@@ -11,11 +10,8 @@ import config from "@/lib/config";
 
 /**
  * Vertical love-story timeline — semantic ordered list with one GSAP
- * ScrollTrigger reveal per milestone and a single scrub-linked line fill
- * (the chapter's one scrub timeline, MASTER.md §15.7).
+ * ScrollTrigger reveal per milestone and a single scrub-linked line fill.
  *
- * On desktop entries alternate in from the side their photo sits on; on mobile
- * every entry uses the same upward reveal so the rhythm stays predictable.
  * Under reduced motion nothing runs and the final state is what renders.
  */
 export function Story() {
@@ -31,7 +27,7 @@ export function Story() {
       const items = gsap.utils.toArray<HTMLElement>(".story-item");
 
       items.forEach((item, i) => {
-        const fromSide = wide ? (i % 2 === 1 ? 36 : -36) : 0;
+        const fromSide = wide ? (i % 2 === 1 ? -36 : 36) : 0;
 
         gsap.from(item, {
           opacity: 0,
@@ -83,7 +79,7 @@ export function Story() {
     <section
       ref={root}
       aria-labelledby="story-title"
-      className="section-pad relative overflow-hidden bg-ivory-50"
+      className="section-pad relative overflow-hidden bg-sage-100"
     >
       <SectionTitle id="story-title" eyebrow="Our Journey" title="Our Love Story" />
 
@@ -96,43 +92,33 @@ export function Story() {
           <div className="story-line-fill h-full w-full bg-gold-600" />
         </div>
 
-        <ol className="list-none space-y-12">
+        <ol className="list-none space-y-10">
           {config.loveStory.map((m, i) => {
             const flip = i % 2 === 1;
             return (
               <li
                 key={m.title}
-                className={`story-item relative flex flex-col gap-4 pl-12 sm:flex-row sm:items-center sm:gap-8 sm:pl-0 ${
-                  flip ? "sm:flex-row-reverse" : ""
+                className={`story-item relative flex flex-col pl-10 sm:pl-0 ${
+                  flip ? "sm:items-start" : "sm:items-end"
                 }`}
               >
                 {/* node */}
                 <span
                   aria-hidden="true"
-                  className="story-node absolute left-4 top-2 z-10 h-3 w-3 -translate-x-1/2 border border-gold-600 bg-ivory-50 sm:left-1/2"
+                  className="story-node absolute left-4 top-6 z-10 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border border-gold-600 bg-ivory-50 sm:left-1/2"
                 />
 
-                {/* photo on a beige mat */}
-                <div className="sm:w-1/2">
-                  <div className="border border-sage-300 bg-beige-200 p-2">
-                    <div className="relative aspect-[4/3] w-full overflow-hidden">
-                      <Image
-                        src={m.photo}
-                        alt={`${m.title} — ${m.date}`}
-                        fill
-                        loading="lazy"
-                        sizes="(max-width: 640px) 90vw, 40vw"
-                        className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] hover:scale-[1.04]"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* text */}
-                <div className={`sm:w-1/2 ${flip ? "sm:text-right" : ""}`}>
+                {/* text card */}
+                <div
+                  className={`paper-card p-6 sm:w-[calc(50%-2rem)] ${
+                    flip
+                      ? "sm:mr-auto sm:text-left"
+                      : "sm:ml-auto sm:text-right"
+                  }`}
+                >
                   <span className="eyebrow !text-gold-700">{m.date}</span>
                   <h3
-                    className="mt-2 font-display font-semibold text-olive-900"
+                    className="mt-1 font-display font-semibold text-olive-900"
                     style={{ fontSize: "var(--text-h3)" }}
                   >
                     {m.title}

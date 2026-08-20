@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState, useMemo, Suspense, useRef } from "react";
+import { useCallback, useEffect, useState, useMemo, Suspense } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { useSearchParams } from "next/navigation";
-import { toCsv } from "@/lib/csv";
 import { getCategoryColor } from "@/lib/colors";
 
 interface Category {
@@ -87,9 +86,6 @@ function GuestsContent() {
   const [selectedWhatsAppIds, setSelectedWhatsAppIds] = useState<string[]>([]);
   const [whatsAppQueueIndex, setWhatsAppQueueIndex] = useState(0);
   const [whatsAppStatus, setWhatsAppStatus] = useState<string | null>(null);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [bulkStatus, setBulkStatus] = useState<string | null>(null);
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
@@ -192,10 +188,30 @@ function GuestsContent() {
     return `${baseUrl}/?to=${encodeURIComponent(guest.name)}&id=${guest.unique_code}`;
   };
 
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const messageFor = (guest: Guest) =>
     whatsAppTemplate
       .replaceAll("{nama}", guest.name)
       .replaceAll("{link}", invitationLinkFor(guest));
+
+  const handleOpenGuestWhatsApp = (guest: Guest) => {
+    const phoneNumber = normalizeWhatsAppNumber(guest.contact);
+    if (!phoneNumber) return;
+    window.open(
+      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(messageFor(guest))}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const handleCopyGuestWhatsAppMessage = async (guest: Guest) => {
+    try {
+      await navigator.clipboard.writeText(messageFor(guest));
+      setCopiedId(guest.id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {}
+  };
 
   const toggleWhatsAppGuest = (guestId: string) => {
     setSelectedWhatsAppIds((previous) =>
@@ -325,59 +341,6 @@ function GuestsContent() {
     navigator.clipboard?.writeText(link);
   };
 
-  const handleDownloadCsv = () => {
-    const header = ["unique_code", "name", "category", "pax", "contact_type", "contact"];
-    const rows = guests.map((g) => [
-      g.unique_code,
-      g.name,
-      g.guest_categories?.name || "",
-      g.pax.toString(),
-      g.contact_type,
-      g.contact
-    ]);
-    const csvContent = toCsv([header, ...rows]);
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `tamu-${side}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleUploadCsv = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setBulkStatus("Mengunggah...");
-    try {
-      const text = await file.text();
-      const res = await fetch("/api/admin/guests/bulk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ side, csv: text }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        alert(data.error || "Gagal mengunggah CSV");
-      } else {
-        const { created, updated, categoriesCreated, errors } = data.summary;
-        let msg = `Berhasil! Dibuat: ${created}, Diperbarui: ${updated}, Kategori Baru: ${categoriesCreated}.`;
-        if (errors.length > 0) {
-          msg += `\nTerdapat ${errors.length} error (lihat console).`;
-          console.warn("CSV Import Errors:", errors);
-        }
-        alert(msg);
-        fetchData();
-      }
-    } catch (err) {
-      alert("Terjadi kesalahan saat memproses file.");
-    }
-    setBulkStatus(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
   return (
     <AdminShell>
       <div className="space-y-6">
@@ -392,28 +355,6 @@ function GuestsContent() {
             </p>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <button
-              onClick={handleDownloadCsv}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 sm:w-auto"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
-              Download CSV
-            </button>
-            <div>
-              <input type="file" accept=".csv" ref={fileInputRef} className="hidden" onChange={handleUploadCsv} />
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={!!bulkStatus}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-50 sm:w-auto"
-              >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                </svg>
-                {bulkStatus || "Upload CSV"}
-              </button>
-            </div>
             <button
               onClick={openAddModal}
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-600 hover:to-emerald-700 sm:w-auto"
@@ -690,10 +631,36 @@ function GuestsContent() {
                     </dl>
 
                     <div className="mt-3 flex items-center justify-end gap-1 border-t border-slate-100 pt-3">
-                      <button onClick={() => copyInvitationLink(g)} title="Salin Link" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-5.236a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 1 0-6.364 6.364l1.757 1.757" />
+                      <button
+                        type="button"
+                        onClick={() => handleOpenGuestWhatsApp(g)}
+                        disabled={!normalizeWhatsAppNumber(g.contact)}
+                        title={
+                          normalizeWhatsAppNumber(g.contact)
+                            ? `Buka Chat WhatsApp (${g.name})`
+                            : "Kontak WhatsApp tidak tersedia / tidak valid"
+                        }
+                        className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50 transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:text-slate-300"
+                      >
+                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
                         </svg>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyGuestWhatsAppMessage(g)}
+                        title={copiedId === g.id ? "Pesan WA Tersalin!" : "Salin Pesan WhatsApp"}
+                        className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                      >
+                        {copiedId === g.id ? (
+                          <svg className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                          </svg>
+                        ) : (
+                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v9.25c0 .621-.504 1.125-1.125 1.125Z" />
+                          </svg>
+                        )}
                       </button>
                       <button onClick={() => openEditModal(g)} title="Edit Tamu" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
                         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
@@ -764,10 +731,36 @@ function GuestsContent() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-end gap-1">
-                            <button onClick={() => copyInvitationLink(g)} title="Salin" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
-                              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m9.86-5.236a4.5 4.5 0 0 0-1.242-7.244l-4.5-4.5a4.5 4.5 0 1 0-6.364 6.364l1.757 1.757" />
+                            <button
+                              type="button"
+                              onClick={() => handleOpenGuestWhatsApp(g)}
+                              disabled={!normalizeWhatsAppNumber(g.contact)}
+                              title={
+                                normalizeWhatsAppNumber(g.contact)
+                                  ? `Buka Chat WhatsApp (${g.name})`
+                                  : "Kontak WhatsApp tidak tersedia / tidak valid"
+                              }
+                              className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50 transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:text-slate-300"
+                            >
+                              <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
                               </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleCopyGuestWhatsAppMessage(g)}
+                              title={copiedId === g.id ? "Pesan WA Tersalin!" : "Salin Pesan WhatsApp"}
+                              className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                            >
+                              {copiedId === g.id ? (
+                                <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                              ) : (
+                                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v9.25c0 .621-.504 1.125-1.125 1.125Z" />
+                                </svg>
+                              )}
                             </button>
                             <button onClick={() => openEditModal(g)} title="Edit" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
                               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">

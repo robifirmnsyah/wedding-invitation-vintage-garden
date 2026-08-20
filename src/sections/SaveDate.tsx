@@ -11,18 +11,20 @@ import {
   staggerContainer,
   staggerTight,
 } from "@/animations/variants";
+import { buildCalendarUrl } from "@/lib/utils";
 import config from "@/lib/config";
+import { HiOutlineCalendarDays } from "react-icons/hi2";
 
 function Unit({ value, label }: { value: number; label: string }) {
   return (
     <RevealItem
       variants={scaleIn}
-      className="flex flex-col items-center px-1 sm:px-4"
+      className="flex flex-col items-center px-0.5 sm:px-1"
     >
-      <span className="font-display text-4xl font-semibold tabular-nums text-olive-900 sm:text-5xl">
+      <span className="font-display text-xl font-semibold tabular-nums text-olive-900 sm:text-3xl">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="mt-2 font-body text-sm font-medium uppercase tracking-[0.15em] text-olive-700">
+      <span className="mt-1 font-body text-[9px] font-medium uppercase tracking-wider text-olive-700 sm:text-xs">
         {label}
       </span>
     </RevealItem>
@@ -30,83 +32,104 @@ function Unit({ value, label }: { value: number; label: string }) {
 }
 
 /**
- * Save the Date — editorial countdown between hairline rules.
- * The tiles are decorative for AT; the timer announces as one plain
- * sentence (MASTER.md §17.11). Digits settle once on entry — the ticking
- * value itself is never animated, so it stays legible.
+ * Save the Date — editorial countdown within the ornamental floral frame.
+ * Content (text + timer) is centered inside the inner frame area with padding,
+ * and the compact 'Add to Calendar' button sits directly below the frame.
  */
 export function SaveDate() {
   const t = useCountdown(config.countdownTarget);
+  const coupleNames = `${config.couple.groom.shortName} & ${config.couple.bride.shortName}`;
+  const calendarUrl = buildCalendarUrl(config.event.resepsi, coupleNames);
 
   return (
     <section
       aria-labelledby="save-date-title"
       className="section-pad relative isolate overflow-hidden bg-ivory-50"
     >
-      <div className="relative mx-auto w-full max-w-[31rem] aspect-[2/3]">
-        <WatercolorLayer
-          src="ornamental-calendar-frame.png"
-          className="inset-0"
-          opacity={0.9}
-          sizes="(max-width: 640px) 100vw, 31rem"
-        />
-        <StaggerGroup
-          variants={staggerContainer}
-          className="relative z-[1] flex h-full flex-col items-center justify-center px-[14%] pt-[8%] text-center"
-        >
-          <RevealItem variants={riseIn}>
-            <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
-              Save The Date
-            </p>
-            <h2
-              id="save-date-title"
-              className="mt-3 font-display font-semibold text-olive-900"
-              style={{ fontSize: "var(--text-h2)" }}
-            >
-              Counting The Days
-            </h2>
-          </RevealItem>
-          <RevealItem variants={fadeIn}>
-            <SprigDivider className="!my-4 text-gold-600" />
-          </RevealItem>
-          <RevealItem variants={riseIn}>
-            <time
-              dateTime={config.countdownTarget}
-              className="font-display font-medium italic text-gold-700"
-              style={{ fontSize: "var(--text-lead)" }}
-            >
-              {config.hero.dateLabel}
-            </time>
-          </RevealItem>
+      <div className="relative mx-auto flex w-full max-w-[26rem] flex-col items-center px-4 sm:max-w-[30rem]">
+        {/* Floral Frame Container */}
+        <div className="relative aspect-[2/3] w-full max-w-[26rem] sm:max-w-[30rem]">
+          <WatercolorLayer
+            src="ornamental-calendar-frame.png"
+            className="inset-0"
+            opacity={0.95}
+            sizes="(max-width: 640px) 92vw, 30rem"
+          />
 
-          <div
-            role="timer"
-            aria-label={`${t.days} hari ${t.hours} jam ${t.minutes} menit ${t.seconds} detik menuju hari pernikahan`}
-            className="mt-7 w-full"
+          {/* Inner Content Area (Centered inside floral frame) */}
+          <StaggerGroup
+            variants={staggerContainer}
+            className="absolute inset-0 z-[1] flex flex-col items-center justify-center px-[20%] pt-[10%] pb-[10%] text-center sm:px-[22%]"
           >
-            <StaggerGroup
-              as="div"
-              variants={staggerTight}
-              aria-hidden="true"
-              className="grid grid-cols-4 divide-x divide-sage-300 border-y border-sage-300 py-6"
-            >
-              <Unit value={t.days} label="Hari" />
-              <Unit value={t.hours} label="Jam" />
-              <Unit value={t.minutes} label="Menit" />
-              <Unit value={t.seconds} label="Detik" />
-            </StaggerGroup>
-          </div>
-
-          {t.done && (
-            <RevealItem
-              as="p"
-              variants={fadeIn}
-              className="mt-8 font-display text-lg font-medium italic text-olive-700"
-            >
-              Alhamdulillah, hari bahagia telah tiba 🤍
+            <RevealItem variants={riseIn}>
+              <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
+                Save The Date
+              </p>
+              <h2
+                id="save-date-title"
+                className="mt-2 font-display font-semibold text-olive-900 sm:mt-3"
+                style={{ fontSize: "var(--text-h2)" }}
+              >
+                Counting The Days
+              </h2>
             </RevealItem>
-          )}
-        </StaggerGroup>
+
+            <RevealItem variants={fadeIn}>
+              <SprigDivider className="!my-3 text-gold-600 sm:!my-4" />
+            </RevealItem>
+
+            <RevealItem variants={riseIn}>
+              <time
+                dateTime={config.countdownTarget}
+                className="font-display font-medium italic text-gold-700"
+                style={{ fontSize: "var(--text-lead)" }}
+              >
+                {config.hero.dateLabel}
+              </time>
+            </RevealItem>
+
+            <div
+              role="timer"
+              aria-label={`${t.days} hari ${t.hours} jam ${t.minutes} menit ${t.seconds} detik menuju hari pernikahan`}
+              className="mt-4 w-full max-w-[15rem] sm:mt-5 sm:max-w-xs mx-auto"
+            >
+              <StaggerGroup
+                as="div"
+                variants={staggerTight}
+                aria-hidden="true"
+                className="grid grid-cols-4 divide-x divide-sage-300 border-y border-sage-300 py-2.5 sm:py-3.5"
+              >
+                <Unit value={t.days} label="Hari" />
+                <Unit value={t.hours} label="Jam" />
+                <Unit value={t.minutes} label="Menit" />
+                <Unit value={t.seconds} label="Detik" />
+              </StaggerGroup>
+            </div>
+
+            {t.done && (
+              <RevealItem
+                as="p"
+                variants={fadeIn}
+                className="mt-4 font-display text-sm font-medium italic text-olive-700 sm:mt-5 sm:text-base"
+              >
+                Alhamdulillah, hari bahagia telah tiba 🤍
+              </RevealItem>
+            )}
+          </StaggerGroup>
+        </div>
+
+        {/* Button Add to Calendar (Positioned OUTSIDE, compact & centered below frame) */}
+        <RevealItem variants={fadeIn} className="mt-5 sm:mt-6 flex justify-center">
+          <a
+            href={calendarUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Add to Google Calendar (tab baru)"
+            className="btn-olive inline-flex w-auto items-center justify-center gap-2 !px-5 !py-2.5 !text-xs sm:!text-sm shadow-sm transition-all hover:scale-[1.02]"
+          >
+            <HiOutlineCalendarDays aria-hidden="true" className="text-base sm:text-lg" /> Add to Calendar
+          </a>
+        </RevealItem>
       </div>
     </section>
   );

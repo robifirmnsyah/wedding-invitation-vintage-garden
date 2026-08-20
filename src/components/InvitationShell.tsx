@@ -111,7 +111,6 @@ export function InvitationShell() {
               }}
             >
               <Quote />
-              <Story />
               <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               <BrideGroom />
               <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
@@ -120,7 +119,9 @@ export function InvitationShell() {
               <EventDetails />
               <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Gallery />
-              <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
+              <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
+              <Story />
+              <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
               <Wishes />
               <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
               <Gift />

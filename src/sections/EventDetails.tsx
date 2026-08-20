@@ -1,6 +1,6 @@
 "use client";
 
-import { StaggerGroup, RevealItem } from "@/components/Reveal";
+import { Reveal, StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SprigDivider } from "@/components/Decor";
 import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
 import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
@@ -12,7 +12,6 @@ import {
   drawLine,
   staggerContainer,
 } from "@/animations/variants";
-import { buildCalendarUrl } from "@/lib/utils";
 import config from "@/lib/config";
 import type { EventInfo } from "@/lib/types";
 import {
@@ -22,103 +21,63 @@ import {
 } from "react-icons/hi2";
 
 function EventCard({ event }: { event: EventInfo }) {
-  const coupleNames = `${config.couple.groom.shortName} & ${config.couple.bride.shortName}`;
-
   return (
     <StaggerGroup
       variants={staggerContainer}
       early
-      className="w-full max-w-md"
+      className="flex w-full flex-col items-center"
     >
-      {/* keepsake frame: paper card + double gold hairline (MASTER.md §13.3) */}
-      <div className="keepsake-frame p-6 text-center sm:p-8">
-        <RevealItem variants={riseIn}>
-          <h3
-            className="font-display font-semibold text-olive-900"
-            style={{ fontSize: "var(--text-h3)" }}
-          >
-            {event.title}
-          </h3>
+      <RevealItem variants={riseIn} className="text-center">
+        <h3
+          className="font-display font-semibold text-olive-900"
+          style={{ fontSize: "var(--text-h3)" }}
+        >
+          {event.title}
+        </h3>
+      </RevealItem>
+
+      <RevealItem variants={drawLine} className="w-full">
+        <SprigDivider className="!my-4 text-gold-600" />
+      </RevealItem>
+
+      {/* Info Block (Date, Time, Venue) - Centered container, left-aligned contents */}
+      <div className="mt-1 w-full space-y-4 font-body text-base text-left text-olive-900">
+        <RevealItem
+          as="p"
+          variants={slideUp}
+          className="flex flex-row items-start gap-3"
+        >
+          <HiOutlineCalendarDays
+            aria-hidden="true"
+            className="mt-0.5 shrink-0 text-xl text-olive-500"
+          />
+          <time dateTime={event.date}>{event.dateLabel}</time>
         </RevealItem>
 
-        <RevealItem variants={drawLine}>
-          <SprigDivider className="!my-4 text-gold-600" />
+        <RevealItem
+          as="p"
+          variants={slideUp}
+          className="flex flex-row items-start gap-3"
+        >
+          <HiOutlineClock aria-hidden="true" className="mt-0.5 shrink-0 text-xl text-olive-500" />
+          <span>{event.time}</span>
         </RevealItem>
 
-        <div className="mt-6 space-y-4 font-body text-base text-olive-900">
-          <RevealItem
-            as="p"
-            variants={slideUp}
-            className="flex items-center justify-center gap-2"
-          >
-            <HiOutlineCalendarDays
+        <RevealItem variants={slideUp}>
+          <address className="flex flex-row items-start gap-3 not-italic">
+            <HiOutlineMapPin
               aria-hidden="true"
-              className="shrink-0 text-olive-500"
+              className="mt-0.5 shrink-0 text-xl text-olive-500"
             />
-            <time dateTime={event.date}>{event.dateLabel}</time>
-          </RevealItem>
-
-          <RevealItem
-            as="p"
-            variants={slideUp}
-            className="flex items-center justify-center gap-2"
-          >
-            <HiOutlineClock aria-hidden="true" className="shrink-0 text-olive-500" />
-            {event.time}
-          </RevealItem>
-
-          <RevealItem variants={slideUp}>
-            <address className="flex flex-col items-center gap-1 not-italic">
-              <span className="flex items-center gap-2 font-medium">
-                <HiOutlineMapPin
-                  aria-hidden="true"
-                  className="shrink-0 text-olive-500"
-                />
+            <div className="flex flex-col gap-1">
+              <span className="font-semibold text-lg text-olive-900">
                 {event.venue}
               </span>
-              <span className="max-w-xs text-sm leading-relaxed text-olive-700">
+              <span className="text-sm leading-snug text-olive-700">
                 {event.address}
               </span>
-            </address>
-          </RevealItem>
-        </div>
-
-        {/* the live map itself is left alone — only its frame is revealed */}
-        <RevealItem
-          variants={softMask}
-          className="mt-6 overflow-hidden rounded border border-sage-300"
-        >
-          <iframe
-            src={event.mapsEmbed}
-            title={`Peta ${event.title}`}
-            className="h-44 w-full border-0"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </RevealItem>
-
-        <RevealItem
-          variants={fadeIn}
-          className="mt-6 flex flex-col justify-center gap-3 sm:flex-row"
-        >
-          <a
-            href={event.mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Lihat lokasi ${event.venue} di Google Maps (tab baru)`}
-            className="btn-ghost"
-          >
-            <HiOutlineMapPin aria-hidden="true" /> Lihat Lokasi
-          </a>
-          <a
-            href={buildCalendarUrl(event, coupleNames)}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Simpan tanggal ke Google Calendar (tab baru)"
-            className="btn-olive !px-5 !py-2.5"
-          >
-            <HiOutlineCalendarDays aria-hidden="true" /> Simpan Tanggal
-          </a>
+            </div>
+          </address>
         </RevealItem>
       </div>
     </StaggerGroup>
@@ -126,15 +85,14 @@ function EventCard({ event }: { event: EventInfo }) {
 }
 
 /**
- * Event details — the invitation card proper, presented as a keepsake
- * frame on a sage mat chapter. Map URL, embed, and calendar action are
- * unchanged (IMPLEMENTATION_PLAN §P1.5).
+ * Event details — the invitation card proper, presented seamlessly
+ * integrated with the floral gate background.
  */
 export function EventDetails() {
   return (
     <section
       aria-labelledby="event-title"
-      className="section-pad relative overflow-hidden bg-sage-100"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-sage-100 py-4 px-2 sm:py-8 sm:px-4"
     >
       <BotanicalParallax
         src="floral-right.png"
@@ -144,31 +102,54 @@ export function EventDetails() {
         distance={-48}
       />
 
-      <div className="relative mx-auto flex min-h-[52rem] w-full max-w-[43rem] flex-col items-center justify-center py-20 sm:min-h-[56rem] sm:py-24">
-        <WatercolorLayer
-          src="event-garden-arch.png"
-          className="inset-0"
-          opacity={0.82}
-          sizes="(max-width: 640px) 100vw, 43rem"
-        />
-        <div className="relative z-[1] flex w-full flex-col items-center px-[12%] text-center sm:px-[16%]">
-          <div>
-            <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
-              Save The Moment
-            </p>
-            <h2
-              id="event-title"
-              className="mt-3 font-display font-semibold text-olive-900"
-              style={{ fontSize: "var(--text-h2)" }}
-            >
-              Wedding Event
-            </h2>
-            <SprigDivider className="!my-4 text-gold-600" />
-          </div>
-          <div className="mt-3 w-full">
+      <div className="relative mx-auto flex w-full max-w-md flex-col items-center">
+        {/* HEADER: Outside and above the gate */}
+        <Reveal variants={fadeIn} className="relative z-10 w-full text-center mb-2 sm:mb-4 px-2">
+          <p className="font-body text-xs font-semibold uppercase tracking-[0.22em] text-gold-700 sm:text-sm">
+            Save The Moment
+          </p>
+          <h2
+            id="event-title"
+            className="mt-2 font-display font-semibold text-olive-900"
+            style={{ fontSize: "var(--text-h2)" }}
+          >
+            Wedding Event
+          </h2>
+          <SprigDivider className="!mt-4 mx-auto text-gold-600" />
+        </Reveal>
+
+        {/* GATE CONTAINER */}
+        <div className="relative flex aspect-[2/3] w-full flex-col items-center justify-center">
+          <WatercolorLayer
+            src="event-garden-arch.png"
+            className="inset-0 contrast-105 brightness-[1.02]"
+            opacity={1}
+            quality={100}
+            priority={true}
+            sizes="(max-width: 640px) 100vw, 28rem"
+          />
+          
+          {/* INNER SAFE ZONE */}
+          <div className="relative z-[1] mx-auto flex w-full max-w-[260px] sm:max-w-[280px] flex-col items-center px-4 text-center">
             <EventCard event={config.event.resepsi} />
           </div>
         </div>
+
+        {/* BUTTON: Outside and below the gate */}
+        <Reveal
+          variants={fadeIn}
+          className="mt-3 sm:mt-4 flex w-full justify-center"
+        >
+          <a
+            href={config.event.resepsi.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Lihat lokasi ${config.event.resepsi.venue} di Google Maps (tab baru)`}
+            className="btn-olive inline-flex w-auto items-center justify-center gap-2 !px-5 !py-2.5 !text-xs sm:!text-sm shadow-sm transition-all hover:scale-[1.02]"
+          >
+            <HiOutlineMapPin aria-hidden="true" className="text-base sm:text-lg" /> Lihat Lokasi
+          </a>
+        </Reveal>
       </div>
     </section>
   );
