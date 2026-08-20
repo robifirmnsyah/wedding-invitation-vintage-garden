@@ -28,8 +28,7 @@ function EventCard({ event }: { event: EventInfo }) {
     >
       <RevealItem variants={riseIn} className="text-center">
         <h3
-          className="font-display font-semibold text-olive-900"
-          style={{ fontSize: "var(--text-h3)" }}
+          className="font-display font-semibold text-olive-900 text-4xl sm:text-5xl"
         >
           {event.title}
         </h3>
@@ -77,6 +76,18 @@ function EventCard({ event }: { event: EventInfo }) {
               </span>
             </div>
           </address>
+        </RevealItem>
+
+        <RevealItem variants={slideUp} className="pt-5 flex justify-center w-full">
+          <a
+            href={event.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Lihat lokasi ${event.venue} di Google Maps (tab baru)`}
+            className="btn-olive inline-flex w-auto items-center justify-center gap-2 !px-5 !py-2.5 !text-xs sm:!text-sm shadow-sm transition-all hover:scale-[1.02]"
+          >
+            <HiOutlineMapPin aria-hidden="true" className="text-base sm:text-lg" /> Lihat Lokasi
+          </a>
         </RevealItem>
       </div>
     </StaggerGroup>
@@ -126,21 +137,6 @@ export function EventDetails() {
           </div>
         </div>
 
-        {/* BUTTON: Outside and below the gate */}
-        <Reveal
-          variants={fadeIn}
-          className="mt-3 sm:mt-4 flex w-full justify-center"
-        >
-          <a
-            href={config.event.resepsi.mapsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Lihat lokasi ${config.event.resepsi.venue} di Google Maps (tab baru)`}
-            className="btn-olive inline-flex w-auto items-center justify-center gap-2 !px-5 !py-2.5 !text-xs sm:!text-sm shadow-sm transition-all hover:scale-[1.02]"
-          >
-            <HiOutlineMapPin aria-hidden="true" className="text-base sm:text-lg" /> Lihat Lokasi
-          </a>
-        </Reveal>
       </div>
     </section>
   );

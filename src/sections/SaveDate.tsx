@@ -19,12 +19,12 @@ function Unit({ value, label }: { value: number; label: string }) {
   return (
     <RevealItem
       variants={scaleIn}
-      className="flex flex-col items-center px-0.5 sm:px-1"
+      className="flex flex-col items-center px-2"
     >
-      <span className="font-display text-xl font-semibold tabular-nums text-olive-900 sm:text-3xl">
+      <span className="font-display text-4xl font-semibold tabular-nums text-olive-900 sm:text-5xl">
         {String(value).padStart(2, "0")}
       </span>
-      <span className="mt-1 font-body text-[9px] font-medium uppercase tracking-wider text-olive-700 sm:text-xs">
+      <span className="mt-2 font-body text-xs font-medium uppercase tracking-wider text-olive-700 sm:text-sm">
         {label}
       </span>
     </RevealItem>
@@ -90,19 +90,19 @@ export function SaveDate() {
 
             <div
               role="timer"
-              aria-label={`${t.days} hari ${t.hours} jam ${t.minutes} menit ${t.seconds} detik menuju hari pernikahan`}
-              className="mt-4 w-full max-w-[15rem] sm:mt-5 sm:max-w-xs mx-auto"
+              aria-label={`${t.days} days ${t.hours} hours ${t.minutes} minutes ${t.seconds} seconds to the wedding`}
+              className="mt-4 w-full max-w-[12rem] sm:mt-5 sm:max-w-[14rem] mx-auto"
             >
               <StaggerGroup
                 as="div"
                 variants={staggerTight}
                 aria-hidden="true"
-                className="grid grid-cols-4 divide-x divide-sage-300 border-y border-sage-300 py-2.5 sm:py-3.5"
+                className="grid grid-cols-2 gap-y-5 gap-x-4 py-2 sm:py-3"
               >
-                <Unit value={t.days} label="Hari" />
-                <Unit value={t.hours} label="Jam" />
-                <Unit value={t.minutes} label="Menit" />
-                <Unit value={t.seconds} label="Detik" />
+                <Unit value={t.days} label="Days" />
+                <Unit value={t.hours} label="Hours" />
+                <Unit value={t.minutes} label="Minutes" />
+                <Unit value={t.seconds} label="Seconds" />
               </StaggerGroup>
             </div>
 
