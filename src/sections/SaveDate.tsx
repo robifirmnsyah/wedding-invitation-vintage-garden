@@ -46,9 +46,9 @@ export function SaveDate() {
       aria-labelledby="save-date-title"
       className="section-pad relative isolate overflow-hidden bg-ivory-50"
     >
-      <div className="relative mx-auto flex w-full max-w-[26rem] flex-col items-center px-4 sm:max-w-[30rem]">
+      <div className="relative mx-auto flex w-full max-w-[32rem] flex-col items-center px-4 sm:max-w-[40rem]">
         {/* Floral Frame Container */}
-        <div className="relative aspect-[2/3] w-full max-w-[26rem] sm:max-w-[30rem]">
+        <div className="relative aspect-[2/3] w-full max-w-[32rem] sm:max-w-[40rem]">
           <WatercolorLayer
             src="ornamental-calendar-frame.png"
             className="inset-0"
