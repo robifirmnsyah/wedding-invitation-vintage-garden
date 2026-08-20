@@ -79,8 +79,8 @@ export function Gallery() {
         </p>
       </div>
 
-      <div className="mx-auto mt-9 max-w-3xl">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-beige-200 shadow-paper sm:rounded-[2.25rem]">
+      <div className="mx-auto mt-9 max-w-2xl sm:max-w-3xl">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-beige-200 shadow-paper sm:rounded-[2.25rem]">
           <AnimatePresence initial={false} mode="sync">
             <motion.button
               key={current.src}
@@ -98,8 +98,9 @@ export function Gallery() {
                 alt={current.caption}
                 fill
                 loading="lazy"
-                sizes="(max-width: 640px) calc(100vw - 2.5rem), 42rem"
+                sizes="(max-width: 640px) calc(100vw - 2.5rem), 48rem"
                 className="object-cover"
+                style={{ objectPosition: "center center" }}
               />
               <span className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-olive-950/45 to-transparent" />
               <span className="absolute bottom-4 left-5 font-display text-lg italic text-ivory-50 sm:bottom-5 sm:left-6">
@@ -133,7 +134,7 @@ export function Gallery() {
         <div className="mt-4 overflow-hidden pb-2 sm:mt-5">
           <motion.div
             ref={railTrackRef}
-            className="flex gap-3"
+            className="flex items-center gap-3"
             initial={false}
             animate={railDistance && !reducedMotion ? { x: [0, -railDistance] } : { x: 0 }}
             transition={{
@@ -146,6 +147,7 @@ export function Gallery() {
             {railItems.map((item, railIndex) => {
               const index = railIndex % items.length;
               const isPrimaryCopy = railIndex < items.length;
+              const isWide = item.span === "wide";
               return (
                 <button
                   key={`${item.src}-${railIndex}`}
@@ -157,7 +159,9 @@ export function Gallery() {
                   aria-label={`Pilih foto ${index + 1}: ${item.caption}`}
                   aria-current={displayedIndex === index ? "true" : undefined}
                   tabIndex={isPrimaryCopy ? 0 : -1}
-                  className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-24 sm:w-24 ${
+                  className={`relative h-20 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-24 ${
+                    isWide ? "aspect-[3/2]" : "aspect-[2/3]"
+                  } ${
                     displayedIndex === index
                       ? "border-gold-600 shadow-paper"
                       : "border-transparent opacity-70 hover:opacity-100"
@@ -167,13 +171,20 @@ export function Gallery() {
                     src={item.src}
                     alt=""
                     fill
-                    sizes="6rem"
+                    sizes="8rem"
                     className="object-cover"
+                    style={{ objectPosition: "center center" }}
                   />
                 </button>
               );
             })}
           </motion.div>
+        </div>
+
+        <div className="mt-12 text-center sm:mt-14">
+          <p className="font-display text-base font-medium tracking-[0.18em] text-olive-800 sm:text-lg">
+            #pasTIBIsah
+          </p>
         </div>
       </div>
 

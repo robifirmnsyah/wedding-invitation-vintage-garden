@@ -10,7 +10,6 @@ import {
 } from "react-icons/hi2";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SectionTitle } from "@/components/Decor";
-import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import { motionTokens } from "@/animations/tokens";
 import { fadeIn, slideUp, staggerContainer } from "@/animations/variants";
 import { copyToClipboard } from "@/lib/utils";
@@ -72,14 +71,8 @@ export function Gift() {
   return (
     <section
       aria-labelledby="gift-title"
-      className="section-pad relative isolate overflow-hidden bg-ivory-50"
+      className="section-pad relative overflow-hidden bg-ivory-50"
     >
-      <WatercolorLayer
-        src="gift-garden-path.png"
-        className="bottom-[-18rem] left-1/2 h-[min(42rem,118vw)] w-[min(32rem,102vw)] -translate-x-1/2 sm:bottom-[-15rem]"
-        opacity={0.18}
-        sizes="(max-width: 640px) 110vw, 36rem"
-      />
       <div className="relative z-[1]">
         <SectionTitle id="gift-title" eyebrow="With Love" title="Wedding Gift" />
 

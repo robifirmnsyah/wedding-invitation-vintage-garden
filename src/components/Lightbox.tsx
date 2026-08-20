@@ -200,9 +200,14 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
                 )}
               </motion.figure>
             </AnimatePresence>
-            <span id="lightbox-count" className="mt-1 font-body text-sm text-ivory-50/70">
-              {(index ?? 0) + 1} / {items.length}
-            </span>
+            <div className="mt-3 flex flex-col items-center gap-1.5 text-center">
+              <span id="lightbox-count" className="font-body text-xs text-ivory-50/70">
+                {(index ?? 0) + 1} / {items.length}
+              </span>
+              <p className="mt-1 font-display text-sm font-medium tracking-[0.18em] text-ivory-50/90 sm:text-base">
+                #pasTIBIsah
+              </p>
+            </div>
           </div>
         </motion.div>
       )}

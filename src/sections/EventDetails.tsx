@@ -2,7 +2,6 @@
 
 import { Reveal, StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SprigDivider } from "@/components/Decor";
-import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
 import { WatercolorLayer } from "@/components/decorative/WatercolorLayer";
 import {
   fadeIn,
@@ -94,14 +93,6 @@ export function EventDetails() {
       aria-labelledby="event-title"
       className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-sage-100 py-4 px-2 sm:py-8 sm:px-4"
     >
-      <BotanicalParallax
-        src="floral-right.png"
-        side="right"
-        className="-right-[18%] top-[10%] h-[48%] w-[44%] sm:-right-[5%] sm:w-[24%]"
-        opacity={0.13}
-        distance={-48}
-      />
-
       <div className="relative mx-auto flex w-full max-w-md flex-col items-center">
         {/* HEADER: Outside and above the gate */}
         <Reveal variants={fadeIn} className="relative z-10 w-full text-center mb-2 sm:mb-4 px-2">

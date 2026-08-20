@@ -4,7 +4,6 @@ import Image from "next/image";
 import { FaInstagram } from "react-icons/fa6";
 import { SectionTitle } from "@/components/Decor";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
-import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
 import {
   fadeIn,
   slideUp,
@@ -93,21 +92,6 @@ export function BrideGroom() {
       aria-labelledby="bride-groom-title"
       className="section-pad relative overflow-hidden bg-beige-200"
     >
-      <BotanicalParallax
-        src="floral-left.png"
-        side="left"
-        className="-left-[16%] top-[12%] h-[46%] w-[42%] sm:-left-[4%] sm:w-[22%]"
-        opacity={0.14}
-        distance={52}
-      />
-      <BotanicalParallax
-        src="floral-right.png"
-        side="right"
-        className="-right-[16%] bottom-[8%] h-[46%] w-[42%] sm:-right-[4%] sm:w-[22%]"
-        opacity={0.14}
-        distance={-52}
-      />
-
       <SectionTitle
         id="bride-groom-title"
         eyebrow="Bismillah"

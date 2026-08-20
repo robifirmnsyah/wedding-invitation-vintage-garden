@@ -2,7 +2,6 @@
 
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { SprigDivider } from "@/components/Decor";
-import { BotanicalParallax } from "@/components/decorative/BotanicalParallax";
 import { fadeIn, riseIn, drawLine, staggerLoose } from "@/animations/variants";
 import config from "@/lib/config";
 
@@ -15,13 +14,6 @@ export function Quote() {
       aria-labelledby="quote-ref"
       className="section-pad relative overflow-hidden bg-ivory-50 pt-28"
     >
-      <BotanicalParallax
-        src="floral-left.png"
-        side="left"
-        className="-left-[18%] top-[6%] h-[52%] w-[46%] sm:-left-[6%] sm:w-[26%]"
-        opacity={0.07}
-        distance={44}
-      />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-[9%] inset-y-[12%] rounded-[48%] bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.96)_0%,_rgba(255,250,240,0.76)_48%,_transparent_76%)]"
