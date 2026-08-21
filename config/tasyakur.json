@@ -19,7 +19,7 @@
   },
   "hero": {
     "tagline": "The Wedding Of",
-    "dateLabel": "Sabtu, 5 September 2026",
+    "dateLabel": "Minggu, 30 Agustus 2026",
     "photo": "/assets/gallery/prewed/prewed-03.webp"
   },
   "quote": {
@@ -51,17 +51,17 @@
   ],
   "event": {
     "resepsi": {
-      "title": "Resepsi",
-      "date": "2026-09-05T10:00:00",
-      "dateLabel": "Sabtu, 5 September 2026",
-      "time": "10.00 - 14.00 WIB",
-      "venue": "Hubdam III Siliwangi",
-      "address": "Jl. Moch. Toha No.055, Ciateul, Kec. Regol, Kota Bandung, Jawa Barat 40252",
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Hubdam+III+Siliwangi+Bandung",
+      "title": "Tasyukur\nMenjelang Pernikahan",
+      "date": "2026-08-30T10:00:00",
+      "dateLabel": "Minggu, 30 Agustus 2026",
+      "time": "",
+      "venue": "Kediaman Mempelai Pria",
+      "address": "Jl. Sukasari No. 03, RT 04/RW 10, Kel. Pasir Biru, Kec. Cibiru, Kota Bandung, Jawa Barat 40615",
+      "mapsUrl": "https://maps.app.goo.gl/xvP1AZfWuMR6A3BdA?g_st=ac",
       "mapsEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7921.263788910059!2d107.6066144!3d-6.9345235999999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e89b72429ef3%3A0xaf0cd315b57c9df1!2sHubdam%20III%20Siliwangi!5e0!3m2!1sid!2sid!4v1782062318634!5m2!1sid!2sid"
     }
   },
-  "countdownTarget": "2026-09-05T10:00:00",
+  "countdownTarget": "2026-08-30T10:00:00",
   "gallery": [
     {
       "src": "/assets/gallery/prewed/prewed-01.webp",

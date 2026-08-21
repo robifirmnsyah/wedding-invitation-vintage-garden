@@ -28,18 +28,27 @@ function EventCard({ event }: { event: EventInfo }) {
     >
       <RevealItem variants={riseIn} className="text-center">
         <h3
-          className="font-display font-semibold text-olive-900 text-4xl sm:text-5xl"
+          className="text-olive-900 text-center"
         >
-          {event.title}
+          {event.title.split('\n').map((line, i) => (
+            <span 
+              key={i} 
+              className={i === 0 
+                ? "font-accent text-4xl sm:text-5xl block text-olive-800" 
+                : "font-display font-medium text-xs sm:text-sm tracking-[0.1em] uppercase block mt-1 text-olive-900"}
+            >
+              {line}
+            </span>
+          ))}
         </h3>
       </RevealItem>
 
       <RevealItem variants={drawLine} className="w-full">
-        <SprigDivider className="!my-4 text-gold-600" />
+        <SprigDivider className="!my-3 text-gold-600" />
       </RevealItem>
 
       {/* Info Block (Date, Time, Venue) - Centered container, left-aligned contents */}
-      <div className="mt-1 w-full space-y-4 font-body text-base text-left text-olive-900">
+      <div className="mt-0 w-full space-y-3 font-body text-[15px] text-left text-olive-900 sm:space-y-4 sm:text-base">
         <RevealItem
           as="p"
           variants={slideUp}
@@ -52,14 +61,16 @@ function EventCard({ event }: { event: EventInfo }) {
           <time dateTime={event.date}>{event.dateLabel}</time>
         </RevealItem>
 
-        <RevealItem
-          as="p"
-          variants={slideUp}
-          className="flex flex-row items-start gap-3"
-        >
-          <HiOutlineClock aria-hidden="true" className="mt-0.5 shrink-0 text-xl text-olive-500" />
-          <span>{event.time}</span>
-        </RevealItem>
+        {event.time && (
+          <RevealItem
+            as="p"
+            variants={slideUp}
+            className="flex flex-row items-start gap-3"
+          >
+            <HiOutlineClock aria-hidden="true" className="mt-0.5 shrink-0 text-xl text-olive-500" />
+            <span>{event.time}</span>
+          </RevealItem>
+        )}
 
         <RevealItem variants={slideUp}>
           <address className="flex flex-row items-start gap-3 not-italic">
@@ -68,23 +79,23 @@ function EventCard({ event }: { event: EventInfo }) {
               className="mt-0.5 shrink-0 text-xl text-olive-500"
             />
             <div className="flex flex-col gap-1">
-              <span className="font-semibold text-lg text-olive-900">
+              <span className="font-semibold text-[15px] text-olive-900">
                 {event.venue}
               </span>
-              <span className="text-sm leading-snug text-olive-700">
+              <span className="text-xs leading-snug text-olive-700">
                 {event.address}
               </span>
             </div>
           </address>
         </RevealItem>
 
-        <RevealItem variants={slideUp} className="pt-5 flex justify-center w-full">
+        <RevealItem variants={slideUp} className="pt-3 flex justify-center w-full sm:pt-5">
           <a
             href={event.mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Lihat lokasi ${event.venue} di Google Maps (tab baru)`}
-            className="btn-olive inline-flex w-auto items-center justify-center gap-2 !px-5 !py-2.5 !text-xs sm:!text-sm shadow-sm transition-all hover:scale-[1.02]"
+            className="btn-olive inline-flex w-auto items-center justify-center gap-1.5 !px-3.5 !py-2 !text-[11px] sm:!text-xs shadow-sm transition-all hover:scale-[1.02]"
           >
             <HiOutlineMapPin aria-hidden="true" className="text-base sm:text-lg" /> Lihat Lokasi
           </a>

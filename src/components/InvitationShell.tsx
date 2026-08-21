@@ -18,7 +18,7 @@ import { Gift } from "@/sections/Gift";
 import { Closing } from "@/sections/Closing";
 import { SoftDivider } from "@/components/SoftDivider";
 import { motionTokens } from "@/animations/tokens";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 
 const easeInFastSlowOut = (progress: number) => {
   const split = 0.3;
@@ -113,17 +113,29 @@ export function InvitationShell() {
               <Quote />
               <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               <BrideGroom />
-              <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
-              <SaveDate />
-              <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
+              {!isTasyakur ? (
+                <>
+                  <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
+                  <SaveDate />
+                  <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
+                </>
+              ) : (
+                <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
+              )}
               <EventDetails />
               <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Gallery />
-              <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
-              <Story />
-              <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
-              <Wishes />
-              <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
+              {!isTasyakur ? (
+                <>
+                  <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
+                  <Story />
+                  <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
+                  <Wishes />
+                  <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
+                </>
+              ) : (
+                <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
+              )}
               <Gift />
               <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Closing />
