@@ -204,7 +204,7 @@ body.locked {
 
   /* Overlay control shared by the lightbox and QRIS modal */
   .lightbox-control {
-    @apply flex h-11 w-11 items-center justify-center border border-ivory-50/50 text-ivory-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-600;
+    @apply flex h-11 w-11 items-center justify-center text-ivory-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-600;
     transition:
       background-color var(--motion-duration-fast) var(--motion-ease-out),
       transform var(--motion-duration-fast) var(--motion-ease-out);

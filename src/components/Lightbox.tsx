@@ -183,7 +183,7 @@ export function Lightbox({ items, index, onClose, onNavigate }: Props) {
                 exit="exit"
                 transition={transition}
               >
-                <div className="relative h-[70vh] w-full border border-ivory-50/20 bg-olive-950/30">
+                <div className="relative h-[70vh] w-full">
                   <Image
                     src={current.src}
                     alt={current.caption || "Foto galeri"}

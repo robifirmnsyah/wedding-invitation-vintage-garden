@@ -113,17 +113,17 @@ export function Gallery() {
             type="button"
             onClick={() => move(-1)}
             aria-label="Foto sebelumnya"
-            className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ivory-50/85 text-olive-800 shadow-paper transition hover:bg-ivory-50 sm:left-4"
+            className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white drop-shadow-md transition-transform hover:scale-110 sm:left-4"
           >
-            <HiChevronLeft className="h-6 w-6" />
+            <HiChevronLeft className="h-8 w-8" />
           </button>
           <button
             type="button"
             onClick={() => move(1)}
             aria-label="Foto berikutnya"
-            className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-ivory-50/85 text-olive-800 shadow-paper transition hover:bg-ivory-50 sm:right-4"
+            className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white drop-shadow-md transition-transform hover:scale-110 sm:right-4"
           >
-            <HiChevronRight className="h-6 w-6" />
+            <HiChevronRight className="h-8 w-8" />
           </button>
         </div>
 
