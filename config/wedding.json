@@ -29,24 +29,19 @@
   },
   "loveStory": [
     {
-      "title": "First Met",
-      "date": "2019",
-      "story": "Pertama kali kami dipertemukan di sebuah tempat yang sederhana. Tak ada yang istimewa saat itu, hanya sebuah sapaan kecil yang ternyata menjadi awal dari segalanya."
+      "title": "Pertemuan",
+      "date": "2023",
+      "story": "Perjalanan kami dimulai pada tahun 2023 melalui sebuah kesempatan yang mempertemukan kami di masa perkuliahan. Tidak ada kisah yang luar biasa atau pertemuan yang penuh kejutan. Kami hanya dua orang yang saling mengenal, bekerja sama menyelesaikan berbagai tanggung jawab, dan tanpa disadari mulai menjadi bagian dari cerita satu sama lain."
     },
     {
-      "title": "In Relationship",
-      "date": "2021",
-      "story": "Dari obrolan ringan menjadi cerita panjang setiap hari. Kami belajar saling memahami, tumbuh bersama, dan menyadari bahwa kebersamaan ini terasa begitu menenangkan."
+      "title": "Perjalanan",
+      "date": "",
+      "story": "Seiring berjalannya waktu, kami tumbuh bersama melalui berbagai fase kehidupan. Menyelesaikan pendidikan, membangun karier, menghadapi tantangan, dan merayakan setiap pencapaian. Setiap langkah mengajarkan kami arti saling mendukung dan bertumbuh bersama."
     },
     {
-      "title": "Engagement",
-      "date": "2025",
-      "story": "Dengan restu kedua keluarga, kami mantapkan langkah menuju jenjang yang lebih serius. Sebuah janji kecil yang kami rawat dengan penuh harapan."
-    },
-    {
-      "title": "Toward Marriage",
+      "title": "Pernikahan",
       "date": "2026",
-      "story": "Kini, dengan menyebut nama Allah, kami siap menyatukan dua hati dalam ikatan yang suci. Mohon doa restu agar diberi kelancaran sampai hari bahagia kami."
+      "story": "Tidak ada momen besar yang mengubah segalanya. Hanya hari demi hari yang kami lalui bersama, hingga pada akhirnya kami sadar bahwa kami ingin terus bertumbuh, bermimpi, dan menua bersama. Dari keyakinan itulah kami memutuskan untuk menikah."
     }
   ],
   "event": {
