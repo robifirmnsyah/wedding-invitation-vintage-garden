@@ -5,6 +5,7 @@ export type Side = "bride" | "groom";
 
 const GUESTS_SHEET = "Web Invitation Active";
 const CATEGORIES_SHEET = "Web Categories Active";
+const WISHES_SHEET = "Web Wishes Active";
 const GUEST_HEADERS = [
   "Kode Undangan", "Nama", "Jumlah", "Kategori", "Pihak", "Tipe Kontak", "Kontak", "Status RSVP", "Ucapan", "Dibuat Pada", "Diperbarui Pada",
 ];
@@ -319,4 +320,53 @@ export async function getGuestStats() {
   return { stats, categoryBreakdown };
 }
 
-export const SHEET_CONFIG = { GUESTS_SHEET, CATEGORIES_SHEET, GUEST_HEADERS, CATEGORY_HEADERS };
+export async function listPublicWishes() {
+  const rows = await getValues(WISHES_SHEET, "A2:G");
+  return rows.map((row, index) => {
+    let replies = [];
+    try {
+      replies = row[6] ? JSON.parse(row[6]) : [];
+    } catch {
+      replies = [];
+    }
+    return {
+      id: stringAt(row, 0),
+      name: stringAt(row, 1),
+      message: stringAt(row, 2),
+      attendance: stringAt(row, 3) as "hadir" | "tidak_hadir" | "ragu",
+      verified: stringAt(row, 4) === "TRUE",
+      createdAt: stringAt(row, 5),
+      replies,
+      row: index + 2,
+    };
+  }).filter(wish => wish.id);
+}
+
+export async function appendPublicWish(wish: any) {
+  const rowData = [
+    wish.id,
+    wish.name,
+    wish.message,
+    wish.attendance,
+    wish.verified ? "TRUE" : "FALSE",
+    wish.createdAt,
+    JSON.stringify(wish.replies || [])
+  ];
+  await getSheets().spreadsheets.values.append({
+    spreadsheetId: getSpreadsheetId(),
+    range: `'${WISHES_SHEET}'!A:G`,
+    valueInputOption: "USER_ENTERED",
+    insertDataOption: "INSERT_ROWS",
+    requestBody: { values: [rowData] },
+  });
+}
+
+export async function updatePublicWishReplies(wishId: string, replies: any[]) {
+  const wishes = await listPublicWishes();
+  const wish = wishes.find(w => w.id === wishId);
+  if (!wish) throw new Error("Wish not found");
+  
+  await updateValues(WISHES_SHEET, `G${wish.row}:G${wish.row}`, [[JSON.stringify(replies)]]);
+}
+
+export const SHEET_CONFIG = { GUESTS_SHEET, CATEGORIES_SHEET, WISHES_SHEET, GUEST_HEADERS, CATEGORY_HEADERS };
