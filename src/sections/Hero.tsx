@@ -174,7 +174,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
                 <Sprig />
               </motion.div>
 
-              <motion.p variants={line} className="eyebrow mt-3">
+              <motion.p variants={line} className="eyebrow mt-3 whitespace-pre-line text-center">
                 {config.hero.tagline}
               </motion.p>
 
