@@ -132,12 +132,12 @@ export function InvitationShell() {
                   <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
                   <Wishes />
                   <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
+                  <Gift />
+                  <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
                 </>
               ) : (
-                <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
+                <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               )}
-              <Gift />
-              <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Closing />
             </motion.div>
           )}

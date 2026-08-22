@@ -54,7 +54,7 @@
       "title": "Tasyukur\nMenjelang Pernikahan",
       "date": "2026-08-30T10:00:00",
       "dateLabel": "Minggu, 30 Agustus 2026",
-      "time": "",
+      "time": "09.00 - Selesai",
       "venue": "Kediaman Mempelai Pria",
       "address": "Jl. Sukasari No. 03, RT 04/RW 10, Kel. Pasir Biru, Kec. Cibiru, Kota Bandung, Jawa Barat 40615",
       "mapsUrl": "https://maps.app.goo.gl/xvP1AZfWuMR6A3BdA?g_st=ac",
@@ -253,8 +253,7 @@
     "qris": "/assets/payment/qris1.jpeg"
   },
   "closing": {
-    "message": "Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kedua mempelai.",
-    "gratitude": "With heartfelt gratitude, we invite your prayers and blessings"
+    "message": "Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu kepada kedua mempelai."
   },
-  "music": "/assets/music/violin-wedding.mp3"
+  "music": "/assets/music/tasyakur.mp3"
 }
