@@ -79,7 +79,7 @@ export function Story() {
     <section
       ref={root}
       aria-labelledby="story-title"
-      className="section-pad relative overflow-hidden bg-sage-100"
+      className="section-pad relative overflow-hidden bg-ivory-50"
     >
       <SectionTitle id="story-title" eyebrow="Our Journey" title="Our Love Story" />
 

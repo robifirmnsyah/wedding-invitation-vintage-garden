@@ -57,6 +57,7 @@ export function Wishes() {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [attendance, setAttendance] = useState<Wish["attendance"]>("hadir");
+  const [pax, setPax] = useState<number>(1);
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
 
@@ -73,6 +74,9 @@ export function Wishes() {
           setRegisteredGuest(d.guest);
           if (d.guest.rsvp_status && d.guest.rsvp_status !== "pending") {
             setAttendance(d.guest.rsvp_status as Wish["attendance"]);
+          }
+          if (d.guest.pax) {
+            setPax(d.guest.pax);
           }
           if (d.guest.wish_message) {
             setMessage(d.guest.wish_message);
@@ -162,7 +166,7 @@ export function Wishes() {
   return (
     <section
       aria-labelledby="wishes-title"
-      className="section-pad relative overflow-hidden bg-ivory-50"
+      className="section-pad relative overflow-hidden "
     >
       <div className="relative z-[1]">
         <SectionTitle id="wishes-title" eyebrow="Send Your Love" title="Wedding Wishes" />
@@ -177,7 +181,7 @@ export function Wishes() {
           {status === "success" ? (
             <motion.div key="success" {...formState} className="py-8 text-center" role="status">
               <motion.div
-                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-olive-600 bg-sage-100"
+                className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-olive-600 "
                 initial={{ scale: 0.7, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ ...motionTokens.spring, delay: 0.1 }}
@@ -206,7 +210,7 @@ export function Wishes() {
           ) : (
             <motion.form key="form" {...formState} onSubmit={submitRsvp} className="space-y-4">
               {registeredGuest ? (
-                <div className="border border-sage-300 bg-sage-100 p-3">
+                <div className="border border-sage-300  p-3">
                   <div className="flex items-center gap-2">
                     <HiCheckBadge
                       aria-hidden="true"
@@ -235,39 +239,71 @@ export function Wishes() {
                     maxLength={60}
                     required
                     placeholder="Nama Anda"
-                    className="mt-1.5 min-h-10 w-full rounded border border-sage-300 bg-ivory-50 px-3 py-2 font-body text-sm text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
+                    className="mt-1.5 min-h-10 w-full rounded border border-sage-300  px-3 py-2 font-body text-sm text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
                   />
                 </div>
               )}
 
-              <div>
-                <span
-                  id="attendance-label"
-                  className="font-body text-xs font-medium text-olive-700"
-                >
-                  Kehadiran
-                </span>
-                <div
-                  role="radiogroup"
-                  aria-labelledby="attendance-label"
-                  className="mt-1.5 grid grid-cols-3 gap-2"
-                >
-                  {ATTENDANCE.map((a) => (
+              {/* Kehadiran Dropdown & Plus/Minus Jumlah Tamu Counter */}
+              <div className="grid grid-cols-2 gap-3 items-end">
+                {/* Kehadiran Dropdown */}
+                <div>
+                  <label
+                    htmlFor="attendance-select"
+                    className="font-body text-xs font-medium text-olive-700 block mb-1.5"
+                  >
+                    Kehadiran
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="attendance-select"
+                      value={attendance}
+                      onChange={(e) => setAttendance(e.target.value as Wish["attendance"])}
+                      className="min-h-10 w-full rounded-lg border border-sage-300 bg-[#FFFFFF] px-3 py-2 font-body text-sm text-olive-900 outline-none transition-colors duration-200 focus:border-olive-600 focus:ring-1 focus:ring-olive-600 cursor-pointer appearance-none pr-8"
+                    >
+                      <option value="hadir">Hadir</option>
+                      <option value="tidak_hadir">Tidak Hadir</option>
+                      <option value="ragu">Masih Ragu</option>
+                    </select>
+                    {/* Custom chevron icon */}
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-olive-600">
+                      <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Konfirmasi Jumlah Orang (Plus / Minus Counter) */}
+                <div>
+                  <label
+                    className="font-body text-xs font-medium text-olive-700 block mb-1.5"
+                  >
+                    Jumlah Tamu
+                  </label>
+                  <div className="flex min-h-10 w-full items-center justify-between rounded-lg border border-sage-300 bg-[#FFFFFF] px-1.5">
                     <button
                       type="button"
-                      key={a}
-                      role="radio"
-                      aria-checked={attendance === a}
-                      onClick={() => setAttendance(a)}
-                      className={`min-h-10 cursor-pointer rounded border px-2 py-1.5 font-body text-xs transition-colors duration-200 ${
-                        attendance === a
-                          ? "border-olive-600 bg-olive-600 text-ivory-50"
-                          : "border-sage-300 bg-ivory-50 text-olive-700 hover:bg-sage-100"
-                      }`}
+                      onClick={() => setPax((p) => Math.max(1, p - 1))}
+                      disabled={attendance === "tidak_hadir" || pax <= 1}
+                      aria-label="Kurangi jumlah tamu"
+                      className="flex h-7 w-7 items-center justify-center rounded-md bg-sage-100/90 text-olive-900 font-bold text-base hover:bg-sage-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
                     >
-                      {attendanceLabel[a]}
+                      -
                     </button>
-                  ))}
+                    <span className="font-body text-xs sm:text-sm font-semibold text-olive-950 tabular-nums">
+                      {pax} Orang
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setPax((p) => Math.min(10, p + 1))}
+                      disabled={attendance === "tidak_hadir" || pax >= 10}
+                      aria-label="Tambah jumlah tamu"
+                      className="flex h-7 w-7 items-center justify-center rounded-md bg-sage-100/90 text-olive-900 font-bold text-base hover:bg-sage-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed active:scale-95"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -286,7 +322,7 @@ export function Wishes() {
                   required
                   rows={3}
                   placeholder="Tulis ucapan dan doa terbaik Anda..."
-                  className="mt-1.5 w-full resize-none rounded border border-sage-300 bg-ivory-50 px-3 py-2 font-body text-sm text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
+                  className="mt-1.5 w-full resize-none rounded border border-sage-300  px-3 py-2 font-body text-sm text-olive-900 outline-none transition-colors duration-200 placeholder:text-sage-500 focus:border-olive-600"
                 />
               </div>
 
@@ -346,7 +382,7 @@ export function Wishes() {
                     {w.name}
                     {w.verified && (
                       <span
-                        className="inline-flex items-center gap-0.5 rounded-full border border-sage-300 bg-sage-100 px-1 py-0.5 text-[10px] font-medium text-olive-700"
+                        className="inline-flex items-center gap-0.5 rounded-full border border-sage-300  px-1 py-0.5 text-[10px] font-medium text-olive-700"
                         title="Tamu undangan"
                       >
                         <HiCheckBadge
@@ -398,7 +434,7 @@ export function Wishes() {
                       className={`flex h-8 w-8 items-center justify-center rounded-full font-body text-sm transition-colors ${
                         page === pageNum
                           ? 'bg-olive-600 text-ivory-50'
-                          : 'text-olive-700 hover:bg-sage-100'
+                          : 'text-olive-700 hover:'
                       }`}
                     >
                       {pageNum}

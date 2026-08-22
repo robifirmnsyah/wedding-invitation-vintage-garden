@@ -72,10 +72,10 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
   return (
     <section
       aria-label="Sampul undangan"
-      className="vintage-garden-cover relative z-10 flex min-h-svh w-full touch-pan-y items-center justify-center overflow-visible bg-ivory-50"
+      className="vintage-garden-cover relative z-10 flex min-h-svh w-full touch-pan-y items-center justify-center overflow-visible "
     >
       <motion.div
-        className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-visible bg-ivory-50 text-center shadow-paper"
+        className="relative mx-auto h-svh min-h-[568px] w-full max-w-[560px] overflow-visible  text-center shadow-paper"
         initial={{ opacity: 0 }}
         animate={{
           opacity: 1,
@@ -142,7 +142,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
           {opened && (
             <motion.div
               aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-[9] bg-ivory-50"
+              className="pointer-events-none absolute inset-0 z-[9] "
               initial={{ opacity: 0 }}
               animate={{ opacity: [0, 0.7, 0] }}
               exit={{ opacity: 0 }}

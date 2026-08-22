@@ -45,6 +45,16 @@
     }
   ],
   "event": {
+    "akad": {
+      "title": "Akad Nikah",
+      "date": "2026-09-03T09:00:00",
+      "dateLabel": "Kamis, 3 September 2026",
+      "time": "09.00 WIB",
+      "venue": "KUA Kecamatan Andir",
+      "address": "Jl. Elang V No. 25, Maleber, Kec. Andir, Kota Bandung, Jawa Barat 40184",
+      "mapsUrl": "https://maps.app.goo.gl/xetzZpNRfwyzq6cJ7?g_st=ac",
+      "mapsEmbed": ""
+    },
     "resepsi": {
       "title": "Resepsi",
       "date": "2026-09-05T10:00:00",

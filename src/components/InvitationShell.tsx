@@ -16,7 +16,6 @@ import { Gallery } from "@/sections/Gallery";
 import { Wishes } from "@/sections/Wishes";
 import { Gift } from "@/sections/Gift";
 import { Closing } from "@/sections/Closing";
-import { SoftDivider } from "@/components/SoftDivider";
 import { motionTokens } from "@/animations/tokens";
 import config, { isTasyakur } from "@/lib/config";
 
@@ -111,32 +110,16 @@ export function InvitationShell() {
               }}
             >
               <Quote />
-              <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               <BrideGroom />
-              {!isTasyakur ? (
-                <>
-                  <SoftDivider from="var(--beige-200)" to="var(--ivory-50)" />
-                  <SaveDate />
-                  <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
-                </>
-              ) : (
-                <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
-              )}
+              {!isTasyakur && <SaveDate />}
               <EventDetails />
-              <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
               <Gallery />
-              {!isTasyakur ? (
+              {!isTasyakur && (
                 <>
-                  <SoftDivider from="var(--beige-200)" to="var(--sage-100)" />
                   <Story />
-                  <SoftDivider from="var(--sage-100)" to="var(--ivory-50)" />
                   <Wishes />
-                  <SoftDivider from="var(--ivory-50)" to="var(--sage-100)" />
                   <Gift />
-                  <SoftDivider from="var(--sage-100)" to="var(--beige-200)" />
                 </>
-              ) : (
-                <SoftDivider from="var(--ivory-50)" to="var(--beige-200)" />
               )}
               <Closing />
             </motion.div>

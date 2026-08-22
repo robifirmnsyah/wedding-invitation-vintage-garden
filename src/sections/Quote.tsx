@@ -1,55 +1,99 @@
 "use client";
 
+import Image from "next/image";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
-import { SprigDivider } from "@/components/Decor";
-import { fadeIn, riseIn, drawLine, staggerLoose } from "@/animations/variants";
+import { fadeIn, riseIn, staggerLoose } from "@/animations/variants";
 import config from "@/lib/config";
 
-/** Islamic verse — QS Ar-Rum 21 as a quiet typographic pause. */
+/** Islamic verse — QS Ar-Rum 21 as a classic vintage botanical card. */
 export function Quote() {
-  const { quote } = config;
+  const { quote, couple } = config;
 
   return (
     <section
       aria-labelledby="quote-ref"
-      className="section-pad relative overflow-hidden bg-ivory-50 pt-28"
+      className="relative overflow-hidden bg-ivory-50 px-4 pt-32 pb-16 sm:px-6 sm:pt-40 sm:pb-24"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-[9%] inset-y-[12%] rounded-[48%] bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.96)_0%,_rgba(255,250,240,0.76)_48%,_transparent_76%)]"
-      />
 
       <StaggerGroup
         variants={staggerLoose}
-        className="relative mx-auto flex max-w-2xl flex-col items-center text-center"
+        className="relative z-10 mx-auto max-w-lg sm:max-w-xl md:max-w-2xl"
       >
-        <RevealItem as="p" variants={fadeIn} className="eyebrow !text-olive-700">
-          <span id="quote-ref">{quote.ref}</span>
-        </RevealItem>
+        {/* Outer Card with Gold Double Border & Soft Paper Shadow */}
+        <div className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] border border-gold-600/50 bg-[#FFFFFF] p-2.5 sm:p-3.5 shadow-lifted">
+          {/* Inner Inset Border Frame */}
+          <div className="relative flex flex-col items-center overflow-hidden rounded-[1.65rem] sm:rounded-[2.15rem] border border-gold-600/35 px-5 pt-12 pb-28 text-center sm:px-10 sm:pt-16 sm:pb-36">
 
-        <RevealItem variants={drawLine} className="w-full">
-          <SprigDivider className="mt-4" />
-        </RevealItem>
+            {/* Initials: R & T */}
+            <RevealItem
+              variants={riseIn}
+              className="relative z-10 mb-5 flex items-center justify-center gap-4 text-olive-900 font-accent text-[3.5rem] leading-none sm:text-[4.75rem]"
+            >
+              <span>{couple.groom.shortName[0]}</span>
+              <span className="mt-1 font-serif text-2xl sm:text-4xl italic text-gold-700">
+                &amp;
+              </span>
+              <span>{couple.bride.shortName[0]}</span>
+            </RevealItem>
 
-        <RevealItem variants={riseIn} className="mt-2">
-          <blockquote>
-            <p dir="rtl" lang="ar" className="arabic-verse text-olive-900">
-              {quote.arabic}
-            </p>
-          </blockquote>
-        </RevealItem>
+            {/* Botanical Sprig Divider */}
+            <div className="pointer-events-none relative z-10 mb-6 h-5 w-32 opacity-75">
+              <Image
+                src="/assets/decorative/vintage-garden-frame/botanical-divider.png"
+                alt=""
+                fill
+                className="object-contain"
+              />
+            </div>
 
-        <RevealItem
-          as="p"
-          variants={fadeIn}
-          className="mx-auto mt-8 max-w-prose font-display text-lg font-medium italic leading-relaxed text-olive-700"
-        >
-          <span lang="id">&ldquo;{quote.translation}&rdquo;</span>
-        </RevealItem>
+            {/* Translation text */}
+            <RevealItem
+              as="p"
+              variants={fadeIn}
+              className="relative z-10 mx-auto max-w-prose font-display text-[0.98rem] leading-[1.9] text-olive-900/90 sm:text-[1.125rem] sm:leading-[2]"
+            >
+              <span lang="id">&ldquo;{quote.translation}&rdquo;</span>
+            </RevealItem>
 
-        <RevealItem variants={drawLine} className="mt-8 w-full">
-          <SprigDivider />
-        </RevealItem>
+            {/* Verse Reference */}
+            <RevealItem
+              as="p"
+              variants={fadeIn}
+              className="relative z-10 mt-7 font-body text-xs font-semibold tracking-[0.25em] text-olive-800 uppercase sm:text-sm"
+            >
+              <span id="quote-ref">{quote.ref}</span>
+            </RevealItem>
+
+            {/* Bottom Floral Arrangement: Pink Roses & Hydrangeas */}
+            <div className="pointer-events-none absolute -bottom-4 inset-x-0 h-32 w-full sm:h-44 sm:-bottom-6">
+              <Image
+                src="/assets/decorative/vintage-garden-frame/floral-bottom.png"
+                alt=""
+                fill
+                className="object-contain object-bottom"
+              />
+            </div>
+
+            {/* Corner Leaf Sprigs for extra richness */}
+            <div className="pointer-events-none absolute -bottom-6 -left-6 h-28 w-28 opacity-80 sm:h-36 sm:w-36">
+              <Image
+                src="/assets/decorative/vintage-botanical-branch.png"
+                alt=""
+                fill
+                className="object-contain -rotate-45"
+              />
+            </div>
+            <div className="pointer-events-none absolute -bottom-6 -right-6 h-28 w-28 opacity-80 sm:h-36 sm:w-36">
+              <Image
+                src="/assets/decorative/vintage-botanical-branch.png"
+                alt=""
+                fill
+                className="object-contain rotate-45 -scale-x-100"
+              />
+            </div>
+
+          </div>
+        </div>
       </StaggerGroup>
     </section>
   );

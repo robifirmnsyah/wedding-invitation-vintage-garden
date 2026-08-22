@@ -69,7 +69,7 @@ export function Gallery() {
   }, [items.length, lightboxIndex, displayedIndex]);
 
   return (
-    <section aria-labelledby="gallery-title" className="section-pad overflow-hidden bg-ivory-50">
+    <section aria-labelledby="gallery-title" className="section-pad overflow-hidden ">
       <div className="mx-auto max-w-3xl text-center">
         <p className="font-accent text-[clamp(2.55rem,11vw,4rem)] leading-none text-olive-800">
           Portraits of Us
@@ -80,7 +80,7 @@ export function Gallery() {
       </div>
 
       <div className="mx-auto mt-9 max-w-2xl sm:max-w-3xl">
-        <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem] bg-beige-200 shadow-paper sm:rounded-[2.25rem]">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[1.75rem]  shadow-paper sm:rounded-[2.25rem]">
           <AnimatePresence initial={false} mode="sync">
             <motion.button
               key={current.src}
