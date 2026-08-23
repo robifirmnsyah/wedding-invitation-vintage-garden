@@ -5,7 +5,7 @@ import {
   Great_Vibes,
   Poppins,
 } from "next/font/google";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 import "./globals.css";
 
 const display = Cormorant_Garamond({
@@ -39,17 +39,21 @@ const accent = Great_Vibes({
 
 const groom = config.couple.groom.shortName;
 const bride = config.couple.bride.shortName;
+const person1 = isTasyakur ? groom : bride;
+const person2 = isTasyakur ? bride : groom;
+const fullName1 = isTasyakur ? config.couple.groom.name : config.couple.bride.name;
+const fullName2 = isTasyakur ? config.couple.bride.name : config.couple.groom.name;
 
 export const metadata: Metadata = {
-  title: `${groom} & ${bride} — Wedding Invitation`,
-  description: `Undangan pernikahan ${config.couple.groom.name} & ${config.couple.bride.name}`,
+  title: `${person1} & ${person2} — Wedding Invitation`,
+  description: `Undangan pernikahan ${fullName1} & ${fullName2}`,
   icons: {
     icon: "/assets/logo/favicon-olive.png",
     apple: "/assets/logo/favicon-olive.png",
   },
   openGraph: {
-    title: `${groom} & ${bride} — Wedding Invitation`,
-    description: `Undangan pernikahan ${config.couple.groom.name} & ${config.couple.bride.name}`,
+    title: `${person1} & ${person2} — Wedding Invitation`,
+    description: `Undangan pernikahan ${fullName1} & ${fullName2}`,
     type: "website",
   },
 };

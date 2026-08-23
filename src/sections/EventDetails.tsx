@@ -61,9 +61,21 @@ function EventCard({ event }: { event: EventInfo }) {
 
         {/* Event Title (e.g. Resepsi) */}
         <RevealItem variants={riseIn} className="mt-3 sm:mt-5">
-          <h3 className="font-accent text-[2.75rem] leading-tight text-olive-900 sm:text-[3.5rem]">
-            {event.title}
-          </h3>
+          {(() => {
+            const lines = event.title.split("\n");
+            return (
+              <>
+                <h3 className="font-accent text-[2.75rem] leading-tight text-olive-900 sm:text-[3.5rem]">
+                  {lines[0]}
+                </h3>
+                {lines.length > 1 && (
+                  <p className="mt-1 font-display text-xl sm:text-2xl text-olive-800">
+                    {lines.slice(1).join(" ")}
+                  </p>
+                )}
+              </>
+            );
+          })()}
         </RevealItem>
 
         {/* Date & Time Block */}

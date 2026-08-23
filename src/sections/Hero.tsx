@@ -7,7 +7,7 @@ import { VintageGardenFrame } from "@/components/decorative/VintageGardenFrame";
 import { PetalFall } from "@/components/decorative/PetalFall";
 import { Sprig } from "@/components/Decor";
 import { motionTokens } from "@/animations/tokens";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 
 interface Props {
   guestName: string;
@@ -59,13 +59,16 @@ const framePop = {
 
 export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
   const { groom, bride } = config.couple;
+  const person1 = isTasyakur ? groom : bride;
+  const person2 = isTasyakur ? bride : groom;
+
   const names = (
     <>
       <span className="block">
-        {groom.shortName}
+        {person1.shortName}
         <span className="ml-2 text-gold-700 sm:ml-3">&amp;</span>
       </span>
-      <span className="block">{bride.shortName}</span>
+      <span className="block">{person2.shortName}</span>
     </>
   );
 
@@ -126,7 +129,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
               <motion.button
                 onClick={onOpen}
                 className="btn-olive mt-6 min-w-48 rounded-full normal-case tracking-[0.02em] shadow-paper sm:mt-8"
-                aria-label={`Buka undangan ${groom.shortName} dan ${bride.shortName}`}
+                aria-label={`Buka undangan ${person1.shortName} dan ${person2.shortName}`}
                 variants={line}
                 whileTap={{ scale: 0.96 }}
               >
@@ -168,8 +171,8 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
               >
                 <Sprig style={{ transform: "scaleX(-1)" }} />
                 <span className="font-accent text-xl leading-none">
-                  {groom.shortName[0]}
-                  {bride.shortName[0]}
+                  {person1.shortName[0]}
+                  {person2.shortName[0]}
                 </span>
                 <Sprig />
               </motion.div>
@@ -201,7 +204,7 @@ export function Hero({ guestName, opened, onOpen, onScrollToContent }: Props) {
                   <div className="arch-frame relative h-full w-full">
                     <Image
                       src={config.hero.photo}
-                      alt={`${groom.shortName} & ${bride.shortName}`}
+                      alt={`${person1.shortName} & ${person2.shortName}`}
                       fill
                       sizes="(max-width: 640px) 52vw, 17rem"
                       className="object-cover"

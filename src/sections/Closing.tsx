@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { fadeIn, riseIn, slideUp, staggerLoose } from "@/animations/variants";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 
 /**
  * Closing Section — A grand botanical garden arch pavilion composition
@@ -100,11 +100,16 @@ export function Closing() {
           </RevealItem>
 
           {/* Couple Short Names */}
-          <RevealItem variants={slideUp} className="mt-2.5">
+          <RevealItem variants={slideUp} className="mt-2.5 flex flex-col items-center">
+            {isTasyakur && (
+              <p className="font-body text-sm sm:text-base font-medium text-olive-800 mb-2">
+                Kel. Bpk. Indra Gunawan &amp; Ibu Tini Martini
+              </p>
+            )}
             <h2 className="font-display text-3xl sm:text-4xl font-semibold text-olive-950">
-              {groom.shortName}
+              {isTasyakur ? groom.shortName : bride.shortName}
               <span className="mx-2 font-accent font-normal text-gold-700">&amp;</span>
-              {bride.shortName}
+              {isTasyakur ? bride.shortName : groom.shortName}
             </h2>
           </RevealItem>
 

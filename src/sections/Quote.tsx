@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { StaggerGroup, RevealItem } from "@/components/Reveal";
 import { fadeIn, riseIn, staggerLoose } from "@/animations/variants";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 
 /** Islamic verse — QS Ar-Rum 21 as a classic vintage botanical card. */
 export function Quote() {
@@ -24,16 +24,16 @@ export function Quote() {
           {/* Inner Inset Border Frame */}
           <div className="relative flex flex-col items-center overflow-hidden rounded-[1.65rem] sm:rounded-[2.15rem] border border-gold-600/35 px-5 pt-12 pb-28 text-center sm:px-10 sm:pt-16 sm:pb-36">
 
-            {/* Initials: R & T */}
+            {/* Initials */}
             <RevealItem
               variants={riseIn}
               className="relative z-10 mb-5 flex items-center justify-center gap-4 text-olive-900 font-accent text-[3.5rem] leading-none sm:text-[4.75rem]"
             >
-              <span>{couple.groom.shortName[0]}</span>
+              <span>{isTasyakur ? couple.groom.shortName[0] : couple.bride.shortName[0]}</span>
               <span className="mt-1 font-serif text-2xl sm:text-4xl italic text-gold-700">
                 &amp;
               </span>
-              <span>{couple.bride.shortName[0]}</span>
+              <span>{isTasyakur ? couple.bride.shortName[0] : couple.groom.shortName[0]}</span>
             </RevealItem>
 
             {/* Botanical Sprig Divider */}

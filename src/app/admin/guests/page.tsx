@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, useMemo, Suspense } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import { useSearchParams } from "next/navigation";
 import { getCategoryColor } from "@/lib/colors";
+import { isTasyakur } from "@/lib/config";
 
 interface Category {
   id: string;
@@ -40,7 +41,7 @@ Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh
 
-Robi & Tiara`;
+${isTasyakur ? "Robi & Tiara" : "Tiara & Robi"}`;
 
 function normalizeWhatsAppNumber(contact: string): string | null {
   const digits = contact.replace(/\D/g, "");
@@ -81,11 +82,13 @@ function GuestsContent() {
   const [filterRsvp, setFilterRsvp] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("created_at");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
-  const [showWhatsAppPanel, setShowWhatsAppPanel] = useState(false);
-  const [whatsAppTemplate, setWhatsAppTemplate] = useState(DEFAULT_WHATSAPP_TEMPLATE);
-  const [selectedWhatsAppIds, setSelectedWhatsAppIds] = useState<string[]>([]);
-  const [whatsAppQueueIndex, setWhatsAppQueueIndex] = useState(0);
-  const [whatsAppStatus, setWhatsAppStatus] = useState<string | null>(null);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  const activeFilterCount =
+    (filterCategory ? 1 : 0) +
+    (filterRsvp ? 1 : 0) +
+    (sortKey !== "created_at" || sortDir !== "desc" ? 1 : 0);
+
 
   // Modal state
   const [showModal, setShowModal] = useState(false);
@@ -173,15 +176,7 @@ function GuestsContent() {
     }
   };
 
-  const whatsAppEligibleGuests = useMemo(
-    () => sorted.filter((guest) => guest.contact_type === "WhatsApp" && normalizeWhatsAppNumber(guest.contact)),
-    [sorted]
-  );
 
-  const selectedWhatsAppGuests = useMemo(
-    () => guests.filter((guest) => selectedWhatsAppIds.includes(guest.id) && normalizeWhatsAppNumber(guest.contact)),
-    [guests, selectedWhatsAppIds]
-  );
 
   const invitationLinkFor = (guest: Guest) => {
     const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
@@ -191,15 +186,39 @@ function GuestsContent() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const messageFor = (guest: Guest) =>
-    whatsAppTemplate
+    DEFAULT_WHATSAPP_TEMPLATE
       .replaceAll("{nama}", guest.name)
       .replaceAll("{link}", invitationLinkFor(guest));
 
-  const handleOpenGuestWhatsApp = (guest: Guest) => {
+  const handleOpenGuestWhatsApp = async (guest: Guest) => {
+    const message = messageFor(guest);
     const phoneNumber = normalizeWhatsAppNumber(guest.contact);
-    if (!phoneNumber) return;
+
+    if (phoneNumber) {
+      window.open(
+        `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
+      return;
+    }
+
+    // If no phone number, open native share sheet (e.g. Android/iOS contact picker)
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: `Undangan Pernikahan untuk ${guest.name}`,
+          text: message,
+        });
+        return;
+      } catch (err: any) {
+        if (err?.name === "AbortError") return;
+      }
+    }
+
+    // Fallback: Open WhatsApp directly so user can pick any contact to share to
     window.open(
-      `https://wa.me/${phoneNumber}?text=${encodeURIComponent(messageFor(guest))}`,
+      `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`,
       "_blank",
       "noopener,noreferrer"
     );
@@ -213,58 +232,7 @@ function GuestsContent() {
     } catch {}
   };
 
-  const toggleWhatsAppGuest = (guestId: string) => {
-    setSelectedWhatsAppIds((previous) =>
-      previous.includes(guestId) ? previous.filter((id) => id !== guestId) : [...previous, guestId]
-    );
-    setWhatsAppQueueIndex(0);
-  };
 
-  const toggleVisibleWhatsAppGuests = () => {
-    const visibleIds = whatsAppEligibleGuests.map((guest) => guest.id);
-    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedWhatsAppIds.includes(id));
-    setSelectedWhatsAppIds((previous) =>
-      allVisibleSelected
-        ? previous.filter((id) => !visibleIds.includes(id))
-        : [...new Set([...previous, ...visibleIds])]
-    );
-    setWhatsAppQueueIndex(0);
-  };
-
-  const copyWhatsAppMessage = async () => {
-    const previewGuest = selectedWhatsAppGuests[0] ?? whatsAppEligibleGuests[0];
-    if (!previewGuest) {
-      setWhatsAppStatus("Tambahkan nomor WhatsApp yang valid terlebih dahulu.");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(messageFor(previewGuest));
-      setWhatsAppStatus(`Pesan untuk ${previewGuest.name} telah disalin.`);
-    } catch {
-      setWhatsAppStatus("Pesan belum dapat disalin. Silakan salin dari pratinjau.");
-    }
-  };
-
-  const openNextWhatsAppChat = () => {
-    if (selectedWhatsAppGuests.length === 0) {
-      setWhatsAppStatus("Pilih minimal satu tamu dengan nomor WhatsApp yang valid.");
-      return;
-    }
-    const guest = selectedWhatsAppGuests[whatsAppQueueIndex % selectedWhatsAppGuests.length];
-    const phoneNumber = normalizeWhatsAppNumber(guest.contact);
-    if (!phoneNumber) {
-      setWhatsAppStatus(`Nomor WhatsApp ${guest.name} belum valid.`);
-      return;
-    }
-    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(messageFor(guest))}`, "_blank", "noopener,noreferrer");
-    const nextIndex = (whatsAppQueueIndex + 1) % selectedWhatsAppGuests.length;
-    setWhatsAppQueueIndex(nextIndex);
-    setWhatsAppStatus(
-      selectedWhatsAppGuests.length === 1
-        ? `Chat ${guest.name} sudah dibuka.`
-        : `Chat ${guest.name} sudah dibuka. Berikutnya: ${selectedWhatsAppGuests[nextIndex].name}.`
-    );
-  };
 
   const openAddModal = () => {
     setEditingGuest(null);
@@ -367,212 +335,137 @@ function GuestsContent() {
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row">
-          <div className="flex-1">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari nama, kode, atau kontak..."
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-            />
-          </div>
-          <select
-            value={filterCategory}
-            onChange={(e) => setFilterCategory(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-          >
-            <option value="">Semua Kategori</option>
-            {categories.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </select>
-          <select
-            value={filterRsvp}
-            onChange={(e) => setFilterRsvp(e.target.value)}
-            className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-          >
-            <option value="">Semua Status</option>
-            <option value="pending">Pending</option>
-            <option value="hadir">Hadir</option>
-            <option value="tidak_hadir">Tidak Hadir</option>
-            <option value="ragu">Ragu</option>
-          </select>
-          <div className="flex gap-2">
-            <select
-              value={sortKey}
-              onChange={(e) => setSortKey(e.target.value as SortKey)}
-              className="flex-1 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-            >
-              {SORT_OPTIONS.map((o) => (
-                <option key={o.key} value={o.key}>
-                  Urutkan: {o.label}
-                </option>
-              ))}
-            </select>
-            <button
-              type="button"
-              onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
-              title={sortDir === "asc" ? "Naik (A-Z)" : "Turun (Z-A)"}
-              className="shrink-0 rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-slate-600 transition-colors hover:bg-slate-50"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                {sortDir === "asc" ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h13.5m-13.5 6H12m-8.25 6h5.25m4.5 0 3-3m0 0 3 3m-3-3v9" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h13.5m-13.5 6H12m-8.25 6h5.25m4.5-9 3 3m0 0 3-3m-3 3v-9" />
-                )}
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* WhatsApp sender */}
-        <section className="overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
-          <div className="flex flex-col gap-4 bg-gradient-to-r from-emerald-50 via-white to-amber-50 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 9.75a.375.375 0 0 1-.375-.375V7.5a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375V7.5a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Zm-4.875 4.875a.375.375 0 0 1-.375-.375v-1.875A.375.375 0 0 1 8.625 12h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375v-1.875A.375.375 0 0 1 13.5 12h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 5.25A2.25 2.25 0 0 1 6.75 3h10.5a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25H12l-3.75 3v-3H6.75A2.25 2.25 0 0 1 4.5 14.25v-9Z" />
+        {/* Compact Filters & Search */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-2.5 shadow-sm sm:p-4">
+          <div className="flex items-center gap-2">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
               </div>
-              <div>
-                <h2 className="font-semibold text-slate-900">Kirim Undangan WhatsApp</h2>
-                <p className="mt-1 max-w-2xl text-sm leading-5 text-slate-600">
-                  Siapkan pesan dan buka chat personal satu per satu. Nama serta link undangan tiap tamu akan terisi otomatis.
-                </p>
-              </div>
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cari nama, kode, kontak..."
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-9 pr-8 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 sm:py-2.5"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400 hover:text-slate-600"
+                >
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
+
+            {/* Mobile Filter Toggle Button */}
             <button
               type="button"
-              onClick={() => setShowWhatsAppPanel((isOpen) => !isOpen)}
-              aria-expanded={showWhatsAppPanel}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-sm font-semibold text-emerald-800 shadow-sm transition-colors hover:bg-emerald-50"
+              onClick={() => setShowMobileFilters((prev) => !prev)}
+              aria-expanded={showMobileFilters}
+              className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-all sm:hidden ${
+                activeFilterCount > 0 || showMobileFilters
+                  ? "border-emerald-500 bg-emerald-50 text-emerald-700 ring-2 ring-emerald-500/20"
+                  : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+              }`}
             >
-              {showWhatsAppPanel ? "Tutup pengiriman" : "Atur pengiriman"}
-              <svg className={`h-4 w-4 transition-transform ${showWhatsAppPanel ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" />
               </svg>
+              <span>Filter</span>
+              {activeFilterCount > 0 && (
+                <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-emerald-600 px-1 text-[10px] font-bold text-white">
+                  {activeFilterCount}
+                </span>
+              )}
             </button>
           </div>
 
-          {showWhatsAppPanel && (
-            <div className="grid gap-6 border-t border-emerald-100 p-5 sm:p-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(19rem,.85fr)]">
-              <div className="space-y-5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-800">Pilih penerima</h3>
-                    <p className="mt-1 text-xs text-slate-500">
-                      {whatsAppEligibleGuests.length} nomor WhatsApp valid dari daftar yang sedang tampil.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={toggleVisibleWhatsAppGuests}
-                    disabled={whatsAppEligibleGuests.length === 0}
-                    className="rounded-lg px-3 py-2 text-xs font-semibold text-emerald-700 transition-colors hover:bg-emerald-50 disabled:cursor-not-allowed disabled:text-slate-400"
-                  >
-                    {whatsAppEligibleGuests.length > 0 && whatsAppEligibleGuests.every((guest) => selectedWhatsAppIds.includes(guest.id))
-                      ? "Batal pilih semua"
-                      : "Pilih semua yang tampil"}
-                  </button>
-                </div>
+          {/* Expanded Filter Options (Collapsible on mobile, inline on desktop) */}
+          <div
+            className={`mt-2.5 pt-2.5 border-t border-slate-100 sm:mt-3 sm:pt-0 sm:border-t-0 ${
+              showMobileFilters ? "block" : "hidden sm:flex"
+            } sm:flex sm:flex-wrap sm:items-center sm:gap-2.5`}
+          >
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-2.5">
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white sm:w-auto sm:text-sm sm:py-2"
+              >
+                <option value="">Semua Kategori</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
 
-                <div className="max-h-56 divide-y divide-slate-100 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50/50">
-                  {whatsAppEligibleGuests.length > 0 ? (
-                    whatsAppEligibleGuests.map((guest) => {
-                      const checked = selectedWhatsAppIds.includes(guest.id);
-                      return (
-                        <label key={guest.id} className="flex cursor-pointer items-center gap-3 px-3 py-3 transition-colors hover:bg-white">
-                          <input
-                            type="checkbox"
-                            checked={checked}
-                            onChange={() => toggleWhatsAppGuest(guest.id)}
-                            className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
-                          />
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-medium text-slate-800">{guest.name}</span>
-                            <span className="block truncate text-xs text-slate-500">{guest.contact}</span>
-                          </span>
-                          <code className="hidden rounded bg-white px-2 py-1 text-[10px] font-semibold text-slate-500 ring-1 ring-slate-200 sm:block">{guest.unique_code}</code>
-                        </label>
-                      );
-                    })
-                  ) : (
-                    <p className="px-4 py-7 text-center text-sm text-slate-500">Tidak ada nomor WhatsApp valid pada daftar ini.</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="whatsapp-template" className="mb-2 block text-sm font-semibold text-slate-800">Template pesan</label>
-                  <textarea
-                    id="whatsapp-template"
-                    value={whatsAppTemplate}
-                    onChange={(event) => setWhatsAppTemplate(event.target.value)}
-                    rows={11}
-                    maxLength={3000}
-                    className="w-full resize-y rounded-xl border border-slate-300 bg-white px-3.5 py-3 text-sm leading-6 text-slate-800 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                    aria-describedby="whatsapp-template-help"
-                  />
-                  <p id="whatsapp-template-help" className="mt-2 text-xs leading-5 text-slate-500">
-                    Gunakan <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">{`{nama}`}</code> untuk nama tamu dan <code className="rounded bg-slate-100 px-1 py-0.5 text-slate-700">{`{link}`}</code> untuk link undangan personal.
-                  </p>
-                </div>
-              </div>
-
-              <aside className="flex flex-col rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">Pratinjau & antrean</p>
-                    <p className="mt-1 text-xs text-slate-500">{selectedWhatsAppGuests.length} tamu dipilih</p>
-                  </div>
-                  <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-semibold text-emerald-800">Manual</span>
-                </div>
-
-                <div className="mt-4 min-h-44 whitespace-pre-wrap rounded-xl border border-slate-200 bg-white p-3.5 text-sm leading-6 text-slate-600">
-                  {selectedWhatsAppGuests.length > 0
-                    ? messageFor(selectedWhatsAppGuests[whatsAppQueueIndex % selectedWhatsAppGuests.length])
-                    : whatsAppEligibleGuests[0]
-                      ? messageFor(whatsAppEligibleGuests[0])
-                      : "Pilih tamu dengan nomor WhatsApp valid untuk melihat pratinjau pesan."}
-                </div>
-
-                {whatsAppStatus && (
-                  <p className="mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-xs leading-5 text-emerald-800" role="status">{whatsAppStatus}</p>
-                )}
-
-                <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-1">
-                  <button
-                    type="button"
-                    onClick={openNextWhatsAppChat}
-                    disabled={selectedWhatsAppGuests.length === 0}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:bg-slate-300"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M8.625 10.5a.375.375 0 0 1-.375-.375V8.25a.375.375 0 0 1 .375-.375H10.5a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H8.625Zm4.875 0a.375.375 0 0 1-.375-.375V8.25a.375.375 0 0 1 .375-.375h1.875a.375.375 0 0 1 .375.375v1.875a.375.375 0 0 1-.375.375H13.5Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 4.5A2.25 2.25 0 0 1 6.75 2.25h10.5a2.25 2.25 0 0 1 2.25 2.25v9a2.25 2.25 0 0 1-2.25 2.25h-5.25l-3.75 3v-3H6.75A2.25 2.25 0 0 1 4.5 13.5v-9Z" /></svg>
-                    {selectedWhatsAppGuests.length > 1 ? "Buka chat berikutnya" : "Buka chat WhatsApp"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={copyWhatsAppMessage}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
-                  >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" aria-hidden="true"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 7.5V6.75A2.25 2.25 0 0 1 10.5 4.5h6.75a2.25 2.25 0 0 1 2.25 2.25v6.75a2.25 2.25 0 0 1-2.25 2.25h-.75m-8.25-8.25H6.75A2.25 2.25 0 0 0 4.5 9.75v7.5a2.25 2.25 0 0 0 2.25 2.25h7.5a2.25 2.25 0 0 0 2.25-2.25v-7.5a2.25 2.25 0 0 0-2.25-2.25H8.25Z" /></svg>
-                    Salin pesan
-                  </button>
-                </div>
-
-                <div className="mt-5 rounded-xl border border-dashed border-slate-300 bg-white/60 p-3.5">
-                  <p className="text-xs font-semibold text-slate-700">Gateway otomatis</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">Belum diaktifkan. Mode ini akan tersedia setelah token provider WhatsApp dikonfigurasi dengan aman di server.</p>
-                </div>
-              </aside>
+              <select
+                value={filterRsvp}
+                onChange={(e) => setFilterRsvp(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white sm:w-auto sm:text-sm sm:py-2"
+              >
+                <option value="">Semua Status</option>
+                <option value="pending">Pending</option>
+                <option value="hadir">Hadir</option>
+                <option value="tidak_hadir">Tidak Hadir</option>
+                <option value="ragu">Ragu</option>
+              </select>
             </div>
-          )}
-        </section>
+
+            <div className="mt-2 flex items-center gap-2 sm:mt-0">
+              <select
+                value={sortKey}
+                onChange={(e) => setSortKey(e.target.value as SortKey)}
+                className="flex-1 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2 text-xs text-slate-800 outline-none transition focus:border-emerald-500 focus:bg-white sm:w-auto sm:text-sm sm:py-2"
+              >
+                {SORT_OPTIONS.map((o) => (
+                  <option key={o.key} value={o.key}>
+                    Urutkan: {o.label}
+                  </option>
+                ))}
+              </select>
+
+              <button
+                type="button"
+                onClick={() => setSortDir((d) => (d === "asc" ? "desc" : "asc"))}
+                title={sortDir === "asc" ? "Naik (A-Z)" : "Turun (Z-A)"}
+                className="shrink-0 rounded-xl border border-slate-200 bg-slate-50/70 p-2 text-slate-600 transition hover:bg-slate-100 sm:py-2 sm:px-2.5"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  {sortDir === "asc" ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h13.5m-13.5 6H12m-8.25 6h5.25m4.5 0 3-3m0 0 3 3m-3-3v9" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h13.5m-13.5 6H12m-8.25 6h5.25m4.5-9 3 3m0 0 3-3m-3 3v-9" />
+                  )}
+                </svg>
+              </button>
+
+              {activeFilterCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFilterCategory("");
+                    setFilterRsvp("");
+                    setSortKey("created_at");
+                    setSortDir("desc");
+                  }}
+                  className="rounded-xl px-2 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
 
         {/* Table / List */}
         {loading ? (
@@ -588,97 +481,112 @@ function GuestsContent() {
         ) : (
           <>
             {/* Mobile card list */}
-            <div className="space-y-3 lg:hidden">
+            <div className="space-y-2 lg:hidden">
               {sorted.map((g) => {
                 const badge = RSVP_BADGE[g.rsvp_status] ?? RSVP_BADGE.pending;
                 return (
-                  <div key={g.id} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        <p className="truncate font-semibold text-slate-900">{g.name}</p>
-                        <code className="mt-1 inline-block rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">
-                          {g.unique_code}
-                        </code>
+                  <div key={g.id} className="rounded-xl border border-slate-200 bg-white p-3 shadow-xs transition hover:border-slate-300">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <p className="font-semibold text-slate-900 text-sm leading-tight truncate">{g.name}</p>
+                          {g.guest_categories && (() => {
+                            const catMatch = categories.find((c) => c.name === g.guest_categories!.name);
+                            const colorInfo = getCategoryColor(catMatch?.color ?? "slate");
+                            return (
+                              <span className={`inline-block rounded-md px-1.5 py-0.5 text-[10px] font-semibold ${colorInfo.bg} ${colorInfo.text}`}>
+                                {g.guest_categories.name}
+                              </span>
+                            );
+                          })()}
+                          <span className="text-[11px] font-medium text-slate-400">· {g.pax} org</span>
+                        </div>
+                        {g.contact && (
+                          <p className="mt-1 text-xs text-slate-500 font-mono truncate">
+                            {g.contact}
+                          </p>
+                        )}
                       </div>
-                      <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ${badge.cls}`}>
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-medium ring-1 ${badge.cls}`}>
                         {badge.label}
                       </span>
                     </div>
 
-                    <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                       <div>
-                         <dt className="text-xs text-slate-400">Kategori</dt>
-                         <dd className="mt-0.5">
-                           {g.guest_categories ? (() => {
-                             const catMatch = categories.find(c => c.name === g.guest_categories!.name);
-                             const colorInfo = getCategoryColor(catMatch?.color ?? "slate");
-                             return (
-                               <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${colorInfo.bg} ${colorInfo.text}`}>
-                                 {g.guest_categories.name}
-                               </span>
-                             );
-                           })() : <span className="text-slate-400">—</span>}
-                         </dd>
-                       </div>
-                      <div>
-                        <dt className="text-xs text-slate-400">Jumlah</dt>
-                        <dd className="text-slate-700">{g.pax}</dd>
-                      </div>
-                      <div className="col-span-2">
-                        <dt className="text-xs text-slate-400">{g.contact_type}</dt>
-                        <dd className="break-words text-slate-700">{g.contact || "—"}</dd>
-                      </div>
-                    </dl>
-
-                    <div className="mt-3 flex items-center justify-end gap-1 border-t border-slate-100 pt-3">
+                    <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 pt-2">
                       <button
                         type="button"
                         onClick={() => handleOpenGuestWhatsApp(g)}
-                        disabled={!normalizeWhatsAppNumber(g.contact)}
                         title={
                           normalizeWhatsAppNumber(g.contact)
                             ? `Buka Chat WhatsApp (${g.name})`
-                            : "Kontak WhatsApp tidak tersedia / tidak valid"
+                            : `Bagikan Undangan (${g.name}) via WhatsApp / Kontak`
                         }
-                        className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50 transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:text-slate-300"
+                        className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition-colors ${
+                          normalizeWhatsAppNumber(g.contact)
+                            ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                            : "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                        }`}
                       >
-                        <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-                        </svg>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleCopyGuestWhatsAppMessage(g)}
-                        title={copiedId === g.id ? "Pesan WA Tersalin!" : "Salin Pesan WhatsApp"}
-                        className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
-                      >
-                        {copiedId === g.id ? (
-                          <svg className="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                          </svg>
+                        {normalizeWhatsAppNumber(g.contact) ? (
+                          <>
+                            <svg className="h-3.5 w-3.5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+                            </svg>
+                            <span>Chat WA</span>
+                          </>
                         ) : (
-                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v9.25c0 .621-.504 1.125-1.125 1.125Z" />
-                          </svg>
+                          <>
+                            <svg className="h-3.5 w-3.5 text-blue-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z" />
+                            </svg>
+                            <span>Bagikan</span>
+                          </>
                         )}
                       </button>
-                      <button onClick={() => openEditModal(g)} title="Edit Tamu" className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700">
-                        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                        </svg>
-                      </button>
-                      {deletingId === g.id ? (
-                        <div className="flex items-center gap-1">
-                          <button onClick={() => handleDelete(g.id)} className="rounded-lg bg-red-100 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-200">Hapus</button>
-                          <button onClick={() => setDeletingId(null)} className="rounded-lg px-2.5 py-1.5 text-xs text-slate-500 hover:text-slate-700">Batal</button>
-                        </div>
-                      ) : (
-                        <button onClick={() => setDeletingId(g.id)} title="Hapus" className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600">
-                          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleCopyGuestWhatsAppMessage(g)}
+                          title={copiedId === g.id ? "Pesan WA Tersalin!" : "Salin Pesan WhatsApp"}
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                        >
+                          {copiedId === g.id ? (
+                            <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                          ) : (
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v9.25c0 .621-.504 1.125-1.125 1.125Z" />
+                            </svg>
+                          )}
+                        </button>
+                        <button
+                          onClick={() => openEditModal(g)}
+                          title="Edit Tamu"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                        >
+                          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                           </svg>
                         </button>
-                      )}
+                        {deletingId === g.id ? (
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => handleDelete(g.id)} className="rounded-lg bg-red-100 px-2 py-1 text-[11px] font-medium text-red-600 hover:bg-red-200">Hapus</button>
+                            <button onClick={() => setDeletingId(null)} className="rounded-lg px-2 py-1 text-[11px] text-slate-500 hover:text-slate-700">Batal</button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => setDeletingId(g.id)}
+                            title="Hapus"
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -734,13 +642,12 @@ function GuestsContent() {
                             <button
                               type="button"
                               onClick={() => handleOpenGuestWhatsApp(g)}
-                              disabled={!normalizeWhatsAppNumber(g.contact)}
                               title={
                                 normalizeWhatsAppNumber(g.contact)
                                   ? `Buka Chat WhatsApp (${g.name})`
-                                  : "Kontak WhatsApp tidak tersedia / tidak valid"
+                                  : `Bagikan Undangan (${g.name}) via WhatsApp / Kontak`
                               }
-                              className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50 transition-colors disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent disabled:text-slate-300"
+                              className="rounded-lg p-2 text-emerald-600 hover:bg-emerald-50 transition-colors"
                             >
                               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>

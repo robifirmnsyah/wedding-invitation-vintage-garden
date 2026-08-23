@@ -11,7 +11,7 @@ import {
   softMask,
   staggerTight,
 } from "@/animations/variants";
-import config from "@/lib/config";
+import config, { isTasyakur } from "@/lib/config";
 import type { Person } from "@/lib/types";
 
 function PersonCard({
@@ -108,6 +108,10 @@ function PersonCard({
  */
 export function BrideGroom() {
   const { groom, bride } = config.couple;
+  const person1 = isTasyakur ? groom : bride;
+  const person2 = isTasyakur ? bride : groom;
+  const title1 = isTasyakur ? "Mempelai Pria" : "Mempelai Wanita";
+  const title2 = isTasyakur ? "Mempelai Wanita" : "Mempelai Pria";
 
   return (
     <section
@@ -193,14 +197,14 @@ export function BrideGroom() {
 
       {/* ── PERSON CARDS GRID ────────────────────────────────────────────── */}
       <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:items-stretch md:gap-8">
-        <PersonCard person={groom} title="Mempelai Pria" />
+        <PersonCard person={person1} title={title1} />
         
         {/* Elegant Center Ampersand for Desktop/Mobile */}
         <div className="flex items-center justify-center">
           <span className="font-accent text-4xl text-gold-700 sm:text-5xl">&amp;</span>
         </div>
 
-        <PersonCard person={bride} title="Mempelai Wanita" delay={0.16} />
+        <PersonCard person={person2} title={title2} delay={0.16} />
       </div>
     </section>
   );
