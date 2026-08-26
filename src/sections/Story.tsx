@@ -123,7 +123,7 @@ export function Story() {
                   >
                     {m.title}
                   </h3>
-                  <p className="mt-2 font-body text-base leading-relaxed text-olive-700">
+                  <p className="mt-2 font-body text-base leading-relaxed text-olive-700 whitespace-pre-line">
                     {m.story}
                   </p>
                 </div>

@@ -29,19 +29,19 @@
   },
   "loveStory": [
     {
-      "title": "Pertemuan",
-      "date": "2023",
-      "story": "Perjalanan kami dimulai pada tahun 2023 melalui sebuah kesempatan yang mempertemukan kami di masa perkuliahan. Tidak ada kisah yang luar biasa atau pertemuan yang penuh kejutan. Kami hanya dua orang yang saling mengenal, bekerja sama menyelesaikan berbagai tanggung jawab, dan tanpa disadari mulai menjadi bagian dari cerita satu sama lain."
+      "title": "Awal Pertemuan",
+      "date": "MEI 2023",
+      "story": "Meski berasal dari kampus yang berbeda, takdir mempertemukan kami melalui sebuah program perkuliahan. Kami ditempatkan dalam satu kelompok untuk menyelesaikan sebuah proyek bersama. Dari komunikasi yang awalnya hanya membahas tugas, perlahan kami mulai mengenal satu sama lain.\n\nKetika program tersebut berakhir, komunikasi kami ternyata tetap berlanjut. Hingga sebuah pertemuan sederhana sambil menikmati mie ayam di RSHS menjadi awal dari perjalanan kami. Dari sanalah cerita ini dimulai."
     },
     {
-      "title": "Perjalanan",
-      "date": "",
-      "story": "Seiring berjalannya waktu, kami tumbuh bersama melalui berbagai fase kehidupan. Menyelesaikan pendidikan, membangun karier, menghadapi tantangan, dan merayakan setiap pencapaian. Setiap langkah mengajarkan kami arti saling mendukung dan bertumbuh bersama."
+      "title": "Memulai Perjalanan Bersama",
+      "date": "APRIL 2024",
+      "story": "Setelah menyelesaikan perkuliahan, kami memutuskan untuk mencari pekerjaan dan memulai kehidupan baru di Jakarta. Di kota ini, kami belajar hidup mandiri, menghadapi berbagai tantangan, serta saling menemani dalam setiap prosesnya.\n\nDi tengah segala suka dan duka, keyakinan kami untuk melangkah bersama semakin tumbuh. Kami pun mulai menabung dan perlahan mempersiapkan masa depan serta pernikahan yang kami impikan."
     },
     {
-      "title": "Pernikahan",
-      "date": "2026",
-      "story": "Tidak ada momen besar yang mengubah segalanya. Hanya hari demi hari yang kami lalui bersama, hingga pada akhirnya kami sadar bahwa kami ingin terus bertumbuh, bermimpi, dan menua bersama. Dari keyakinan itulah kami memutuskan untuk menikah."
+      "title": "Menuju Hari Bahagia",
+      "date": "DESEMBER 2025",
+      "story": "Niat baik yang telah lama kami simpan akhirnya menemukan waktunya. Dengan penuh keyakinan, Robi memberanikan diri menemui orang tua Tiara untuk menyampaikan keseriusan dan niat baiknya.\n\nSetelah itu, kedua keluarga mulai saling mengunjungi dan mengenal lebih dekat. Dengan doa serta restu dari orang-orang tercinta, perjalanan panjang kami akhirnya membawa kami menuju sebuah ikatan suci hari ketika kami berjanji untuk berjalan bersama dalam suka maupun duka, sebagai pasangan seumur hidup."
     }
   ],
   "event": {
@@ -109,7 +109,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-09.webp",
+      "src": "/assets/gallery/prewed/prewed-34.webp",
       "caption": "Our Moment 09",
       "span": "tall"
     },
@@ -139,7 +139,7 @@
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-28i.webp",
+      "src": "/assets/gallery/prewed/prewed-33.webp",
       "caption": "Our Moment 15",
       "span": "wide"
     },
@@ -154,7 +154,7 @@
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-28j.webp",
+      "src": "/assets/gallery/prewed/prewed-32.webp",
       "caption": "Our Moment 18",
       "span": "tall"
     },
@@ -221,21 +221,6 @@
     {
       "src": "/assets/gallery/prewed/prewed-31.webp",
       "caption": "Our Moment 31",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-32.webp",
-      "caption": "Our Moment 32",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-33.webp",
-      "caption": "Our Moment 33",
-      "span": "wide"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-34.webp",
-      "caption": "Our Moment 34",
       "span": "tall"
     }
   ],
