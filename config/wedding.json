@@ -69,158 +69,98 @@
   "countdownTarget": "2026-09-05T10:00:00",
   "gallery": [
     {
-      "src": "/assets/gallery/prewed/prewed-01.webp",
+      "src": "/assets/gallery/prewed/gambar-1.jpg",
       "caption": "Our Moment 01",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-02.webp",
+      "src": "/assets/gallery/prewed/gambar-2.jpg",
       "caption": "Our Moment 02",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-03.webp",
+      "src": "/assets/gallery/prewed/gambar-3.jpg",
       "caption": "Our Moment 03",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-04.webp",
+      "src": "/assets/gallery/prewed/gambar-4.jpg",
       "caption": "Our Moment 04",
-      "span": "tall"
+      "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-05.webp",
+      "src": "/assets/gallery/prewed/gambar-5.jpg",
       "caption": "Our Moment 05",
-      "span": "tall"
+      "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-15.webp",
+      "src": "/assets/gallery/prewed/gambar-6.jpg",
       "caption": "Our Moment 06",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-07.webp",
+      "src": "/assets/gallery/prewed/gambar-7.jpg",
       "caption": "Our Moment 07",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-18.webp",
+      "src": "/assets/gallery/prewed/gambar-8.jpg",
       "caption": "Our Moment 08",
-      "span": "tall"
+      "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-34.webp",
+      "src": "/assets/gallery/prewed/gambar-9.jpg",
       "caption": "Our Moment 09",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-10.webp",
+      "src": "/assets/gallery/prewed/gambar-10.jpg",
       "caption": "Our Moment 10",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-11.webp",
+      "src": "/assets/gallery/prewed/gambar-11.jpg",
       "caption": "Our Moment 11",
-      "span": "wide"
+      "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-36.webp",
+      "src": "/assets/gallery/prewed/gambar-12.jpg",
       "caption": "Our Moment 12",
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-13.webp",
+      "src": "/assets/gallery/prewed/gambar-13.jpg",
       "caption": "Our Moment 13",
-      "span": "wide"
+      "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-14.webp",
+      "src": "/assets/gallery/prewed/gambar-14.jpg",
       "caption": "Our Moment 14",
-      "span": "wide"
+      "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-33.webp",
+      "src": "/assets/gallery/prewed/gambar-15.jpg",
       "caption": "Our Moment 15",
-      "span": "wide"
+      "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-16.webp",
+      "src": "/assets/gallery/prewed/gambar-16.jpg",
       "caption": "Our Moment 16",
-      "span": "wide"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-17.webp",
-      "caption": "Our Moment 17",
       "span": "tall"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-32.webp",
+      "src": "/assets/gallery/prewed/gambar-18.jpg",
       "caption": "Our Moment 18",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-19.webp",
-      "caption": "Our Moment 19",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-20.webp",
-      "caption": "Our Moment 20",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-35.webp",
-      "caption": "Our Moment 21",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-22.webp",
-      "caption": "Our Moment 22",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-23.webp",
-      "caption": "Our Moment 23",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-24.webp",
-      "caption": "Our Moment 24",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-25.webp",
-      "caption": "Our Moment 25",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-26.webp",
-      "caption": "Our Moment 26",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-27.webp",
-      "caption": "Our Moment 27",
       "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-28.webp",
-      "caption": "Our Moment 28",
-      "span": "tall"
+      "src": "/assets/gallery/prewed/gambar-19.jpg",
+      "caption": "Our Moment 19",
+      "span": "wide"
     },
     {
-      "src": "/assets/gallery/prewed/prewed-29.webp",
-      "caption": "Our Moment 29",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-30.webp",
-      "caption": "Our Moment 30",
-      "span": "tall"
-    },
-    {
-      "src": "/assets/gallery/prewed/prewed-31.webp",
-      "caption": "Our Moment 31",
+      "src": "/assets/gallery/prewed/gambar-20.jpg",
+      "caption": "Our Moment 20",
       "span": "tall"
     }
   ],
