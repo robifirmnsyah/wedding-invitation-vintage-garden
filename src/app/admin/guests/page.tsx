@@ -841,27 +841,7 @@ function GuestsContent() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="guest-contact-type" className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Tipe Kontak</label>
-                  <select
-                    id="guest-contact-type" value={formData.contact_type}
-                    onChange={(e) => setFormData({ ...formData, contact_type: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                  >
-                    {CONTACT_TYPES.map((ct) => <option key={ct} value={ct}>{ct}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="guest-contact" className="mb-1 block text-xs font-semibold uppercase tracking-wider text-slate-500">Kontak</label>
-                  <input
-                    id="guest-contact" type="text" value={formData.contact}
-                    onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                    maxLength={100} placeholder="No. WA / Email / dll"
-                    className="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
-                  />
-                </div>
-              </div>
+
 
               {editingGuest && (
                 <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
