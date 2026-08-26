@@ -89,6 +89,54 @@ const RSVP_BADGE: Record<string, { label: string; cls: string }> = {
   pending: { label: "Pending", cls: "bg-slate-100 text-slate-600 ring-slate-200" },
 };
 
+const getReceptionMessage = (
+  guestName: string,
+  link: string,
+  senderType: "pengantin" | "ortu",
+  side: "bride" | "groom"
+) => {
+  if (senderType === "pengantin") {
+    return `_Assalamu'alaikum Warahmatullahi Wabarakatuh_
+
+Tanpa mengurangi rasa hormat, melalui pesan ini kami ingin mengundang Bapak/Ibu/Saudara/i *${guestName}* untuk hadir dan memberikan doa restu pada hari bahagia kami.
+
+Detail informasi mengenai acara dapat diakses melalui tautan berikut:
+
+${link}
+
+Kehadiran serta doa restu dari Bapak/Ibu/Saudara/i tentu akan menjadi kebahagiaan dan kehormatan yang sangat berarti bagi kami.
+
+_Mohon maaf undangan ini hanya dapat kami sampaikan melalui pesan digital._
+
+Atas perhatian dan keikhlasan doa Bapak/Ibu/Saudara/i, kami ucapkan terima kasih.
+
+_Wassalamu'alaikum Warahmatullahi Wabarakatuh_
+
+*Hormat kami,*
+*Tiara & Robi*`;
+  } else {
+    const parentsName = side === "groom" ? "Indra & Martini" : "Enung & Amah";
+    return `_Assalamu'alaikum Warahmatullahi Wabarakatuh_
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i *${guestName}* untuk menghadiri acara pernikahan putra-putri kami.
+
+Informasi lengkap mengenai jadwal dan lokasi acara dapat diakses melalui tautan undangan digital berikut:
+
+${link}
+
+Merupakan suatu kehormatan dan kebahagiaan bagi kami sekeluarga apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu kepada kedua mempelai.
+
+_Mohon maaf apabila penyampaian undangan ini hanya dapat kami kirimkan melalui pesan singkat._
+
+Atas perhatian, keikhlasan doa, dan kehadiran Bapak/Ibu/Saudara/i, kami mengucapkan terima kasih banyak.
+
+_Wassalamu'alaikum Warahmatullahi Wabarakatuh_
+
+*Hormat kami yang mengundang,*
+*${parentsName}*`;
+  }
+};
+
 function GuestsContent() {
   const searchParams = useSearchParams();
   const side = searchParams.get("side") === "bride" ? "bride" : "groom";
@@ -204,14 +252,20 @@ function GuestsContent() {
   };
 
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [senderModalGuest, setSenderModalGuest] = useState<{ guest: Guest; action: "wa" | "copy" } | null>(null);
 
-  const messageFor = (guest: Guest) =>
-    DEFAULT_WHATSAPP_TEMPLATE
-      .replaceAll("{nama}", guest.name)
-      .replaceAll("{link}", invitationLinkFor(guest));
+  const messageFor = (guest: Guest, senderType?: "pengantin" | "ortu") => {
+    if (isTasyakur) {
+      return DEFAULT_WHATSAPP_TEMPLATE
+        .replaceAll("{nama}", guest.name)
+        .replaceAll("{link}", invitationLinkFor(guest));
+    }
+    const type = senderType || "pengantin";
+    return getReceptionMessage(guest.name, invitationLinkFor(guest), type, side);
+  };
 
-  const handleOpenGuestWhatsApp = async (guest: Guest) => {
-    const message = messageFor(guest);
+  const executeOpenWhatsApp = async (guest: Guest, senderType: "pengantin" | "ortu") => {
+    const message = messageFor(guest, senderType);
     const phoneNumber = normalizeWhatsAppNumber(guest.contact);
 
     if (phoneNumber) {
@@ -246,12 +300,40 @@ function GuestsContent() {
     );
   };
 
-  const handleCopyGuestWhatsAppMessage = async (guest: Guest) => {
+  const executeCopyMessage = async (guest: Guest, senderType: "pengantin" | "ortu") => {
     try {
-      await navigator.clipboard.writeText(messageFor(guest));
+      await navigator.clipboard.writeText(messageFor(guest, senderType));
       setCopiedId(guest.id);
       setTimeout(() => setCopiedId(null), 2000);
     } catch { }
+  };
+
+  const handleOpenGuestWhatsApp = (guest: Guest) => {
+    if (isTasyakur) {
+      executeOpenWhatsApp(guest, "pengantin");
+    } else {
+      setSenderModalGuest({ guest, action: "wa" });
+    }
+  };
+
+  const handleCopyGuestWhatsAppMessage = (guest: Guest) => {
+    if (isTasyakur) {
+      executeCopyMessage(guest, "pengantin");
+    } else {
+      setSenderModalGuest({ guest, action: "copy" });
+    }
+  };
+
+  const handleSenderSelect = (senderType: "pengantin" | "ortu") => {
+    if (!senderModalGuest) return;
+    const { guest, action } = senderModalGuest;
+    setSenderModalGuest(null);
+
+    if (action === "wa") {
+      executeOpenWhatsApp(guest, senderType);
+    } else {
+      executeCopyMessage(guest, senderType);
+    }
   };
 
 
@@ -805,6 +887,58 @@ function GuestsContent() {
                 className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-600 hover:to-emerald-700 disabled:opacity-50"
               >
                 {saving ? "Menyimpan..." : editingGuest ? "Simpan Perubahan" : "Tambah Tamu"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sender Choice Modal */}
+      {senderModalGuest && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl transition-all">
+            <h3 className="text-lg font-bold text-slate-900 text-center">
+              Pilih Pengirim Undangan
+            </h3>
+            <p className="mt-2 text-sm text-slate-500 text-center">
+              Pilih format pesan berdasarkan pengirim undangan untuk <span className="font-semibold text-slate-700">{senderModalGuest.guest.name}</span>.
+            </p>
+
+            <div className="mt-6 space-y-3">
+              <button
+                type="button"
+                onClick={() => handleSenderSelect("pengantin")}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 p-4 text-left transition-colors group"
+              >
+                <div className="font-bold text-slate-800 group-hover:text-slate-900 text-sm">
+                  Pengantin
+                </div>
+                <div className="mt-0.5 text-xs text-slate-500">
+                  Format dari Tiara & Robi
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSenderSelect("ortu")}
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 p-4 text-left transition-colors group"
+              >
+                <div className="font-bold text-slate-800 group-hover:text-slate-900 text-sm">
+                  Orang Tua
+                </div>
+                <div className="mt-0.5 text-xs text-slate-500">
+                  Format dari {side === "groom" ? "Indra & Martini" : "Enung & Amah"}
+                </div>
+              </button>
+            </div>
+
+            <div className="mt-5 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setSenderModalGuest(null)}
+                className="rounded-xl px-4 py-2 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
+              >
+                Batal
               </button>
             </div>
           </div>
