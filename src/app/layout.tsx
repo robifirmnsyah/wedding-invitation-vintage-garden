@@ -45,15 +45,23 @@ const fullName1 = isTasyakur ? config.couple.groom.name : config.couple.bride.na
 const fullName2 = isTasyakur ? config.couple.bride.name : config.couple.groom.name;
 
 export const metadata: Metadata = {
-  title: `${person1} & ${person2} — Wedding Invitation`,
-  description: `Undangan pernikahan ${fullName1} & ${fullName2}`,
+  title: isTasyakur
+    ? `${person1} & ${person2} — Tasyakur Menjelang Pernikahan`
+    : `${person1} & ${person2} — Wedding Invitation`,
+  description: isTasyakur
+    ? `Tasyakur Menjelang Pernikahan ${fullName1} & ${fullName2}`
+    : `Undangan pernikahan ${fullName1} & ${fullName2}`,
   icons: {
     icon: "/assets/logo/favicon-olive.png",
     apple: "/assets/logo/favicon-olive.png",
   },
   openGraph: {
-    title: `${person1} & ${person2} — Wedding Invitation`,
-    description: `Undangan pernikahan ${fullName1} & ${fullName2}`,
+    title: isTasyakur
+      ? `${person1} & ${person2} — Tasyakur Menjelang Pernikahan`
+      : `${person1} & ${person2} — Wedding Invitation`,
+    description: isTasyakur
+      ? `Tasyakur Menjelang Pernikahan ${fullName1} & ${fullName2}`
+      : `Undangan pernikahan ${fullName1} & ${fullName2}`,
     type: "website",
   },
 };

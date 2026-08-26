@@ -28,7 +28,27 @@ interface Guest {
 
 const CONTACT_TYPES = ["WhatsApp", "Email", "Instagram", "Telegram", "Lainnya"];
 
-const DEFAULT_WHATSAPP_TEMPLATE = `Assalamu'alaikum Warahmatullahi Wabarakatuh,
+const DEFAULT_WHATSAPP_TEMPLATE = isTasyakur
+  ? `Assalamu'alaikum Warahmatullahi Wabarakatuh,
+
+Kepada Yth. Bapak/Ibu/Saudara/i {nama},
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri acara Tasyakur Menjelang Pernikahan putra kami:
+
+*Robi Firmansyah & Tiara Nurillatiffah*
+
+Silakan buka tautan undangan digital berikut untuk melihat detail acara:
+{link}
+
+Merupakan suatu kehormatan dan kebahagiaan bagi kami sekeluarga apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+
+Atas perhatian dan kehadirannya, kami ucapkan terima kasih.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh
+
+Hormat kami yang mengundang,
+*Kel. Bpk. Indra Gunawan & Ibu Tini Martini (Indra & Martini)*`
+  : `Assalamu'alaikum Warahmatullahi Wabarakatuh,
 
 Kepada Yth. Bapak/Ibu/Saudara/i {nama},
 
@@ -41,7 +61,7 @@ Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh
 
-${isTasyakur ? "Robi & Tiara" : "Tiara & Robi"}`;
+Tiara & Robi`;
 
 function normalizeWhatsAppNumber(contact: string): string | null {
   const digits = contact.replace(/\D/g, "");
@@ -207,7 +227,9 @@ function GuestsContent() {
     if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
       try {
         await navigator.share({
-          title: `Undangan Pernikahan untuk ${guest.name}`,
+          title: isTasyakur
+            ? `Undangan Tasyakur untuk ${guest.name}`
+            : `Undangan Pernikahan untuk ${guest.name}`,
           text: message,
         });
         return;
