@@ -135,8 +135,9 @@ export function DesktopPanel() {
 
       {/* ── Top Left Decorative Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -left-6 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
-        animate={{ y: [0, -3, 0], rotate: [0, 0.4, 0] }}
+        className="pointer-events-none absolute -left-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        style={{ rotate: "12deg" }}
+        animate={{ y: [0, -3, 0], rotate: [12, 12.4, 12] }}
         transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <CornerFloral
@@ -148,8 +149,9 @@ export function DesktopPanel() {
 
       {/* ── Top Right Decorative Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -right-6 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
-        animate={{ y: [0, -3, 0], rotate: [0, -0.4, 0] }}
+        className="pointer-events-none absolute -right-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        style={{ rotate: "-12deg" }}
+        animate={{ y: [0, -3, 0], rotate: [-12, -12.4, -12] }}
         transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
         <CornerFloral
@@ -159,44 +161,48 @@ export function DesktopPanel() {
         />
       </motion.div>
 
-      {/* ── Bottom Left Decorative Corner (Floral + Gunungan) ── */}
+      {/* ── Bottom Left: Gunungan (far corner) ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-6 -left-4 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
-        animate={{ y: [0, 3, 0], rotate: [0, -0.5, 0] }}
+        className="pointer-events-none absolute -bottom-4 -left-2 h-48 w-32 xl:h-60 xl:w-40 opacity-90"
+        animate={{ y: [0, 3, 0] }}
         transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
       >
-        {/* Gunungan gold motif */}
-        <div className="absolute bottom-6 left-6 h-40 w-28 xl:h-52 xl:w-36 opacity-90">
-          <GununganOrnament className="h-full w-full drop-shadow-md" />
-        </div>
-        {/* Bottom floral bouquet */}
-        <div className="absolute inset-0 opacity-90">
-          <CornerFloral
-            src="/assets/decorative/vintage-garden-frame/floral-left.png"
-            className="h-full w-full"
-            objectPosition="bottom left"
-          />
-        </div>
+        <GununganOrnament className="h-full w-full drop-shadow-md" />
       </motion.div>
 
-      {/* ── Bottom Right Decorative Corner (Floral + Gunungan) ── */}
+      {/* ── Bottom Left: Floral bouquet (above Gunungan, spread inward) ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-6 -right-4 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
-        animate={{ y: [0, 3, 0], rotate: [0, 0.5, 0] }}
+        className="pointer-events-none absolute -bottom-2 left-16 xl:left-20 2xl:left-24 h-52 w-52 xl:h-64 xl:w-64 2xl:h-72 2xl:w-72"
+        animate={{ y: [0, 4, 0], rotate: [0, -0.5, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+      >
+        <CornerFloral
+          src="/assets/decorative/vintage-garden-frame/floral-left.png"
+          className="h-full w-full"
+          objectPosition="bottom left"
+        />
+      </motion.div>
+
+      {/* ── Bottom Right: Gunungan (far corner) ── */}
+      <motion.div
+        className="pointer-events-none absolute -bottom-4 -right-2 h-48 w-32 xl:h-60 xl:w-40 opacity-90 -scale-x-100"
+        animate={{ y: [0, 3, 0] }}
         transition={{ duration: 9.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
       >
-        {/* Gunungan gold motif */}
-        <div className="absolute bottom-6 right-6 h-40 w-28 xl:h-52 xl:w-36 opacity-90 -scale-x-100">
-          <GununganOrnament className="h-full w-full drop-shadow-md" />
-        </div>
-        {/* Bottom floral bouquet */}
-        <div className="absolute inset-0 opacity-90">
-          <CornerFloral
-            src="/assets/decorative/vintage-garden-frame/floral-right.png"
-            className="h-full w-full"
-            objectPosition="bottom right"
-          />
-        </div>
+        <GununganOrnament className="h-full w-full drop-shadow-md" />
+      </motion.div>
+
+      {/* ── Bottom Right: Floral bouquet (above Gunungan, spread inward) ── */}
+      <motion.div
+        className="pointer-events-none absolute -bottom-2 right-16 xl:right-20 2xl:right-24 h-52 w-52 xl:h-64 xl:w-64 2xl:h-72 2xl:w-72"
+        animate={{ y: [0, 4, 0], rotate: [0, 0.5, 0] }}
+        transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+      >
+        <CornerFloral
+          src="/assets/decorative/vintage-garden-frame/floral-right.png"
+          className="h-full w-full"
+          objectPosition="bottom right"
+        />
       </motion.div>
 
       {/* ── Center Content: Arch Photo + Typography ── */}
