@@ -64,33 +64,31 @@ function GununganOrnament({ className = "" }: { className?: string }) {
 }
 
 /**
- * Deep burgundy/maroon vintage floral corner arrangement
+ * Decorative floral corner — uses dedicated directional assets so
+ * leaf curves look natural without awkward CSS flips.
  */
-function CornerRoseCluster({
+function CornerFloral({
+  src,
   className = "",
-  flipX = false,
-  flipY = false,
+  objectPosition = "top left",
 }: {
+  src: string;
   className?: string;
-  flipX?: boolean;
-  flipY?: boolean;
+  objectPosition?: string;
 }) {
-  const transform = `${flipX ? "scaleX(-1) " : ""}${flipY ? "scaleY(-1)" : ""}`.trim();
-
   return (
     <div
       className={`pointer-events-none absolute select-none ${className}`}
-      style={{ transform: transform || undefined }}
       aria-hidden="true"
     >
       <div className="relative h-full w-full">
-        {/* Botanical leaf and branch underlay */}
         <div className="absolute inset-0 opacity-85">
           <Image
-            src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
+            src={src}
             alt=""
             fill
-            className="object-contain object-top-left"
+            className="object-contain"
+            style={{ objectPosition }}
             sizes="(max-width: 1400px) 25vw, 320px"
           />
         </div>
@@ -137,25 +135,33 @@ export function DesktopPanel() {
 
       {/* ── Top Left Decorative Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -left-8 -top-6 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        className="pointer-events-none absolute -left-6 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
         animate={{ y: [0, -3, 0], rotate: [0, 0.4, 0] }}
         transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
       >
-        <CornerRoseCluster className="h-full w-full" />
+        <CornerFloral
+          src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
+          className="h-full w-full"
+          objectPosition="top left"
+        />
       </motion.div>
 
       {/* ── Top Right Decorative Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -right-8 -top-6 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        className="pointer-events-none absolute -right-6 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
         animate={{ y: [0, -3, 0], rotate: [0, -0.4, 0] }}
         transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
-        <CornerRoseCluster className="h-full w-full" flipX />
+        <CornerFloral
+          src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
+          className="h-full w-full"
+          objectPosition="top right"
+        />
       </motion.div>
 
       {/* ── Bottom Left Decorative Corner (Floral + Gunungan) ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-8 -left-6 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
+        className="pointer-events-none absolute -bottom-6 -left-4 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
         animate={{ y: [0, 3, 0], rotate: [0, -0.5, 0] }}
         transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
       >
@@ -163,15 +169,19 @@ export function DesktopPanel() {
         <div className="absolute bottom-6 left-6 h-40 w-28 xl:h-52 xl:w-36 opacity-90">
           <GununganOrnament className="h-full w-full drop-shadow-md" />
         </div>
-        {/* Roses bouquet over gunungan */}
+        {/* Bottom floral bouquet */}
         <div className="absolute inset-0 opacity-90">
-          <CornerRoseCluster className="h-full w-full" flipY />
+          <CornerFloral
+            src="/assets/decorative/vintage-garden-frame/floral-left.png"
+            className="h-full w-full"
+            objectPosition="bottom left"
+          />
         </div>
       </motion.div>
 
       {/* ── Bottom Right Decorative Corner (Floral + Gunungan) ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-8 -right-6 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
+        className="pointer-events-none absolute -bottom-6 -right-4 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
         animate={{ y: [0, 3, 0], rotate: [0, 0.5, 0] }}
         transition={{ duration: 9.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
       >
@@ -179,9 +189,13 @@ export function DesktopPanel() {
         <div className="absolute bottom-6 right-6 h-40 w-28 xl:h-52 xl:w-36 opacity-90 -scale-x-100">
           <GununganOrnament className="h-full w-full drop-shadow-md" />
         </div>
-        {/* Roses bouquet over gunungan */}
+        {/* Bottom floral bouquet */}
         <div className="absolute inset-0 opacity-90">
-          <CornerRoseCluster className="h-full w-full" flipX flipY />
+          <CornerFloral
+            src="/assets/decorative/vintage-garden-frame/floral-right.png"
+            className="h-full w-full"
+            objectPosition="bottom right"
+          />
         </div>
       </motion.div>
 
