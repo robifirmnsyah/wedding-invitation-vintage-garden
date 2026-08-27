@@ -15,10 +15,12 @@ function CornerFloral({
   src,
   className = "",
   objectPosition = "top left",
+  rotate = "",
 }: {
   src: string;
   className?: string;
   objectPosition?: string;
+  rotate?: string;
 }) {
   return (
     <div
@@ -31,7 +33,7 @@ function CornerFloral({
             src={src}
             alt=""
             fill
-            className="object-contain"
+            className={`object-contain ${rotate}`}
             style={{ objectPosition }}
             sizes="(max-width: 1400px) 25vw, 320px"
           />
@@ -77,29 +79,31 @@ export function DesktopPanel() {
         aria-hidden="true"
       />
 
-      {/* ── Top Left Decorative Corner ── */}
+      {/* ── Top Left Decorative Corner — rotated 180° to hang DOWN into panel ── */}
       <motion.div
-        className="pointer-events-none absolute -left-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        className="pointer-events-none absolute -left-6 -top-6 h-60 w-60 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
+          src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
           className="h-full w-full"
           objectPosition="top left"
+          rotate="rotate-180"
         />
       </motion.div>
 
-      {/* ── Top Right Decorative Corner ── */}
+      {/* ── Top Right Decorative Corner — rotated 180° to hang DOWN into panel ── */}
       <motion.div
-        className="pointer-events-none absolute -right-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        className="pointer-events-none absolute -right-6 -top-6 h-60 w-60 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
         <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
+          src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
           className="h-full w-full"
           objectPosition="top right"
+          rotate="rotate-180"
         />
       </motion.div>
 
