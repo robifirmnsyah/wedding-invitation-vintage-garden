@@ -81,7 +81,7 @@ export function DesktopPanel() {
 
       {/* ── Top Left Decorative Corner — rotated 180° to hang DOWN into panel ── */}
       <motion.div
-        className="pointer-events-none absolute -left-14 -top-10 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
+        className="pointer-events-none absolute left-0 top-0 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
       >
@@ -95,7 +95,7 @@ export function DesktopPanel() {
 
       {/* ── Top Right Decorative Corner — rotated 180° to hang DOWN into panel ── */}
       <motion.div
-        className="pointer-events-none absolute -right-14 -top-10 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
+        className="pointer-events-none absolute right-0 top-0 h-64 w-64 xl:h-80 xl:w-80 2xl:h-96 2xl:w-96"
         animate={{ y: [0, -3, 0] }}
         transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
