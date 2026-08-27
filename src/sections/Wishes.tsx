@@ -174,7 +174,7 @@ export function Wishes() {
       <StaggerGroup
         variants={staggerContainer}
         early
-        className="mx-auto mt-12 grid max-w-4xl gap-8 lg:grid-cols-2"
+        className="mx-auto mt-12 flex max-w-lg flex-col gap-8"
       >
         <RevealItem variants={slideFromLeft} className="paper-card h-fit p-5 sm:p-6">
           <AnimatePresence mode="wait" initial={false}>
@@ -353,7 +353,7 @@ export function Wishes() {
           </AnimatePresence>
         </RevealItem>
 
-        <RevealItem variants={slideFromRight} className="flex flex-col">
+        <RevealItem variants={slideFromLeft} className="flex flex-col">
           <p className="mb-3 font-body text-sm text-olive-700" aria-live="polite">
             {wishes.length} ucapan
           </p>
