@@ -131,7 +131,7 @@ export function DesktopPanel() {
           ease: "easeInOut",
         }}
       >
-        <div className="relative h-full w-full">
+        <div className="relative h-full w-full -scale-y-100">
           <Image
             src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
             alt=""
@@ -182,7 +182,7 @@ export function DesktopPanel() {
           delay: 0.5,
         }}
       >
-        <div className="relative h-full w-full">
+        <div className="relative h-full w-full -scale-y-100">
           <Image
             src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
             alt=""
