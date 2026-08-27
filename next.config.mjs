@@ -14,6 +14,10 @@ const nextConfig = {
       { protocol: "https", hostname: "**" },
     ],
   },
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  experimental: {
+    webpackBuildWorker: false,
+  },
 };
 
 export default nextConfig;

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useLenis } from "@/hooks/useLenis";
 import { useGuestName } from "@/hooks/useGuestName";
+import { DesktopPanel } from "@/components/DesktopPanel";
 import { MusicButton } from "@/components/MusicButton";
 import { Loading } from "@/sections/Loading";
 import { Hero } from "@/sections/Hero";
@@ -33,8 +34,8 @@ const easeInFastSlowOut = (progress: number) => {
  * Top-level client orchestrator: loading screen → cover → (on open) the full
  * scrollable invitation with smooth scroll and music.
  *
- * The page is a sequence of opaque paper "chapters" with alternating mat
- * backgrounds (MASTER.md §14) — the fixed painted backdrop is retired.
+ * Desktop view displays a dedicated ambient decorative frame on the left,
+ * while preserving the complete mobile invitation experience on the right.
  */
 export function InvitationShell() {
   const [loading, setLoading] = useState(true);
@@ -87,45 +88,48 @@ export function InvitationShell() {
       </a>
 
       <Loading show={loading} />
+      <DesktopPanel />
       <MusicButton src={config.music} active={opened} />
 
-      <main className="relative bg-ivory-50">
-        <Hero
-          guestName={guestName}
-          opened={opened}
-          onOpen={handleOpen}
-          onScrollToContent={scrollToInvitation}
-        />
+      <div className="relative min-h-screen w-full lg:flex lg:justify-end bg-[#f6f2e8]">
+        <main className="relative w-full lg:w-[480px] xl:w-[520px] 2xl:w-[560px] min-h-screen bg-ivory-50 shadow-[-14px_0_36px_rgba(0,0,0,0.12)] border-l border-gold-600/25 z-20 overflow-x-hidden">
+          <Hero
+            guestName={guestName}
+            opened={opened}
+            onOpen={handleOpen}
+            onScrollToContent={scrollToInvitation}
+          />
 
-        <AnimatePresence>
-          {opened && (
-            <motion.div
-              id="isi-undangan"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: motionTokens.durationSection,
-                delay: 0.72,
-                ease: motionTokens.easeOut,
-              }}
-            >
-              <Quote />
-              <BrideGroom />
-              {!isTasyakur && <SaveDate />}
-              <EventDetails />
-              <Gallery />
-              {!isTasyakur && (
-                <>
-                  <Story />
-                  <Wishes />
-                  <Gift />
-                </>
-              )}
-              <Closing />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
+          <AnimatePresence>
+            {opened && (
+              <motion.div
+                id="isi-undangan"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: motionTokens.durationSection,
+                  delay: 0.72,
+                  ease: motionTokens.easeOut,
+                }}
+              >
+                <Quote />
+                <BrideGroom />
+                {!isTasyakur && <SaveDate />}
+                <EventDetails />
+                <Gallery />
+                {!isTasyakur && (
+                  <>
+                    <Story />
+                    <Wishes />
+                    <Gift />
+                  </>
+                )}
+                <Closing />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+      </div>
     </MotionConfig>
   );
 }
