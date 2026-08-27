@@ -322,7 +322,7 @@ export async function getGuestStats() {
 
 export async function listPublicWishes() {
   const rows = await getValues(WISHES_SHEET, "A2:G");
-  return rows.map((row, index) => {
+  const wishes = rows.map((row, index) => {
     let replies = [];
     try {
       replies = row[6] ? JSON.parse(row[6]) : [];
@@ -340,6 +340,16 @@ export async function listPublicWishes() {
       row: index + 2,
     };
   }).filter(wish => wish.id);
+
+  // Urutkan dari yang terbaru ke yang terlama
+  return wishes.sort((a, b) => {
+    const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    if (timeA !== timeB && !isNaN(timeA) && !isNaN(timeB)) {
+      return timeB - timeA;
+    }
+    return b.row - a.row; // Fallback ke urutan baris sheet (baris bawah = lebih baru)
+  });
 }
 
 export async function appendPublicWish(wish: any) {

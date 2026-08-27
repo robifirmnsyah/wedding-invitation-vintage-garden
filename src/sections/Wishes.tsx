@@ -92,7 +92,15 @@ export function Wishes() {
   useEffect(() => {
     fetch("/api/wishes")
       .then((r) => r.json())
-      .then((d) => setWishes(d.wishes ?? []))
+      .then((d) => {
+        const list: Wish[] = d.wishes ?? [];
+        list.sort((a, b) => {
+          const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+          const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+          return timeB - timeA;
+        });
+        setWishes(list);
+      })
       .catch(() => {});
   }, []);
 
