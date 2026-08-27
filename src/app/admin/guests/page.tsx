@@ -46,7 +46,7 @@ Atas perhatian dan kehadirannya, kami ucapkan terima kasih.
 
 Wassalamu'alaikum Warahmatullahi Wabarakatuh
 
-Hormat kami yang mengundang,
+Hormat kami,
 *Kel. Bpk. Indra Gunawan & Ibu Tini Martini*`
   : `Assalamu'alaikum Warahmatullahi Wabarakatuh,
 
