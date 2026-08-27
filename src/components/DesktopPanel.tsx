@@ -6,20 +6,25 @@ import config, { isTasyakur } from "@/lib/config";
 
 /**
  * Decorative floral corner.
- * Uses dedicated directional assets for each corner.
+ *
+ * Container berada tepat di sudut panel.
+ * Image di-scale dan digeser agar transparent padding
+ * dari asset PNG tidak menimbulkan space kosong.
  */
 function CornerFloral({
   src,
   className = "",
+  imageClassName = "",
   objectPosition = "top left",
 }: {
   src: string;
   className?: string;
+  imageClassName?: string;
   objectPosition?: string;
 }) {
   return (
     <div
-      className={`pointer-events-none absolute select-none ${className}`}
+      className={`pointer-events-none absolute overflow-hidden select-none ${className}`}
       aria-hidden="true"
     >
       <div className="relative h-full w-full">
@@ -27,9 +32,9 @@ function CornerFloral({
           src={src}
           alt=""
           fill
-          className="object-contain"
+          className={`object-contain ${imageClassName}`}
           style={{ objectPosition }}
-          sizes="(max-width: 1400px) 25vw, 320px"
+          sizes="(max-width: 1400px) 25vw, 400px"
           aria-hidden="true"
         />
       </div>
@@ -39,6 +44,7 @@ function CornerFloral({
 
 export function DesktopPanel() {
   const { groom, bride } = config.couple;
+
   const person1 = isTasyakur ? groom : bride;
   const person2 = isTasyakur ? bride : groom;
 
@@ -51,19 +57,25 @@ export function DesktopPanel() {
       aria-label="Panel Dekorasi Undangan"
       className="
         fixed inset-y-0 left-0
-        hidden h-screen
+        z-10
+        hidden
+        h-screen
         w-[calc(100%-480px)]
+        overflow-hidden
+        border-r border-[#dfd6c5]/80
+        bg-[#f6f2e8]
+        shadow-[inset_-10px_0_25px_rgba(0,0,0,0.03)]
+        lg:flex
+        lg:flex-col
+        lg:items-center
+        lg:justify-center
         xl:w-[calc(100%-520px)]
         2xl:w-[calc(100%-560px)]
-        lg:flex flex-col items-center justify-center
-        overflow-hidden
-        bg-[#f6f2e8]
-        border-r border-[#dfd6c5]/80
-        shadow-[inset_-10px_0_25px_rgba(0,0,0,0.03)]
-        z-10
       "
     >
-      {/* ── Background subtle watercolor grove texture ── */}
+      {/* ─────────────────────────────────────────────
+          BACKGROUND WATERCOLOR GROVE
+      ───────────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 opacity-[0.22] mix-blend-multiply">
         <Image
           src="/assets/decorative/vintage-garden-frame/watercolor-tree-grove.png"
@@ -76,7 +88,9 @@ export function DesktopPanel() {
         />
       </div>
 
-      {/* ── Subtle paper vignette radial gradient ── */}
+      {/* ─────────────────────────────────────────────
+          PAPER VIGNETTE
+      ───────────────────────────────────────────── */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -86,55 +100,81 @@ export function DesktopPanel() {
         aria-hidden="true"
       />
 
-      {/* ─────────────────────────────────────────────
+      {/* ═════════════════════════════════════════════
           TOP LEFT FLORAL
-          Direct asset, no rotation.
-          Negative offset removes space from the corner.
-      ───────────────────────────────────────────── */}
+
+          Container tepat di titik 0,0.
+          Image diperbesar dan digeser keluar ke kiri
+          dan atas agar sudut visual benar-benar rapat.
+      ═════════════════════════════════════════════ */}
       <motion.div
         className="
           pointer-events-none
           absolute
-          -left-4
-          -top-4
-          h-64 w-64
-          xl:h-80 xl:w-80
-          2xl:h-96 2xl:w-96
+          left-0
+          top-0
+          z-[2]
+          h-72
+          w-72
+          overflow-hidden
+          xl:h-88
+          xl:w-88
+          2xl:h-[26rem]
+          2xl:w-[26rem]
         "
-        animate={{ y: [0, -3, 0] }}
+        animate={{
+          y: [0, -3, 0],
+        }}
         transition={{
           duration: 7.5,
           repeat: Infinity,
           ease: "easeInOut",
         }}
       >
-        <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
-          className="
-            h-full w-full
-            scale-110
-            origin-top-left
-          "
-          objectPosition="top left"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src="/assets/decorative/vintage-garden-frame/floral-top-left.png"
+            alt=""
+            fill
+            priority
+            className="
+              object-contain
+              object-left-top
+              scale-[1.28]
+              -translate-x-[9%]
+              -translate-y-[9%]
+              origin-top-left
+            "
+            sizes="400px"
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
 
-      {/* ─────────────────────────────────────────────
+      {/* ═════════════════════════════════════════════
           TOP RIGHT FLORAL
-          Direct asset, no rotation.
-          Negative offset removes space from the corner.
-      ───────────────────────────────────────────── */}
+
+          Sama seperti kiri, tetapi anchor berada
+          di sudut kanan atas.
+      ═════════════════════════════════════════════ */}
       <motion.div
         className="
           pointer-events-none
           absolute
-          -right-4
-          -top-4
-          h-64 w-64
-          xl:h-80 xl:w-80
-          2xl:h-96 2xl:w-96
+          right-0
+          top-0
+          z-[2]
+          h-72
+          w-72
+          overflow-hidden
+          xl:h-88
+          xl:w-88
+          2xl:h-[26rem]
+          2xl:w-[26rem]
         "
-        animate={{ y: [0, -3, 0] }}
+        animate={{
+          y: [0, -3, 0],
+        }}
         transition={{
           duration: 8.2,
           repeat: Infinity,
@@ -142,31 +182,47 @@ export function DesktopPanel() {
           delay: 0.5,
         }}
       >
-        <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
-          className="
-            h-full w-full
-            scale-110
-            origin-top-right
-          "
-          objectPosition="top right"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src="/assets/decorative/vintage-garden-frame/floral-top-right.png"
+            alt=""
+            fill
+            priority
+            className="
+              object-contain
+              object-right-top
+              scale-[1.28]
+              translate-x-[9%]
+              -translate-y-[9%]
+              origin-top-right
+            "
+            sizes="400px"
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
 
-      {/* ─────────────────────────────────────────────
+      {/* ═════════════════════════════════════════════
           BOTTOM LEFT FLORAL
-      ───────────────────────────────────────────── */}
+      ═════════════════════════════════════════════ */}
       <motion.div
         className="
           pointer-events-none
           absolute
-          -bottom-4
-          -left-8
-          h-56 w-56
-          xl:h-72 xl:w-72
-          2xl:h-80 2xl:w-80
+          bottom-0
+          left-0
+          z-[2]
+          h-64
+          w-64
+          overflow-hidden
+          xl:h-80
+          xl:w-80
+          2xl:h-96
+          2xl:w-96
         "
-        animate={{ y: [0, 4, 0] }}
+        animate={{
+          y: [0, 4, 0],
+        }}
         transition={{
           duration: 9,
           repeat: Infinity,
@@ -174,27 +230,46 @@ export function DesktopPanel() {
           delay: 0.4,
         }}
       >
-        <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-left.png"
-          className="h-full w-full"
-          objectPosition="bottom left"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src="/assets/decorative/vintage-garden-frame/floral-left.png"
+            alt=""
+            fill
+            className="
+              object-contain
+              object-left-bottom
+              scale-[1.1]
+              -translate-x-[4%]
+              translate-y-[4%]
+              origin-bottom-left
+            "
+            sizes="400px"
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
 
-      {/* ─────────────────────────────────────────────
+      {/* ═════════════════════════════════════════════
           BOTTOM RIGHT FLORAL
-      ───────────────────────────────────────────── */}
+      ═════════════════════════════════════════════ */}
       <motion.div
         className="
           pointer-events-none
           absolute
-          -bottom-4
-          -right-8
-          h-56 w-56
-          xl:h-72 xl:w-72
-          2xl:h-80 2xl:w-80
+          bottom-0
+          right-0
+          z-[2]
+          h-64
+          w-64
+          overflow-hidden
+          xl:h-80
+          xl:w-80
+          2xl:h-96
+          2xl:w-96
         "
-        animate={{ y: [0, 4, 0] }}
+        animate={{
+          y: [0, 4, 0],
+        }}
         transition={{
           duration: 9.5,
           repeat: Infinity,
@@ -202,36 +277,56 @@ export function DesktopPanel() {
           delay: 0.6,
         }}
       >
-        <CornerFloral
-          src="/assets/decorative/vintage-garden-frame/floral-right.png"
-          className="h-full w-full"
-          objectPosition="bottom right"
-        />
+        <div className="relative h-full w-full">
+          <Image
+            src="/assets/decorative/vintage-garden-frame/floral-right.png"
+            alt=""
+            fill
+            className="
+              object-contain
+              object-right-bottom
+              scale-[1.1]
+              translate-x-[4%]
+              translate-y-[4%]
+              origin-bottom-right
+            "
+            sizes="400px"
+            aria-hidden="true"
+          />
+        </div>
       </motion.div>
 
-      {/* ─────────────────────────────────────────────
+      {/* ═════════════════════════════════════════════
           CENTER CONTENT
-      ───────────────────────────────────────────── */}
+      ═════════════════════════════════════════════ */}
       <div className="relative z-10 flex max-w-lg flex-col items-center px-8 text-center">
-        {/* ── Arch Photo Container ── */}
+        {/* ── ARCH PHOTO ── */}
         <motion.div
           className="relative w-56 sm:w-64 xl:w-72 2xl:w-80"
-          initial={{ opacity: 0, scale: 0.94, y: 15 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            scale: 0.94,
+            y: 15,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          }}
           transition={{
             duration: 1.1,
             ease: [0.16, 1, 0.3, 1],
           }}
         >
-          {/* ── Outer Gold & Ivory Arch Frame ── */}
+          {/* Outer Arch Frame */}
           <div
             className="
               relative
               aspect-[3/4]
               w-full
               overflow-hidden
-              rounded-t-[999px]
               rounded-b-xl
+              rounded-t-[999px]
               border-[5px]
               border-[#FAF7F0]
               bg-[#FAF7F0]
@@ -241,14 +336,15 @@ export function DesktopPanel() {
               ring-gold-600/30
             "
           >
-            {/* ── Inner Arch Photo ── */}
+            {/* Inner Photo */}
             <div
               className="
                 relative
-                h-full w-full
+                h-full
+                w-full
                 overflow-hidden
-                rounded-t-[999px]
                 rounded-b-lg
+                rounded-t-[999px]
               "
             >
               <Image
@@ -258,15 +354,17 @@ export function DesktopPanel() {
                 priority
                 sizes="(max-width: 1400px) 320px, 400px"
                 className="object-cover"
-                style={{ objectPosition: "center 25%" }}
+                style={{
+                  objectPosition: "center 25%",
+                }}
               />
 
-              {/* Photo gradient */}
+              {/* Photo Gradient */}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
             </div>
           </div>
 
-          {/* ── Decorative Arch Overlay ── */}
+          {/* Decorative Arch Overlay */}
           <Image
             src="/assets/decorative/vintage-garden-frame/portrait-arch-frame.png"
             alt=""
@@ -282,20 +380,26 @@ export function DesktopPanel() {
           />
         </motion.div>
 
-        {/* ─────────────────────────────────────────────
-            TYPOGRAPHY SECTION
-        ───────────────────────────────────────────── */}
+        {/* ═════════════════════════════════════════════
+            TYPOGRAPHY
+        ═════════════════════════════════════════════ */}
         <motion.div
           className="mt-7 flex flex-col items-center"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 12,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
           transition={{
             duration: 1,
             delay: 0.25,
             ease: [0.16, 1, 0.3, 1],
           }}
         >
-          {/* ── Tagline ── */}
+          {/* Tagline */}
           <p
             className="
               font-body
@@ -310,7 +414,7 @@ export function DesktopPanel() {
             {config.hero.tagline || "The Wedding Of"}
           </p>
 
-          {/* ── Couple Names ── */}
+          {/* Couple Names */}
           <h2
             className="
               mt-2.5
@@ -339,7 +443,7 @@ export function DesktopPanel() {
             {person2.shortName}
           </h2>
 
-          {/* ── Date ── */}
+          {/* Date */}
           <p
             className="
               mt-3
