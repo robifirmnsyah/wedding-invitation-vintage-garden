@@ -4,64 +4,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import config, { isTasyakur } from "@/lib/config";
 
-/**
- * Intricate Javanese Gunungan (Kayon) SVG Icon with gold gradient finish
- */
-function GununganOrnament({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 200 300"
-      className={className}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <linearGradient id="goldGununganGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#DFC37C" />
-          <stop offset="35%" stopColor="#C29B48" />
-          <stop offset="70%" stopColor="#8F6C26" />
-          <stop offset="100%" stopColor="#B8933F" />
-        </linearGradient>
-        <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
-          <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#423010" floodOpacity="0.35" />
-        </filter>
-      </defs>
-      <g filter="url(#goldGlow)">
-        {/* Outer Kayon Silhouette */}
-        <path
-          d="M100 8 C115 45, 168 115, 178 185 C186 240, 165 268, 142 278 L142 294 L58 294 L58 278 C35 268, 14 240, 22 185 C32 115, 85 45, 100 8 Z"
-          fill="url(#goldGununganGrad)"
-          stroke="#5E4515"
-          strokeWidth="1.5"
-          opacity="0.92"
-        />
-        {/* Inner Tree of Life & Sacred Geometry Lines */}
-        <path
-          d="M100 24 L100 280 M100 70 C75 95, 45 140, 48 180 C80 180, 100 150, 100 150 C100 150, 120 180, 152 180 C155 140, 125 95, 100 70 Z"
-          stroke="#423010"
-          strokeWidth="1.2"
-          strokeDasharray="2 2"
-          fill="none"
-          opacity="0.6"
-        />
-        <path
-          d="M100 110 C80 130, 60 170, 62 210 M100 110 C120 130, 140 170, 138 210 M100 160 C70 190, 50 230, 52 265 M100 160 C130 190, 150 230, 148 265"
-          stroke="#FBF9F3"
-          strokeWidth="1"
-          opacity="0.5"
-        />
-        {/* Central Gate / Rumah Joglo outline */}
-        <path
-          d="M82 245 L100 225 L118 245 L118 278 L82 278 Z"
-          fill="#3B2607"
-          stroke="#DFC37C"
-          strokeWidth="1"
-          opacity="0.75"
-        />
-      </g>
-    </svg>
-  );
-}
+
+
 
 /**
  * Decorative floral corner — uses dedicated directional assets so
@@ -136,8 +80,7 @@ export function DesktopPanel() {
       {/* ── Top Left Decorative Corner ── */}
       <motion.div
         className="pointer-events-none absolute -left-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
-        style={{ rotate: "12deg" }}
-        animate={{ y: [0, -3, 0], rotate: [12, 12.4, 12] }}
+        animate={{ y: [0, -3, 0] }}
         transition={{ duration: 7.5, repeat: Infinity, ease: "easeInOut" }}
       >
         <CornerFloral
@@ -150,8 +93,7 @@ export function DesktopPanel() {
       {/* ── Top Right Decorative Corner ── */}
       <motion.div
         className="pointer-events-none absolute -right-4 -top-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
-        style={{ rotate: "-12deg" }}
-        animate={{ y: [0, -3, 0], rotate: [-12, -12.4, -12] }}
+        animate={{ y: [0, -3, 0] }}
         transition={{ duration: 8.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       >
         <CornerFloral
@@ -161,19 +103,10 @@ export function DesktopPanel() {
         />
       </motion.div>
 
-      {/* ── Bottom Left: Gunungan (far corner) ── */}
+      {/* ── Bottom Left Floral Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-4 -left-2 h-48 w-32 xl:h-60 xl:w-40 opacity-90"
-        animate={{ y: [0, 3, 0] }}
-        transition={{ duration: 8.8, repeat: Infinity, ease: "easeInOut", delay: 0.2 }}
-      >
-        <GununganOrnament className="h-full w-full drop-shadow-md" />
-      </motion.div>
-
-      {/* ── Bottom Left: Floral bouquet (above Gunungan, spread inward) ── */}
-      <motion.div
-        className="pointer-events-none absolute -bottom-2 left-16 xl:left-20 2xl:left-24 h-52 w-52 xl:h-64 xl:w-64 2xl:h-72 2xl:w-72"
-        animate={{ y: [0, 4, 0], rotate: [0, -0.5, 0] }}
+        className="pointer-events-none absolute -bottom-6 -left-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        animate={{ y: [0, 4, 0] }}
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
       >
         <CornerFloral
@@ -183,19 +116,10 @@ export function DesktopPanel() {
         />
       </motion.div>
 
-      {/* ── Bottom Right: Gunungan (far corner) ── */}
+      {/* ── Bottom Right Floral Corner ── */}
       <motion.div
-        className="pointer-events-none absolute -bottom-4 -right-2 h-48 w-32 xl:h-60 xl:w-40 opacity-90 -scale-x-100"
-        animate={{ y: [0, 3, 0] }}
-        transition={{ duration: 9.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
-      >
-        <GununganOrnament className="h-full w-full drop-shadow-md" />
-      </motion.div>
-
-      {/* ── Bottom Right: Floral bouquet (above Gunungan, spread inward) ── */}
-      <motion.div
-        className="pointer-events-none absolute -bottom-2 right-16 xl:right-20 2xl:right-24 h-52 w-52 xl:h-64 xl:w-64 2xl:h-72 2xl:w-72"
-        animate={{ y: [0, 4, 0], rotate: [0, 0.5, 0] }}
+        className="pointer-events-none absolute -bottom-6 -right-4 h-56 w-56 xl:h-72 xl:w-72 2xl:h-80 2xl:w-80"
+        animate={{ y: [0, 4, 0] }}
         transition={{ duration: 9.5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
       >
         <CornerFloral
