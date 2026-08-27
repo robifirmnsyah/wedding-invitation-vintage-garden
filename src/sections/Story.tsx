@@ -23,11 +23,10 @@ export function Story() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      const wide = window.matchMedia("(min-width: 640px)").matches;
       const items = gsap.utils.toArray<HTMLElement>(".story-item");
 
-      items.forEach((item, i) => {
-        const fromSide = wide ? (i % 2 === 1 ? -36 : 36) : 0;
+      items.forEach((item) => {
+        const fromSide = 0;
 
         gsap.from(item, {
           opacity: 0,
@@ -87,7 +86,7 @@ export function Story() {
         {/* center hairline */}
         <div
           aria-hidden="true"
-          className="absolute left-4 top-0 h-full w-px bg-sage-300 sm:left-1/2 sm:-translate-x-1/2"
+          className="absolute left-4 top-0 h-full w-px bg-sage-300"
         >
           <div className="story-line-fill h-full w-full bg-gold-600" />
         </div>
@@ -98,23 +97,17 @@ export function Story() {
             return (
               <li
                 key={m.title}
-                className={`story-item relative flex flex-col pl-10 sm:pl-0 ${
-                  flip ? "sm:items-start" : "sm:items-end"
-                }`}
+                className="story-item relative flex flex-col pl-10"
               >
                 {/* node */}
                 <span
                   aria-hidden="true"
-                  className="story-node absolute left-4 top-6 z-10 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border border-gold-600 bg-ivory-50 sm:left-1/2"
+                  className="story-node absolute left-4 top-6 z-10 h-3.5 w-3.5 -translate-x-1/2 rotate-45 border border-gold-600 bg-ivory-50"
                 />
 
                 {/* text card */}
                 <div
-                  className={`paper-card p-6 sm:w-[calc(50%-2rem)] ${
-                    flip
-                      ? "sm:mr-auto sm:text-left"
-                      : "sm:ml-auto sm:text-right"
-                  }`}
+                  className="paper-card p-6 w-full"
                 >
                   <span className="eyebrow !text-gold-700">{m.date}</span>
                   <h3

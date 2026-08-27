@@ -247,7 +247,7 @@ export function EventDetails() {
       </div>
 
       {/* ── EVENT CARDS GRID ────────────────────────────────────────────── */}
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:items-stretch md:gap-8">
+      <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center justify-center gap-10">
         {config.event.akad && <EventCard event={config.event.akad} />}
         <EventCard event={config.event.resepsi} />
       </div>

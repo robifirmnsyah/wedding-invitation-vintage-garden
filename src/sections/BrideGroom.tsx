@@ -196,10 +196,10 @@ export function BrideGroom() {
       </div>
 
       {/* ── PERSON CARDS GRID ────────────────────────────────────────────── */}
-      <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center justify-center gap-10 md:flex-row md:items-stretch md:gap-8">
+      <div className="relative z-10 mx-auto flex max-w-lg flex-col items-center justify-center gap-10">
         <PersonCard person={person1} title={title1} />
         
-        {/* Elegant Center Ampersand for Desktop/Mobile */}
+        {/* Elegant Center Ampersand */}
         <div className="flex items-center justify-center">
           <span className="font-accent text-4xl text-gold-700 sm:text-5xl">&amp;</span>
         </div>
