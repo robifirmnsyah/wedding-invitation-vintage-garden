@@ -115,7 +115,7 @@ _Wassalamu'alaikum Warahmatullahi Wabarakatuh_
 *Hormat kami,*
 *Tiara & Robi*`;
   } else {
-    const parentsName = side === "groom" ? "Indra & Martini" : "Enung & Amah";
+    const parentsName = side === "groom" ? "Indra Gunawan & Tini Martini" : "Enung Suherman & Amah";
     return `_Assalamu'alaikum Warahmatullahi Wabarakatuh_
 
 Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i *${guestName}* untuk menghadiri acara pernikahan putra-putri kami.
